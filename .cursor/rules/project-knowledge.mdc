@@ -1,0 +1,19 @@
+# 项目知识库
+
+## 技术栈
+- Python 3.11+ (Backend API)
+- Next.js (Frontend)
+- PostgreSQL + Redis
+- Docker + Docker Compose
+- CrewAI (Server B 任务执行)
+
+## 核心服务
+- storyboard.py: 分镜生成服务
+- image_generator.py: 图像生成服务
+- motion_engine.py: 动态化引擎
+- video_compositor.py: 视频合成服务
+
+## API 设计
+- 统一前缀: /api/v1
+- 认证: Bearer Token
+- 响应格式: {"code": 200, "data": ..., "message": ""}

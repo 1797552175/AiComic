@@ -6,25 +6,35 @@
 
 ```
 AiComic/
-├── README.md           # 项目说明
-├── AGENTS.md           # AI 协作者开发指引
-├── SOUL.md            # AI 协作行为规范
-├── IDENTITY.md        # 项目身份与定位
-├── PROJECT_SPEC.md    # 产品规格与路线图
-├── .cursorrules       # 编码规范
-├── .cursorignore      # Cursor AI 忽略配置
-├── docs/              # 产品需求文档（PRD）
-├── 原型/              # 功能原型设计
-├── 代码/              # 研发输出（必须 git push）
-│   ├── api/           # API 路由
-│   ├── models/        # 数据模型
-│   ├── services/      # 核心服务
-│   └── utils/         # 工具函数
-├── scripts/           # CrewAI 脚本模板库
-│   ├── templates/     # 脚本模板
-│   ├── common/        # 公共模块
-│   └── generator.py   # 脚本生成器
-└── 营销方案/          # 营销推广方案
+├── README.md            # 项目说明
+├── AGENTS.md            # AI 协作者开发指引
+├── SOUL.md             # AI 协作行为规范
+├── IDENTITY.md         # 项目身份与定位
+├── PROJECT_SPEC.md     # 产品规格与路线图
+├── .cursorrules        # 编码规范
+├── .cursorignore       # Cursor AI 忽略配置
+├── .cursor/rules/      # Cursor 项目知识库
+├── apps/               # 应用代码（monorepo 风格）
+│   ├── backend/        # Python/FastAPI 后端
+│   │   ├── api/        # API 路由
+│   │   ├── models/     # 数据模型
+│   │   ├── services/   # 核心服务（分镜/图像/动态化/合成）
+│   │   ├── config/     # 配置管理
+│   │   ├── utils/      # 工具函数
+│   │   ├── Dockerfile
+│   │   ├── docker-compose.yml
+│   │   └── requirements.txt
+│   └── frontend/       # Next.js 前端（待开发）
+├── scripts/             # CrewAI 脚本模板库
+│   ├── templates/       # 脚本模板（crud/api/page/multiagent）
+│   ├── common/         # 公共模块
+│   └── generator.py    # 脚本生成器
+├── config/              # 环境配置模板
+├── docs/               # 产品需求文档（PRD）
+├── 原型/               # 功能原型设计
+├── scripts/            # CrewAI 脚本模板库
+├── test/               # 测试文件
+└── 营销方案/           # 营销推广方案
 ```
 
 ## 🎯 核心链路
@@ -37,18 +47,19 @@ AiComic/
 
 | Bot | 职责 | 输出 |
 |-----|------|------|
-| 状态监控 | 总协调、任务分发、进度跟踪 | 任务板 |
-| 产品经理 | 竞品分析、PRD、原型设计 | `docs/`、`原型/` |
-| 研发 | 技术方案、 CrewAI 脚本、代码 | `代码/` |
+| 状态监控 | 总协调、任务分发 | 任务板 |
+| 产品经理 | 竞品分析、PRD、原型 | `docs/`、`原型/` |
+| 研发 | 技术方案、CrewAI 脚本、代码 | `apps/backend/` |
 | 营销 | 竞品验证、营销方案 | `营销方案/` |
 
 ## 🚀 快速开始
 
-### 研发环境
+### 后端启动
 
 ```bash
-cd /opt/AiComic/代码
-pip install -r requirements.txt
+cd apps/backend
+cp config/.env.example .env
+# 编辑 .env 填入真实 API Key
 docker compose up -d
 ```
 
@@ -56,16 +67,16 @@ docker compose up -d
 
 ```bash
 # 生成脚本
-python /opt/AiComic/scripts/generator.py \
+python scripts/generator.py \
   --type multiagent \
   --name "分镜生成" \
-  --output /tmp/
+  --output /opt/AiComic/scripts/generated/
 
 # 同步到 Server B
-scp /tmp/分镜生成_20260323.py root@150.109.243.164:/opt/AiComic/scripts/generated/
+scp /opt/AiComic/scripts/generated/xxx.py root@150.109.243.164:/opt/AiComic/scripts/generated/
 
 # 在 Server B 执行
-docker exec crewai-runtime python /opt/AiComic/scripts/generated/分镜生成_20260323.py
+docker exec crewai-runtime python /opt/AiComic/scripts/generated/xxx.py
 ```
 
 ### Git 规范
@@ -81,10 +92,11 @@ git push
 | 文档 | 状态 |
 |------|------|
 | 产品需求文档（PRD） | ✅ 已完成 |
-| 功能原型设计 | ✅ 已完成 |
+| 功能原型设计 v2.1 | ✅ 已完成 |
 | 技术架构设计 | ✅ 已完成 |
 | 竞品分析报告 | ✅ 已完成 |
-| 代码实现 | 🚧 进行中 |
+| 后端代码实现 | 🚧 进行中 |
+| 前端实现 | ⏳ 待开始 |
 | 营销方案 | ⏳ 待开始 |
 
 ## 🔗 关键链接

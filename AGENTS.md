@@ -4,7 +4,7 @@
 
 ## 项目概述
 
-**AiComic** —— AI 动态漫创作平台。从文字剧本到动态漫视频的一站式创作工具。
+**AiComic** — AI 动态漫创作平台。从文字剧本到动态漫视频的一站式创作工具。
 
 核心链路：`剧本输入 → AI 分镜 → 画面生成 → 动态化 → 配音配乐 → 合成输出`
 
@@ -12,17 +12,27 @@
 
 ```
 AiComic/
-├── README.md           # 项目说明
-├── AGENTS.md           # 本文件，AI 开发指引
-├── SOUL.md            # AI 协作灵魂与行为规范
-├── .cursorrules       # 编码规范（所有 AI 必读）
-├── PROJECT_SPEC.md    # 产品规格与路线图
-├── docs/              # 产品需求文档（PRD）
-├── 原型/              # 功能原型设计
-├── 代码/              # 研发输出
+├── AGENTS.md           # AI 开发指引
+├── SOUL.md            # AI 协作行为规范
+├── IDENTITY.md        # 项目身份
+├── PROJECT_SPEC.md    # 产品规格
+├── .cursorrules       # 编码规范
+├── .cursor/rules/     # Cursor 项目知识库
+├── apps/              # 应用代码（monorepo）
+│   ├── backend/       # Python/FastAPI 后端
+│   │   ├── api/      # API 路由
+│   │   ├── models/   # 数据模型
+│   │   ├── services/ # 核心服务（分镜/图像/动态化/音频/合成）
+│   │   ├── config/   # 配置管理（settings.py）
+│   │   └── utils/    # 工具函数
+│   └── frontend/     # Next.js 前端（待开发）
 ├── scripts/           # CrewAI 脚本模板库
-│   ├── templates/     # 脚本模板
+│   ├── templates/    # 脚本模板（crud/api/page/multiagent）
 │   └── common/       # 公共模块
+├── config/            # 环境变量模板（.env.example）
+├── docs/              # PRD、产品需求文档
+├── 原型/              # 功能原型设计
+├── test/              # 测试文件
 └── 营销方案/          # 营销输出
 ```
 
@@ -30,7 +40,7 @@ AiComic/
 
 - **产品需求与路线图**：`PROJECT_SPEC.md`
 - **功能/原型设计**：`docs/`、`原型/`
-- **实现前**：先确认需求，再写代码；功能改动后同步更新 `docs/` 与 `PROJECT_SPEC.md`
+- **实现前**：先确认需求，再写代码；改代码时同步更新文档
 
 ## Bot 协作职责
 
@@ -38,7 +48,7 @@ AiComic/
 |-----|------|---------|
 | 状态监控 | 总协调、任务分发、进度跟踪 | 任务板 |
 | 产品经理 | 竞品分析、PRD、原型设计 | `docs/`、`原型/` |
-| 研发 | 技术方案、CrewAI 脚本、代码实现 | `代码/` |
+| 研发 | 技术方案、CrewAI 脚本、代码实现 | `apps/backend/` |
 | 营销 | 竞品验证、营销方案 | `营销方案/` |
 
 **协作流程**：状态监控收任务 → 分配给对应 Bot → Bot 完成后更新任务板 → 状态监控通知
@@ -46,8 +56,8 @@ AiComic/
 ## 实现习惯
 
 1. **新功能**：先看设计/PRD，再实现；改代码时同步更新文档
-2. **CrewAI 脚本**：优先使用 `scripts/templates/` 中的模板，填充 CONFIG 后执行
-3. **代码位置**：`代码/` 目录下按功能模块划分（api/、services/、models/）
+2. **CrewAI 脚本**：优先使用 `scripts/templates/` 中的模板
+3. **代码位置**：`apps/backend/` 目录下按功能模块划分（api/、services/、models/）
 4. **git push 规范**：每次代码更新后必须执行 `git add . && git commit && git push`
 5. **commit 格式**：`feat: [需求名] - [简要描述]`
 6. **大文件**（>800行）：优先抽取为组件/子模块再改

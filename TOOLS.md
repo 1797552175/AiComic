@@ -24,7 +24,7 @@
 | SSH 用户 | `root` |
 | Docker 容器 | `crewai-runtime` |
 | 脚本目录 | `/opt/AiComic/scripts/` |
-| 输出目录 | `/opt/AiComic/代码/output/` |
+| 输出目录 | `/opt/AiComic/scripts/output/` |
 
 ### 常用命令
 
@@ -54,7 +54,7 @@ docker restart crewai-runtime
 | `crud_template.py` | 增删改查操作 |
 | `api_template.py` | REST API 开发 |
 | `page_template.py` | 前端页面 |
-| `multiagent_template.py` | 多 Agent 协作 |
+| `multiagent_template.py` | 多 Agent 协作（最通用） |
 
 **使用方式**：
 ```bash
@@ -64,10 +64,18 @@ python /opt/AiComic/scripts/generator.py \
   --output /opt/AiComic/scripts/generated/
 ```
 
+## 应用代码
+
+**后端**：`/opt/AiComic/apps/backend/`
+- `services/` — 核心服务（storyboard、image、motion、audio、video）
+- `api/` — API 路由
+- `models/` — 数据模型
+- `config/` — 配置管理（settings.py）
+
 ## 飞书群
 
 - **项目群**：`oc_5159dddd87a707d99f3f2eb5e9beec9f`
-- **文档**：`YXMCdbSWFo2JNoxvyXXcJRIon0b`
+- **架构文档**：`YXMCdbSWFo2JNoxvyXXcJRIon0b`
 
 ## Bot 目标会话
 

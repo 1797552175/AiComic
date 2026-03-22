@@ -56,7 +56,7 @@ def function_name(param: str, optional_param: Optional[str] = None) -> dict:
 # 1. 配置区（CONFIG 字典）必须包含
 CONFIG = {
     "task_name": "任务名称",
-    "output_dir": "/opt/AiComic/代码/",
+    "output_dir": "/opt/AiComic/scripts/output/",
     # ... 其他参数
 }
 
@@ -70,6 +70,12 @@ if __name__ == "__main__":
     # ... 执行逻辑
     print(output.summary())
 ```
+
+### 应用代码位置
+- 后端：`/opt/AiComic/apps/backend/`
+- 前端：`/opt/AiComic/apps/frontend/`（待开发）
+- 脚本模板：`/opt/AiComic/scripts/templates/`
+- 脚本输出：`/opt/AiComic/scripts/output/`
 
 ## API 设计规范
 
