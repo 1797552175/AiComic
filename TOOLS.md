@@ -22,9 +22,26 @@
 |------|-----|
 | 地址 | `150.109.243.164` |
 | SSH 用户 | `root` |
-| Docker 容器 | `crewai-runtime` |
+| Docker 容器 | `crewai-runtime`（带 `/opt/AiComic` 持久化挂载）|
 | 脚本目录 | `/opt/AiComic/scripts/` |
 | 输出目录 | `/opt/AiComic/scripts/output/` |
+
+### 启动/重启 CrewAI 容器
+
+```bash
+# 方式1：用启动脚本（推荐）
+bash /opt/AiComic/scripts/start_crewai.sh
+
+# 方式2：用 docker-compose
+cd /opt/AiComic/scripts && docker compose up -d
+
+# 方式3：手动
+docker stop crewai-runtime; docker rm crewai-runtime
+docker run -d --name crewai-runtime \
+  -v /opt/AiComic:/opt/AiComic \
+  -w /opt/AiComic \
+  python:3.11-slim sleep infinity
+```
 
 ### 常用命令
 
@@ -35,7 +52,7 @@ ssh root@150.109.243.164
 # 进入 Docker 容器
 docker exec -it crewai-runtime bash
 
-# 执行脚本
+# 执行脚本（脚本在宿主机，容器内直接可见）
 docker exec crewai-runtime python /opt/AiComic/scripts/generated/xxx.py
 
 # 查看日志
@@ -85,3 +102,11 @@ python /opt/AiComic/scripts/generator.py \
 | 产品经理 | `agent:main:feishu:direct:ou_1fc8e7e760b4403f1bfe021de16fdcb7` |
 | 营销机器人 | `agent:main:feishu:direct:ou_0fe6e8361ab0874a8d7c0df9df1be598` |
 | 状态监控 | `agent:main:feishu:direct:ou_8c538c96e404739a2377e837e50e2d4a` |
+
+## 问题记录
+
+| 日期 | 问题 | 解决方案 | 状态 |
+|------|------|---------|------|
+| 2026-03-23 | 容器无持久化挂载，容器内创建的文件宿主机看不到 | 启动容器加 `-v /opt/AiComic:/opt/AiComic` | ✅ 已修复 |
+| 2026-03-23 | rsync 不可用 | 改用 `tar + scp` 同步文件 | ✅ 已绕过 |
+| 2026-03-23 | 容器内 /opt/AiComic 不存在 | 启动脚本自动 mkdir | ✅ 已修复 |
