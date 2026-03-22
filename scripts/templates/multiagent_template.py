@@ -68,7 +68,7 @@ CONFIG = {
 
 # ============ LLM 配置 ============
 llm_config = {
-    "model": "MiniMax-M2.7",
+    "model": "MiniMax-M2.7-highspeed",
     "api_key": CONFIG["api_key"],
     "base_url": CONFIG["base_url"],
 }
