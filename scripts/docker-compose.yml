@@ -1,0 +1,12 @@
+services:
+  crewai-runtime:
+    image: python:3.11-slim
+    container_name: crewai-runtime
+    volumes:
+      - /opt/AiComic:/opt/AiComic
+    working_dir: /opt/AiComic
+    command: sleep infinity
+    restart: unless-stopped
+    # 如果需要持久化的 Python 环境，可以取消注释下面的 section
+    # 在首次启动后取消注释，保存依赖
+    # runtime: docker
