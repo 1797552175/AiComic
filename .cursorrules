@@ -1,0 +1,108 @@
+# .cursorrules - 项目编码规范
+
+## 项目概述
+
+AiComic — AI 动态漫创作平台，从剧本到视频的自动化生成。
+
+## 技术栈
+
+- **Python**：主要开发语言（CrewAI 脚本、应用服务）
+- **Next.js**：前端（产品经理、用户界面）
+- **Docker**：容器化部署，Server B 上运行 crewai-runtime
+
+## 代码编写原则
+
+1. **DRY** — 提取公共逻辑为可复用函数、类或模块
+2. **高内聚** — 每个模块/类单一职责
+3. **低耦合** — 优先组合而非继承，通过接口交互
+4. **小文件** — 单文件建议 <800 行，超过时优先抽取组件
+
+## Python 规范
+
+### 导入顺序
+```python
+# 1. 标准库
+import os, sys, json
+from datetime import datetime
+from typing import List, Optional
+
+# 2. 第三方库
+from crewai import Agent, Task, Crew
+from dotenv import load_dotenv
+
+# 3. 本地模块
+sys.path.insert(0, '/opt/AiComic/scripts')
+from common import TaskOutput, save_output
+```
+
+### 函数规范
+```python
+def function_name(param: str, optional_param: Optional[str] = None) -> dict:
+    """
+    函数说明
+
+    Args:
+        param: 参数说明
+        optional_param: 可选参数说明
+
+    Returns:
+        返回值说明
+    """
+    pass
+```
+
+### CrewAI 脚本规范
+```python
+# 1. 配置区（CONFIG 字典）必须包含
+CONFIG = {
+    "task_name": "任务名称",
+    "output_dir": "/opt/AiComic/代码/",
+    # ... 其他参数
+}
+
+# 2. 使用公共模块
+sys.path.insert(0, '/opt/AiComic/scripts')
+from common import TaskOutput, save_output, ensure_dir
+
+# 3. 统一的任务输出
+if __name__ == "__main__":
+    output = TaskOutput(CONFIG["task_name"])
+    # ... 执行逻辑
+    print(output.summary())
+```
+
+## API 设计规范
+
+- RESTful 风格
+- 统一响应格式：`{"code": 200, "data": ..., "message": "success"}`
+- 错误码：4xx 客户端错误，5xx 服务端错误
+- 所有 API 必须有文档注释
+
+## Docker 环境（Server B）
+
+```bash
+# 进入容器
+docker exec -it crewai-runtime bash
+
+# 执行脚本
+docker exec crewai-runtime python /opt/AiComic/scripts/generated/xxx.py
+
+# 查看日志
+docker logs -f crewai-runtime
+```
+
+## 文档维护
+
+- 功能改动后同步更新 `docs/` 下相关文档
+- 原型改动后同步更新 `原型/` 下相关文档
+- 更新 `PROJECT_SPEC.md` 路线图
+
+## AI 效率提示
+
+- 大文件（>200行）优先用 grep 定位，再 offset+limit 部分读取
+- 修 bug 先根据报错定位文件和行号，避免整文件盲目读取
+- 一次对话聚焦一个问题，避免历史过长
+
+## 语言规范
+
+- 始终使用简体中文进行回复和注释

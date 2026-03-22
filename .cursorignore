@@ -1,0 +1,42 @@
+# Cursor AI 忽略文件
+
+# 第三方依赖
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+
+# Git
+.git/
+.gitignore
+
+# Docker
+*.dockerignore
+.docker/
+
+# 日志与临时文件
+*.log
+*.tmp
+/tmp/
+
+# 编译产物
+dist/
+build/
+*.egg-info/
+
+# 环境配置
+.env
+.env.local
+*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 大文件（>5MB）
+*.mp4
+*.mov
+*.zip
+*.tar.gz
