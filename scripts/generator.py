@@ -73,10 +73,23 @@ def generate(task_type: str, task_name: str, output_dir: str):
     
     print(f"✓ 脚本已生成: {output_file}")
     
-    # 同时复制 common 目录
+    # 同时复制 common 目录（兼容 Python 3.6）
     common_dest = os.path.join(output_dir, "common")
     if os.path.exists(COMMON_DIR):
-        shutil.copytree(COMMON_DIR, common_dest, dirs_exist_ok=True)
+        if not os.path.exists(common_dest):
+            shutil.copytree(COMMON_DIR, common_dest)
+        else:
+            # 手动复制文件
+            import shutil as sh
+            for item in os.listdir(COMMON_DIR):
+                s = os.path.join(COMMON_DIR, item)
+                d = os.path.join(common_dest, item)
+                if os.path.isdir(s):
+                    if os.path.exists(d):
+                        sh.rmtree(d)
+                    shutil.copytree(s, d)
+                else:
+                    shutil.copy2(s, d)
         print(f"✓ 公共模块已复制: {common_dest}")
     
     return output_file

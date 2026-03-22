@@ -110,3 +110,38 @@ python /opt/AiComic/scripts/generator.py \
 | 2026-03-23 | 容器无持久化挂载，容器内创建的文件宿主机看不到 | 启动容器加 `-v /opt/AiComic:/opt/AiComic` | ✅ 已修复 |
 | 2026-03-23 | rsync 不可用 | 改用 `tar + scp` 同步文件 | ✅ 已绕过 |
 | 2026-03-23 | 容器内 /opt/AiComic 不存在 | 启动脚本自动 mkdir | ✅ 已修复 |
+
+---
+
+## 完整流程问题记录（2026-03-23）
+
+### 🔴 阻塞性问题
+
+| 问题 | 原因 | 解决方案 | 状态 |
+|------|------|---------|------|
+| MiniMax API Key 无效 | API认证失败（401） | 需要用户提供有效的 MiniMax API Key | ⏳ 待修复 |
+| 容器重启后文件不刷新 | volume mount 缓存问题 | 每次同步后需 `docker restart crewai-runtime` | ✅ 已发现 |
+| Python 3.6 不兼容 dirs_exist_ok | copytree 参数 | 手动处理目录复制 | ✅ 已修复 |
+
+### 🟡 CrewAI 1.11.0 API 变化
+
+| 问题 | 旧写法 | 新写法 |
+|------|--------|--------|
+| Process 枚举 | `Process.parallel` | `Process.hierarchical`（需manager）或 `Process.sequential` |
+| Task 依赖 | `task.context = [other_task]` | 仍可用，但 hierarchical 模式需要 manager_agent |
+| memory 参数 | `memory=True` | 需验证 |
+| Agent LLM | 默认 OPENAI_API_KEY | 需显式设置 `llm=f"openai/{model}"` 或安装 litellm |
+
+### ⚠️ 待优化项
+
+1. `generator.py` Python 3.6 兼容性问题
+2. 容器 volume mount 每次同步后需重启
+3. 模板中 MiniMax API Key 需要环境变量传入
+4. litellm 尚未安装到容器（每次新装后重启丢失）
+
+### ✅ 已验证可用的流程
+
+1. ✅ 宿主机到 Server B 文件同步（tar+scp）
+2. ✅ 容器启动带持久化挂载（docker run -v）
+3. ✅ 脚本在容器内执行并保存到宿主机
+4. ✅ litellm 安装后 CrewAI 可调用 MiniMax API（key有效时）
