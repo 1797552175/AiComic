@@ -1,0 +1,186 @@
+# /opt/AiComic/apps/backend/api/users.py
+"""
+FastAPI 用户注册接口
+POST /api/users/register
+接收 username, email, password
+邮箱格式校验、密码长度>=8
+使用 bcrypt 存储密码
+返回 user_id 与 JWT token
+"""
+
+import os
+import sys
+from datetime import datetime, timedelta
+from typing import Optional
+
+import bcrypt
+import jwt
+from fastapi import FastAPI, APIRouter, Depends, HTTPException, status
+from pydantic import BaseModel, EmailStr, field_validator
+from sqlalchemy import create_engine, Column, Integer, String
+from sqlalchemy.orm import declarative_base, sessionmaker, Session
+
+# ------------------- 配置区 -------------------
+
+# JWT 密钥（生产环境请通过环境变量或配置文件注入）
+SECRET_KEY = os.getenv("JWT_SECRET_KEY", "your-secret-key-change-in-production")
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # 24 小时
+
+# 数据库配置（使用 SQLite，仅作演示；可替换为 PostgreSQL、MySQL 等）
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./users.db")
+engine = create_engine(
+    DATABASE_URL,
+    connect_args={"check_same_thread": False}  # SQLite 专用
+)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
+
+# ------------------- SQLAlchemy 模型 -------------------
+
+class User(Base):
+    """用户表模型"""
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    username = Column(String(50), unique=True, index=True, nullable=False)
+    email = Column(String(255), unique=True, index=True, nullable=False)
+    hashed_password = Column(String(255), nullable=False)
+
+
+# ------------------- Pydantic 模型 -------------------
+
+class UserCreate(BaseModel):
+    """注册请求体"""
+    username: str
+    email: EmailStr
+    password: str
+
+    @field_validator("password")
+    @classmethod
+    def password_min_length(cls, v: str) -> str:
+        if len(v) < 8:
+            raise ValueError("密码长度必须不少于 8 位")
+        return v
+
+
+class UserResponse(BaseModel):
+    """注册成功返回体"""
+    user_id: int
+    token: str
+
+    class Config:
+        from_attributes = True
+
+
+# ------------------- 业务逻辑函数 -------------------
+
+def get_db() -> Session:
+    """依赖：获取数据库会话"""
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+
+def hash_password(password: str) -> str:
+    """使用 bcrypt 对密码进行哈希"""
+    salt = bcrypt.gensalt()
+    hashed = bcrypt.hashpw(password.encode("utf-8"), salt)
+    return hashed.decode("utf-8")
+
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """校验密码（可选，用于登录）"""
+    return bcrypt.checkpw(
+        plain_password.encode("utf-8"),
+        hashed_password.encode("utf-8")
+    )
+
+
+def create_access_token(user_id: int, expires_delta: Optional[timedelta] = None) -> str:
+    """生成 JWT token"""
+    to_encode = {"sub": str(user_id), "type": "access"}
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+
+# ------------------- API 路由 -------------------
+
+router = APIRouter(prefix="/api/users", tags=["users"])
+
+
+@router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+def register(user_in: UserCreate, db: Session = Depends(get_db)):
+    """
+    用户注册接口
+    - 校验邮箱格式（使用 Pydantic EmailStr）
+    - 校验密码长度 >= 8 位
+    - 使用 bcrypt 存储密码（哈希）
+    - 生成 JWT token 并返回 user_id 与 token
+    """
+    # 1. 检查用户名是否已存在
+    existing_user = db.query(User).filter(User.username == user_in.username).first()
+    if existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="用户名已被注册"
+        )
+
+    # 2. 检查邮箱是否已被使用
+    existing_email = db.query(User).filter(User.email == user_in.email).first()
+    if existing_email:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="邮箱已被注册"
+        )
+
+    # 3. 密码哈希
+    hashed_pwd = hash_password(user_in.password)
+
+    # 4. 创建用户记录
+    new_user = User(
+        username=user_in.username,
+        email=user_in.email,
+        hashed_password=hashed_pwd
+    )
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)  # 获取自增的 user_id
+
+    # 5. 生成 JWT token
+    token = create_access_token(user_id=new_user.id)
+
+    return UserResponse(user_id=new_user.id, token=token)
+
+
+# ------------------- FastAPI 应用入口 -------------------
+
+app = FastAPI(
+    title="用户注册 API",
+    description="提供用户注册、邮箱格式校验、密码强度校验、JWT 发行功能",
+    version="1.0.0"
+)
+
+# 将路由挂载到 FastAPI 实例
+app.include_router(router)
+
+
+@app.on_event("startup")
+def startup_event():
+    """启动时创建所有表（仅首次或数据库为空时需要）"""
+    Base.metadata.create_all(bind=engine)
+
+
+# ------------------- 本地调试入口 -------------------
+
+if __name__ == "__main__":
+    import uvicorn
+    # 启动服务（默认 127.0.0.1:8000）
+    uvicorn.run("users:app", host="0.0.0.0", port=8000, reload=True)
