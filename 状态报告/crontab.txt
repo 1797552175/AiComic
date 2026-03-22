@@ -1,0 +1,8 @@
+# AiComic 项目定时监控任务
+# 任务进行中时启用，全部完成后关闭
+
+# 每5分钟 - 目录变化检测
+*/5 * * * * /bin/bash /opt/AiComic/状态报告/monitor_cron.sh >> /opt/AiComic/状态报告/cron.log 2>&1
+
+# 每30分钟 - Bot活跃状态检测（通过 sessions_list）
+*/30 * * * * /root/.openclaw/skills/monitor-status-1.0.0/scripts/check_status.sh >> /opt/AiComic/状态报告/bot_status.log 2>&1
