@@ -1,0 +1,26 @@
+{
+  "task_id": "REQ-001-PM",
+  "完成时间": "2026-03-25T12:00:00+08:00",
+  "任务描述": "原型输出：用户注册与登录功能优化",
+  "产出文件": [
+    "/opt/AiComic/原型/用户注册与登录功能优化原型_20260325.md"
+  ],
+  "原型内容概要": {
+    "现状分析": "现有注册API，缺失登录/Token管理/用户信息管理",
+    "优化目标": "P0: 注册优化+登录+Token管理+用户信息管理",
+    "功能模块": [
+      "用户注册（优化）",
+      "用户登录（新增）",
+      "Token管理（新增）",
+      "用户信息管理（新增）"
+    ],
+    "API接口": 8个 (/api/auth/register, /api/auth/login, /api/auth/logout, /api/auth/refresh, /api/users/me, PATCH /api/users/me, PATCH /api/users/me/password, /api/auth/verify-email),
+    "待开发P1": [
+      "第三方登录（微信/Google/Apple）",
+      "密码找回",
+      "登录验证码",
+      "异地登录通知"
+    ]
+  },
+  "下一步": "等待研发确认原型，分配开发任务"
+}

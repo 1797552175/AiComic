@@ -5,6 +5,7 @@ POST /api/v1/auth/sms-login - 手机验证码登录
 POST /api/v1/auth/register - 用户注册
 """
 import re
+import time
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
@@ -28,6 +29,7 @@ class LoginRequest(BaseModel):
     """账号密码登录请求"""
     username: str  # 支持 username 或 email
     password: str
+    remember_me: bool = False  # 7天免登录
 
 
 class SmsLoginRequest(BaseModel):
@@ -102,7 +104,17 @@ class SendCodeResponse(BaseModel):
 # ========================
 
 # 演示用：内存存储验证码（TODO: 生产环境用 Redis）
-_sms_codes = {}
+_sms_codes: dict[str, tuple[str, float]] = {}  # {phone: (code, expire_timestamp)}
+
+
+# ========================
+# 登录安全：登录尝试追踪
+# ========================
+
+# {username_or_ip: (failed_count, last_attempt_timestamp, is_locked)}
+_login_attempts: dict[str, tuple[int, float, bool]] = {}
+MAX_LOGIN_ATTEMPTS = 5  # 最多失败次数
+LOGIN_LOCKOUT_SECONDS = 300  # 锁定 5 分钟
 
 
 # ========================
@@ -127,7 +139,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 def create_tokens(user_id: str, remember_me: bool = False) -> tuple[str, str, int]:
     """
     创建 access_token 和 refresh_token
-    remember_me=True 时 access_token 有效期为 7 天
+    remember_me=True 时 access_token 有效期为 7 天，否则 24 小时
     """
     if remember_me:
         expire_minutes = settings.refresh_token_expire_days * 24 * 60
@@ -149,7 +161,7 @@ def create_tokens(user_id: str, remember_me: bool = False) -> tuple[str, str, in
         algorithm=settings.jwt_algorithm
     )
 
-    # Refresh token (7 days)
+    # Refresh token (always 7 days)
     refresh_expire = datetime.now(timezone.utc) + timedelta(days=settings.refresh_token_expire_days)
     refresh_payload = {
         "sub": user_id,
@@ -164,6 +176,40 @@ def create_tokens(user_id: str, remember_me: bool = False) -> tuple[str, str, in
     )
 
     return access_token, refresh_token, expire_minutes * 60
+
+
+def _check_login_attempt(identifier: str) -> None:
+    """检查登录是否被锁定"""
+    now = time.time()
+    if identifier in _login_attempts:
+        count, last_attempt, is_locked = _login_attempts[identifier]
+        if is_locked and now - last_attempt < LOGIN_LOCKOUT_SECONDS:
+            remaining = int(LOGIN_LOCKOUT_SECONDS - (now - last_attempt))
+            raise HTTPException(
+                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+                detail=f"登录尝试过多，请 {remaining} 秒后重试"
+            )
+        # 重置过期的记录
+        if now - last_attempt >= LOGIN_LOCKOUT_SECONDS:
+            del _login_attempts[identifier]
+
+
+def _record_failed_attempt(identifier: str) -> None:
+    """记录失败的登录尝试"""
+    now = time.time()
+    if identifier in _login_attempts:
+        count, last_attempt, _ = _login_attempts[identifier]
+        new_count = count + 1
+    else:
+        new_count = 1
+
+    is_locked = new_count >= MAX_LOGIN_ATTEMPTS
+    _login_attempts[identifier] = (new_count, now, is_locked)
+
+
+def _clear_login_attempt(identifier: str) -> None:
+    """清除登录尝试记录"""
+    _login_attempts.pop(identifier, None)
 
 
 def decode_token(token: str) -> dict:
@@ -191,6 +237,24 @@ def generate_sms_code() -> str:
     """生成6位验证码"""
     import random
     return str(random.randint(100000, 999999))
+
+
+def _store_sms_code(phone: str, code: str) -> None:
+    """存储验证码（5分钟有效期）"""
+    import time
+    _sms_codes[phone] = (code, time.time() + 300)  # 5分钟有效期
+
+
+def _verify_sms_code(phone: str, code: str) -> bool:
+    """验证验证码（检查有效期）"""
+    import time
+    if phone not in _sms_codes:
+        return False
+    stored_code, expire_time = _sms_codes[phone]
+    if time.time() > expire_time:
+        del _sms_codes[phone]
+        return False
+    return stored_code == code
 
 
 # ========================
@@ -257,7 +321,11 @@ async def login(login_req: LoginRequest, db: AsyncSession = Depends(get_db)):
     """
     账号密码登录
     支持 username 或 email 登录
+    支持 remember_me 参数实现 7 天免登录
     """
+    # 0. 检查登录锁定状态
+    _check_login_attempt(login_req.username)
+
     # 1. 查找用户
     result = await db.execute(
         select(User).where(
@@ -268,6 +336,7 @@ async def login(login_req: LoginRequest, db: AsyncSession = Depends(get_db)):
     user = result.scalar_one_or_none()
 
     if not user:
+        _record_failed_attempt(login_req.username)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="用户名或密码错误"
@@ -275,6 +344,7 @@ async def login(login_req: LoginRequest, db: AsyncSession = Depends(get_db)):
 
     # 2. 验证密码
     if not verify_password(login_req.password, user.hashed_password):
+        _record_failed_attempt(login_req.username)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="用户名或密码错误"
@@ -287,8 +357,11 @@ async def login(login_req: LoginRequest, db: AsyncSession = Depends(get_db)):
             detail="用户已被禁用"
         )
 
-    # 4. 生成 token
-    access_token, refresh_token, expires_in = create_tokens(user.id)
+    # 4. 清除登录尝试记录
+    _clear_login_attempt(login_req.username)
+
+    # 5. 生成 token（支持 remember_me）
+    access_token, refresh_token, expires_in = create_tokens(user.id, login_req.remember_me)
 
     return AuthResponse(
         user_id=user.id,
@@ -303,9 +376,12 @@ async def sms_login(sms_req: SmsLoginRequest, db: AsyncSession = Depends(get_db)
     """
     手机验证码登录
     """
-    # 1. 验证验证码（演示模式从内存获取）
-    stored_code = _sms_codes.get(sms_req.phone)
-    if not stored_code or stored_code != sms_req.code:
+    # 0. 检查登录锁定状态
+    _check_login_attempt(sms_req.phone)
+
+    # 1. 验证验证码（带有效期检查）
+    if not _verify_sms_code(sms_req.phone, sms_req.code):
+        _record_failed_attempt(sms_req.phone)
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="验证码错误或已过期"
@@ -337,7 +413,10 @@ async def sms_login(sms_req: SmsLoginRequest, db: AsyncSession = Depends(get_db)
             detail="用户已被禁用"
         )
 
-    # 5. 生成 token
+    # 5. 清除登录尝试记录
+    _clear_login_attempt(sms_req.phone)
+
+    # 6. 生成 token
     access_token, refresh_token, expires_in = create_tokens(user.id)
 
     return AuthResponse(
@@ -355,9 +434,9 @@ async def send_sms_code(send_req: SendCodeRequest):
     演示模式：返回验证码供测试
     生产环境：调用短信网关（阿里云、腾讯云等）
     """
-    # 演示模式：生成并存储验证码
+    # 演示模式：生成并存储验证码（5分钟有效期）
     code = generate_sms_code()
-    _sms_codes[send_req.phone] = code
+    _store_sms_code(send_req.phone, code)
 
     # TODO: 生产环境调用短信网关
     # await sms_gateway.send(phone=send_req.phone, template_id="xxx", params={"code": code})
