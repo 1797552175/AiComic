@@ -237,8 +237,52 @@ class ImageGenerator:
         Returns:
             {"image_url": str}
         """
-        # TODO: 实现局部重绘
-        raise NotImplementedError("inpaint not yet implemented")
+        # 局部重绘实现
+        import base64
+        try:
+            async with httpx.AsyncClient(timeout=self.timeout) as client:
+                # 下载原图和mask
+                if source_image_url.startswith("http"):
+                    src_resp = await client.get(source_image_url)
+                    src_b64 = base64.b64encode(src_resp.content).decode()
+                else:
+                    src_b64 = source_image_url
+                
+                if mask_image_url.startswith("http"):
+                    mask_resp = await client.get(mask_image_url)
+                    mask_b64 = base64.b64encode(mask_resp.content).decode()
+                else:
+                    mask_b64 = mask_image_url
+                
+                style_prefix = self.STYLE_PRESETS.get("anime", "")
+                full_prompt = f"{style_prefix}, {prompt}"
+                
+                payload = {
+                    "text_prompts": [{"text": full_prompt, "weight": 1.0}],
+                    "init_image": src_b64,
+                    "mask_image": mask_b64,
+                    "mask_source": "upload",
+                    "cfg_scale": 7.5,
+                    "steps": 30,
+                    "samples": 1
+                }
+                
+                response = await client.post(
+                    f"{self.base_url}/v1/generation/stable-diffusion-xl-1012-base/image-to-image/masking",
+                    headers={"Authorization": f"Bearer {self.api_key}"},
+                    json=payload
+                )
+                result = response.json()
+                
+                if "artifacts" in result:
+                    img_data = result["artifacts"][0]["base64"]
+                    return {
+                        "image_url": f"data:image/png;base64,{img_data}",
+                        "mask_applied": True
+                    }
+                return {"error": str(result)}
+        except Exception as e:
+            return {"error": str(e)}
 
     async def apply_lora(
         self,
