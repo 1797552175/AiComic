@@ -1,0 +1,23 @@
+{
+  "task_id": "NEW-FEATURES-MKT-20260324",
+  "bot_type": "marketing",
+  "status": "completed",
+  "completed_at": "2026-03-24T01:42:00+08:00",
+  "task_type": "new_features_marketing",
+  "result": "识别4个新原型并生成营销方案",
+  "findings": {
+    "new_prototypes_20260324": [
+      "角色一致性功能原型_20260324.md",
+      "中文TTS功能原型_20260324.md",
+      "分镜控制功能原型_20260324.md",
+      "故事编辑器原型_20260324.md"
+    ]
+  },
+  "outputs": [
+    "/opt/AiComic/营销方案/增强_角色一致性v2_20260324.md",
+    "/opt/AiComic/营销方案/增强_中文TTS_20260324.md",
+    "/opt/AiComic/营销方案/增强_分镜控制_20260324.md",
+    "/opt/AiComic/营销方案/增强_故事编辑器_20260324.md"
+  ],
+  "note": "基于4个新版原型生成完整营销方案，每个包含可发布内容"
+}
