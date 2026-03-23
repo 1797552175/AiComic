@@ -485,7 +485,7 @@ def create_bot_app(bot_type: str, port: int, name: str):
     # 多任务状态管理
     active_tasks = {}  # task_id -> {"state": "running"|"done", "start": time, "progress": 0~100}
     state_lock = threading.Lock()
-    state = {"tasks": 0, "errors": 0}  # 全局统计
+    state = {"tasks": 0, "errors": 0, "pending": 0}  # 全局统计：总任务数、错误数、排队中任务数
     
     def start_task(tid):
         with state_lock:
@@ -505,9 +505,10 @@ def create_bot_app(bot_type: str, port: int, name: str):
     
     def get_overall_state():
         with state_lock:
-            if not active_tasks:
-                return "idle"
-            return "busy"
+            # 有运行中任务或队列中有等待任务 → busy
+            if active_tasks or state["pending"] > 0:
+                return "busy"
+            return "idle"
     
     def get_active_tasks():
         with state_lock:
@@ -521,9 +522,9 @@ def create_bot_app(bot_type: str, port: int, name: str):
         if x_api_key != API_KEY:
             raise HTTPException(status_code=403)
         
-        start_task(task.task_id)
         with state_lock:
             state["tasks"] += 1
+            state["pending"] += 1  # 任务入队
         print(f"[{name}] 接收任务: {task.task_id}")
         
         # 异步处理任务（不阻塞）
@@ -536,6 +537,10 @@ def create_bot_app(bot_type: str, port: int, name: str):
                     write_completion(bot_type, task.task_id, result.get("output_files", []))
                     finish_task(task.task_id)
                     return
+                
+                # 任务正式开始处理
+                with state_lock:
+                    state["pending"] = max(0, state["pending"] - 1)
                 
                 # 定期更新进度
                 update_progress(task.task_id, 30)
@@ -573,6 +578,7 @@ def create_bot_app(bot_type: str, port: int, name: str):
         return {
             "state": get_overall_state(),
             "tasks": state["tasks"],
+            "pending": state["pending"],
             "errors": state["errors"],
             "active": get_active_tasks()
         }

@@ -1,0 +1,12 @@
+{
+  "task_id": "AUTO-MKT-20260323_222348",
+  "bot_type": "marketing",
+  "status": "completed",
+  "completed_at": "2026-03-23T22:25:00+08:00",
+  "auto_task_type": "marketing_gap",
+  "result": "主动增强方案",
+  "outputs": [
+    "/opt/AiComic/营销方案/增强_异步任务系统_20260323.md"
+  ],
+  "note": "主动增强异步任务系统方案，生成实际可发布内容（小红书3篇+微博+技术文章+社群文案）"
+}

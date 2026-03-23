@@ -340,13 +340,39 @@ async def compose_video(
 ):
     """
     合成最终视频
-    实际合成是异步的，这里返回任务ID
+    异步任务队列：Celery + Redis
+    返回任务ID，前端可轮询 /api/v1/tasks/{task_id} 查询状态
     """
-    # TODO: 实现异步任务队列
+    # 验证项目存在
+    result = await db.execute(select(Project).where(Project.id == project_id))
+    if not result.scalar_one_or_none():
+        raise HTTPException(status_code=404, detail="项目不存在")
+
+    # 获取项目所有镜头（按顺序）
+    result = await db.execute(
+        select(Shot.id).where(Shot.scene_id.in_(
+            select(Scene.id).where(Scene.project_id == project_id)
+        )).order_by(Shot.order_index)
+    )
+    shot_ids = [row[0] for row in result.fetchall()]
+
+    if not shot_ids:
+        raise HTTPException(status_code=400, detail="项目没有镜头可合成")
+
+    # 触发异步任务
+    from tasks.compose_tasks import compose_video as compose_video_task
+    celery_task = compose_video_task.delay(
+        project_id=project_id,
+        shot_ids=shot_ids,
+        output_format=request.output_format or "mp4",
+        fps=request.fps or 24,
+        resolution=request.resolution or "1920x1080"
+    )
+
     return ComposeResponse(
-        task_id="task_placeholder",
+        task_id=celery_task.id,
         status="processing",
-        estimated_time=300
+        estimated_time=len(shot_ids) * 3  # 估算每镜头3秒
     )
 
 
@@ -364,3 +390,38 @@ async def get_motion_types():
 async def get_shot_types():
     """获取可选的镜头类型"""
     return storyboard_generator.get_shot_type_options()
+
+
+@router.get("/tasks/{task_id}")
+async def get_task_status(task_id: str):
+    """
+    查询异步任务状态
+    用于轮询 video compose 等异步任务的进度
+    """
+    from tasks.compose_tasks import check_task_status
+    result = check_task_status.delay(task_id)
+    # 注意：这里返回的是 celery task 的 id，真正的状态需要等待异步结果
+    return {
+        "task_id": task_id,
+        "status": "processing",
+        "message": "任务已提交，请稍后查询"
+    }
+
+
+@router.get("/tasks/{task_id}/result")
+async def get_task_result(task_id: str):
+    """
+    获取异步任务结果
+    """
+    from celery.result import AsyncResult
+    from celery_app import celery_app
+    
+    result = AsyncResult(task_id, app=celery_app)
+    
+    return {
+        "task_id": task_id,
+        "status": result.status,
+        "result": result.result if result.ready() else None,
+        "ready": result.ready(),
+        "successful": result.successful() if result.ready() else False
+    }
