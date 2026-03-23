@@ -1,0 +1,11 @@
+{
+  "task_id": "AUTO-DEV-TODO",
+  "bot_type": "dev",
+  "完成时间": "2026-03-23T21:02:00+08:00",
+  "扫描结果": "8个TODO（已存在于飞书任务板，无新增）",
+  "TODO清单": [
+    "TODO-IMG-001~004: image_generator.py 图生图/局部重绘/LoRA",
+    "TODO-AUDIO-001~002: audio_service.py CosyVoice/Azure TTS",
+    "TODO-ROUTE-001~002: routes.py 异步任务队列"
+  ]
+}

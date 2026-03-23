@@ -167,25 +167,96 @@ class ImageGenerator:
         source_image_url: str,
         prompt: str,
         style: str = "anime",
-        strength: float = 0.5
+        strength: float = 0.5,
+        quality: str = "hd",
+        negative_prompt: Optional[str] = None
     ) -> Dict[str, Any]:
         """
         图生图模式：基于参考图生成新图
 
         Args:
-            source_image_url: 参考图URL
+            source_image_url: 参考图URL（支持 file:// 或 http:// 或 s3://）
             prompt: 描述词
-            style: 风格
-            strength: 变换强度 0.0-1.0
+            style: 风格 (anime/realistic/cyberpunk/ink/bw)
+            strength: 变换强度 0.0-1.0，值越大变化越大
+            quality: 质量等级 (standard/hd/uhd)
+            negative_prompt: 负面提示词
 
         Returns:
-            {"image_url": str, "thumbnail_url": str, "seed": int}
+            {"image_url": str, "seed": int, "resolution": str}
         """
-        # TODO: 实现图生图
-        # 1. 下载参考图
-        # 2. 构造 img2img 请求（init_image + text_prompt）
-        # 3. 调用SD API
-        raise NotImplementedError("img2img not yet implemented")
+        preset = self.QUALITY_PRESETS.get(quality, self.QUALITY_PRESETS["hd"])
+        style_prefix = self.STYLE_PRESETS.get(style, self.STYLE_PRESETS["anime"])
+
+        # 构建完整prompt
+        full_prompt = f"{style_prefix}, {prompt}"
+
+        # 默认负面词
+        default_neg = (
+            "low quality, blurry, distorted, deformed, "
+            "bad anatomy, watermark, text, signature, "
+            "multiple heads, extra limbs, poorly drawn hands"
+        )
+        neg_prompt = negative_prompt or default_neg
+
+        # 下载并编码参考图
+        image_base64 = await self._download_and_encode_image(source_image_url)
+
+        # 分辨率
+        w, h = preset["resolution"][0], preset["resolution"][1]
+
+        # 构造 img2img 请求（兼容 Stability AI SDXL img2img）
+        payload = {
+            "text_prompts": [
+                {"text": full_prompt, "weight": 1.0},
+                {"text": neg_prompt, "weight": -1.0}
+            ],
+            "init_image": image_base64,  # base64 编码的参考图
+            "image_strength": 1.0 - strength,  # Stability API 用 image_strength（值越小越接近原图）
+            "cfg_scale": preset["cfg"],
+            "height": h,
+            "width": w,
+            "steps": preset["steps"],
+            "samples": 1
+        }
+
+        try:
+            async with httpx.AsyncClient(timeout=self.timeout) as client:
+                response = await client.post(
+                    f"{self.base_url}/v1/generation/stable-diffusion-xl-1024-v1-0/image-to-image",
+                    headers={
+                        "Authorization": f"Bearer {self.api_key}",
+                        "Content-Type": "application/json"
+                    },
+                    json=payload
+                )
+                response.raise_for_status()
+                result = response.json()
+
+                # 解析返回的图片
+                artifacts = result.get("artifacts", [])
+                if artifacts:
+                    result_base64 = artifacts[0]["base64"]
+                    seed = artifacts[0].get("seed", 0)
+                    image_data = base64.b64decode(result_base64)
+
+                    image_url = await self._save_image(image_data, f"{uuid.uuid4()}.png")
+
+                    return {
+                        "image_url": image_url,
+                        "seed": seed,
+                        "prompt": full_prompt,
+                        "resolution": f"{w}x{h}",
+                        "source_image": source_image_url,
+                        "strength": strength
+                    }
+
+                raise ValueError("No artifacts returned from SD img2img API")
+
+        except httpx.HTTPStatusError as e:
+            raise RuntimeError(f"SD img2img API error: {e.response.status_code} - {e.response.text}")
+        except Exception as e:
+            raise RuntimeError(f"img2img generation failed: {str(e)}")
 
     async def inpaint(
         self,
@@ -228,6 +299,38 @@ class ImageGenerator:
         # 方案1: 在SD生成时加载LoRA权重
         # 方案2: 使用IP-Adapter进行特征融合
         raise NotImplementedError("LoRA not yet implemented")
+
+    async def _download_and_encode_image(self, image_url: str) -> str:
+        """
+        下载图片并转为 base64 编码
+
+        Args:
+            image_url: 图片URL，支持 file://, http://, s3://
+
+        Returns:
+            base64 编码的图片字符串（不含 data URI 前缀）
+        """
+        import os
+
+        # file:// 本地文件
+        if image_url.startswith("file://"):
+            filepath = image_url[7:]
+            with open(filepath, "rb") as f:
+                return base64.b64encode(f.read()).decode("utf-8")
+
+        # s3:// 对象存储
+        if image_url.startswith("s3://"):
+            # TODO: 使用 boto3 下载 S3 对象
+            raise NotImplementedError("S3 image download not yet implemented")
+
+        # http:///https:// 网络图片
+        if image_url.startswith("http://") or image_url.startswith("https://"):
+            async with httpx.AsyncClient(timeout=30.0) as client:
+                response = await client.get(image_url)
+                response.raise_for_status()
+                return base64.b64encode(response.content).decode("utf-8")
+
+        raise ValueError(f"Unsupported image URL scheme: {image_url}")
 
     async def _save_image(self, image_data: bytes, filename: str) -> str:
         """保存图片到存储"""

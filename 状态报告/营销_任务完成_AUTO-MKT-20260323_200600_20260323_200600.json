@@ -1,0 +1,10 @@
+{
+  "task_id": "AUTO-MKT-20260323_200600",
+  "bot_type": "marketing",
+  "完成时间": "20260323_200600",
+  "产出文件列表": [
+    "/opt/AiComic/营销方案/自动补全___init___20260323.md",
+    "/opt/AiComic/营销方案/自动补全_users_20260323.md",
+    "/opt/AiComic/营销方案/自动补全_routes_20260323.md"
+  ]
+}

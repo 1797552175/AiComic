@@ -1,0 +1,16 @@
+{
+  "task_id": "AUTO-MKT-20260323_194939",
+  "bot_type": "marketing",
+  "status": "completed",
+  "completed_at": "2026-03-23T19:55:00+08:00",
+  "auto_task_type": "marketing_gap",
+  "description": "三次扫描确认docs目录无遗漏",
+  "result": "代码库清洁",
+  "findings": {
+    "checked_dirs": ["/opt/AiComic/原型/", "/opt/AiComic/docs/", "/opt/AiComic/代码/"],
+    "recent_features": 7,
+    "missing_plans": 0,
+    "non_product_docs": 2
+  },
+  "summary": "所有近7天产品功能均有营销方案覆盖，无需新增"
+}

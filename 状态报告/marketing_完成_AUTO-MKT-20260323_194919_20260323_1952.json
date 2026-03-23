@@ -1,0 +1,16 @@
+{
+  "task_id": "AUTO-MKT-20260323_194919",
+  "bot_type": "marketing",
+  "status": "completed",
+  "completed_at": "2026-03-23T19:52:00+08:00",
+  "auto_task_type": "marketing_gap",
+  "description": "二次扫描确认近7天功能营销方案覆盖情况",
+  "result": "代码库清洁",
+  "findings": {
+    "recent_prototypes": 7,
+    "covered_by_main_plan": 3,
+    "covered_by_new_plans": 4,
+    "missing_plans": 0
+  },
+  "summary": "所有近7天新增功能均有营销方案覆盖，无需新增"
+}

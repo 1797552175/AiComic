@@ -1,0 +1,29 @@
+{
+  "task_id": "AUTO-MKT-20260323_194729",
+  "bot_type": "marketing",
+  "status": "completed",
+  "completed_at": "2026-03-23T19:50:00+08:00",
+  "auto_task_type": "marketing_gap",
+  "description": "扫描近7天新增功能，交叉比对营销方案，为缺失功能生成营销方案框架",
+  "findings": {
+    "recent_features": [
+      "动态漫动效系统",
+      "Celery异步任务+WebSocket",
+      "用户注册与登录优化",
+      "角色一致性系统"
+    ],
+    "missing_plans": [
+      "动态漫动效系统",
+      "异步任务系统",
+      "用户体系",
+      "角色一致性系统"
+    ]
+  },
+  "outputs": [
+    "/opt/AiComic/营销方案/自动补全_动态漫动效_20260323.md",
+    "/opt/AiComic/营销方案/自动补全_异步任务系统_20260323.md",
+    "/opt/AiComic/营销方案/自动补全_用户体系_20260325.md",
+    "/opt/AiComic/营销方案/自动补全_角色一致性_20260323.md"
+  ],
+  "next_action": "向状态监控机器人请求下一个任务"
+}

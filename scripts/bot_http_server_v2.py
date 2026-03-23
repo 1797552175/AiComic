@@ -61,11 +61,13 @@ class TaskQueue:
     
     def get_status(self):
         with self._lock:
+            total = len(self.pending) + len(self.running)
             return {
                 "pending": len(self.pending),
                 "running": len(self.running),
                 "completed": len(self.completed),
-                "running_tasks": {k: v["bot_type"] for k, v in self.running.items()}
+                "running_tasks": {k: v["bot_type"] for k, v in self.running.items()},
+                "state": "idle" if total == 0 else "busy"
             }
 
 task_queue = TaskQueue()
@@ -211,34 +213,60 @@ def handle_auto_task_pm(task: TaskRequest) -> dict:
     return {"status": "completed", "output_files": [output_file], "summary": "竞品扫描完成"}
 
 def handle_auto_task_marketing(task: TaskRequest) -> dict:
+    # Marketing self-maintenance: git-based new code detection + deduplication
     import glob
     now = time.time()
-    seven_days = now - 7 * 86400
     mkt_dir = "/opt/AiComic/营销方案"
     os.makedirs(mkt_dir, exist_ok=True)
-    new_files = []
-    for pattern in [f"/opt/AiComic/apps/**/api/*.py"]:
-        for f in glob.glob(pattern, recursive=True):
-            try:
-                if os.path.getmtime(f) > seven_days:
-                    new_files.append(os.path.basename(f).replace(".py", ""))
-            except:
-                pass
+    
+    # 1. Git-based new code detection (not file mtime)
+    try:
+        r = subprocess.run(
+            ["git", "-C", "/opt/AiComic", "diff", "--name-only", "--since=7 days ago"],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=10
+        )
+        changed = [os.path.basename(f) for f in r.stdout.decode().strip().split("\n") if f and f.endswith(".py")]
+        changed_modules = list(set(f.replace(".py", "") for f in changed if f.startswith("apps/") and not f.startswith("apps/backend/outputs/")))
+    except:
+        changed_modules = []
+    
+    if not changed_modules:
+        ts = time.strftime("%Y%m%d")
+        out_path = f"{mkt_dir}/no_new_code_{ts}.md"
+        with open(out_path, "w") as f:
+            f.write(f"# MKT Gap Scan {time.strftime('%Y-%m-%d')}\nNo new code in 7 days.\n")
+        return {"status": "completed", "output_files": [out_path], "summary": "no new code"}
+    
+    # 2. Deduplicate: skip if plan already exists
+    existing = set()
+    if os.path.exists(mkt_dir):
+        for fn in os.listdir(mkt_dir):
+            if fn.startswith("auto_") and fn.endswith(".md"):
+                parts = fn.split("_")
+                if len(parts) >= 2:
+                    existing.add(parts[1])
+    
+    new_modules = [m for m in changed_modules if m not in existing and m not in ["__init__", "__pycache__"]]
+    
     output_files = []
     ts = time.strftime("%Y%m%d")
-    for fname in list(set(new_files))[:5]:
-        if "auth" not in fname.lower():
-            content = f"# {fname} 营销方案\n\n## 目标用户\nAI创作爱好者\n\n## 核心卖点\n自动化\n\n## 渠道\n知乎、小红书\n\n## 文案\n「AI动态漫，让故事活起来」\n"
-            out_path = f"{mkt_dir}/自动补全_{fname}_{ts}.md"
+    for fname in new_modules[:5]:
+        content_body = f"# {fname} Marketing Plan\n\n## Target Users\nAI creators\n\n## Core Value\nAutomation\n\n## Channels\nZhihu, Xiaohongshu\n\n## Copy\nAI makes your story alive\n"
+        out_path = f"{mkt_dir}/auto_{fname}_{ts}.md"
+        try:
             with open(out_path, "w") as f:
-                f.write(content)
+                f.write(content_body)
             output_files.append(out_path)
+        except:
+            pass
+    
     if not output_files:
-        out_path = f"{mkt_dir}/补全报告_{ts}.md"
+        out_path = f"{mkt_dir}/no_gap_{ts}.md"
         with open(out_path, "w") as f:
-            f.write(f"# 营销补全报告 {time.strftime('%Y-%m-%d')}\n\n暂无新增功能\n")
+            f.write(f"# MKT Gap {time.strftime('%Y-%m-%d')}\nAll recent modules already have plans.\n")
         output_files.append(out_path)
-    return {"status": "completed", "output_files": output_files, "summary": "营销补全完成"}
+    
+    return {"status": "completed", "output_files": output_files, "summary": f"done, new={len(output_files)}"}
 
 AUTO_HANDLERS = {
     "dev": handle_auto_task_dev,
@@ -246,12 +274,71 @@ AUTO_HANDLERS = {
     "marketing": handle_auto_task_marketing,
 }
 
+# ============== 资源监控 ===============
+SERVER_A_MEM_THRESHOLD = 85
+SERVER_B_CPU_THRESHOLD_HIGH = 80
+SERVER_B_CPU_THRESHOLD_LOW = 20
+MAX_PARALLEL_SERVER_B = 5
+CURRENT_SERVER_B_TASKS = 0
+
+# AUTO-task cooldown: last successful task time per bot type
+_last_auto_success = {"pm": 0, "dev": 0, "marketing": 0}
+_AUTO_COOLDOWN = 60  # 1 minute
+
+def get_server_a_mem_percent():
+    try:
+        with open("/proc/meminfo") as f:
+            lines_mem = f.readlines()
+        total = avail = 0
+        for line in lines_mem:
+            if line.startswith("MemTotal:"):
+                total = int(line.split()[1])
+            elif line.startswith("MemAvailable:"):
+                avail = int(line.split()[1])
+        if total == 0:
+            return 0
+        return int((total - avail) * 100 / total)
+    except:
+        return 0
+
+def get_server_b_cpu():
+    try:
+        cmd = ["ssh", "-i", "/root/.ssh/id_ed25519", "-o", "StrictHostKeyChecking=no",
+               "-o", "ConnectTimeout=5", "root@150.109.243.164",
+               "top -bn1 | grep 'Cpu(s)' | awk '{print $2}' | cut -d'%' -f1"]
+        r = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=10)
+        return float(r.stdout.decode().strip())
+    except:
+        return None
+
+def should_throttle():
+    mem_pct = get_server_a_mem_percent()
+    if mem_pct > SERVER_A_MEM_THRESHOLD:
+        print(f"[Monitor] Server A 内存 {mem_pct}% > 85%，暂停分发")
+        return True
+    return False
+
 # ============== 任务分发线程 ==============
 BOTS = {"pm": "8002", "dev": "8003", "marketing": "8004"}
 
 def dispatcher_loop():
     while True:
         time.sleep(10)
+        
+        # Server A 内存检查
+        if should_throttle():
+            time.sleep(30)
+            continue
+        
+        # Server B CPU 检查
+        cpu = get_server_b_cpu()
+        if cpu is not None:
+            if cpu > 80:
+                print(f"[Monitor] Server B CPU {cpu}% 高负载")
+            elif cpu < 20:
+                print(f"[Monitor] Server B CPU {cpu}% 空闲")
+        
+        # 分配任务给空闲 Bot
         idle_bots = []
         for bot_type, port in BOTS.items():
             try:
@@ -260,6 +347,27 @@ def dispatcher_loop():
                     idle_bots.append(bot_type)
             except:
                 pass
+        
+        runnable = task_queue.get_runnable_tasks()
+        
+        # 队列空时，为空闲 Bot 生成 AUTO 任务（有 cooldown 保护）
+        if not runnable and idle_bots:
+            ts = time.strftime("%Y%m%d_%H%M%S")
+            auto_map = {
+                "pm": {"task_id": f"AUTO-PM-{ts}", "type": "pm", "payload": {"auto_task_type": "competitor_scan"}},
+                "dev": {"task_id": f"AUTO-DEV-{ts}", "type": "dev", "payload": {"auto_task_type": "todo_scan"}},
+                "marketing": {"task_id": f"AUTO-MKT-{ts}", "type": "marketing", "payload": {"auto_task_type": "marketing_gap"}},
+            }
+            for bot_type in idle_bots:
+                if bot_type in auto_map:
+                    # Cooldown: 同一个 bot 5分钟内不重复生成
+                    last = _last_auto_success.get(bot_type, 0)
+                    if time.time() - last < _AUTO_COOLDOWN:
+                        print(f"[Dispatcher] {bot_type} cooldown中，跳过")
+                        continue
+                    auto_task = auto_map[bot_type]
+                    task_queue.pending.append(auto_task)
+                    print(f"[Dispatcher] 生成 AUTO 任务: {auto_task['task_id']} -> {bot_type}")
         
         for task in task_queue.get_runnable_tasks():
             bot_type = task.get("type")
@@ -289,6 +397,8 @@ def _dispatch(task_id: str, bot_type: str, task: dict):
             timeout=300
         )
         task_queue.mark_completed(task_id)
+        if task_id.startswith("AUTO-"):
+            _last_auto_success[bot_type] = time.time()
         print(f"[Dispatcher] {task_id} → {bot_type} 完成")
     except Exception as e:
         print(f"[Dispatcher] {task_id} 分发失败: {e}")
@@ -345,36 +455,90 @@ def create_monitor_app():
     
     return app
 
-# ============== 其他 Bot App ==============
+# ============== 其他 Bot App（支持多任务并发）==============
 def create_bot_app(bot_type: str, port: int, name: str):
     app = FastAPI()
-    state = {"state": "idle", "current_task": None, "tasks": 0, "errors": 0}
+    # 多任务状态管理
+    active_tasks = {}  # task_id -> {"state": "running"|"done", "start": time, "progress": 0~100}
+    state_lock = threading.Lock()
+    state = {"tasks": 0, "errors": 0}  # 全局统计
+    
+    def start_task(tid):
+        with state_lock:
+            active_tasks[tid] = {"state": "running", "start": time.time(), "progress": 0}
+    
+    def update_progress(tid, progress):
+        with state_lock:
+            if tid in active_tasks:
+                active_tasks[tid]["progress"] = progress
+    
+    def finish_task(tid, success=True):
+        with state_lock:
+            if tid in active_tasks:
+                del active_tasks[tid]
+            if not success:
+                state["errors"] += 1
+    
+    def get_overall_state():
+        with state_lock:
+            if not active_tasks:
+                return "idle"
+            return "busy"
+    
+    def get_active_tasks():
+        with state_lock:
+            result = []
+            for k, v in list(active_tasks.items()):
+                result.append([k, v["state"], v.get("progress", 0)])
+            return result
     
     @app.post("/execute")
     async def execute(task: TaskRequest, x_api_key: str = Header(...)):
         if x_api_key != API_KEY:
             raise HTTPException(status_code=403)
-        state["state"] = "processing"
-        state["current_task"] = task.task_id
-        state["tasks"] += 1
-        print(f"[{name}] {task.task_id}")
         
-        if task.task_id.startswith("AUTO-"):
-            handler = AUTO_HANDLERS.get(bot_type, lambda t: {"status": "completed", "output_files": []})
-            result = handler(task)
-            write_completion(bot_type, task.task_id, result.get("output_files", []))
-            state["state"] = "idle"
-            state["current_task"] = None
-            return {"code": 0, "message": "success", "data": result}
+        start_task(task.task_id)
+        with state_lock:
+            state["tasks"] += 1
+        print(f"[{name}] 接收任务: {task.task_id}")
         
-        result = call_openclaw_agent(bot_type, task)
-        success = result.get("status") != "failed"
-        write_completion(bot_type, task.task_id, result.get("output_files", []))
-        state["state"] = "idle"
-        state["current_task"] = None
-        if not success:
-            state["errors"] += 1
-        return {"code": 0, "message": "success", "data": {"task_id": task.task_id, "status": "completed", "result": result}}
+        # 异步处理任务（不阻塞）
+        def run_task():
+            try:
+                # AUTO-task
+                if task.task_id.startswith("AUTO-"):
+                    handler = AUTO_HANDLERS.get(bot_type, lambda t: {"status": "completed", "output_files": []})
+                    result = handler(task)
+                    write_completion(bot_type, task.task_id, result.get("output_files", []))
+                    finish_task(task.task_id)
+                    return
+                
+                # 定期更新进度
+                update_progress(task.task_id, 30)
+                
+                # 调用 agent
+                result = call_openclaw_agent(bot_type, task)
+                update_progress(task.task_id, 80)
+                
+                success = result.get("status") != "failed"
+                write_completion(bot_type, task.task_id, result.get("output_files", []))
+                
+                if not success:
+                    state["errors"] += 1
+                
+                finish_task(task.task_id)
+                print(f"[{name}] 完成任务: {task.task_id}")
+                
+            except Exception as e:
+                print(f"[{name}] 任务异常: {task.task_id} - {e}")
+                finish_task(task.task_id, success=False)
+                state["errors"] += 1
+        
+        # 启动后台线程处理（不阻塞）
+        threading.Thread(target=run_task, daemon=True).start()
+        
+        # 立即返回，不等待任务完成
+        return {"code": 0, "message": "任务已接收，正在异步处理", "task_id": task.task_id, "status": "running"}
     
     @app.get("/health")
     async def health():
@@ -382,7 +546,12 @@ def create_bot_app(bot_type: str, port: int, name: str):
     
     @app.get("/status")
     async def status():
-        return state
+        return {
+            "state": get_overall_state(),
+            "tasks": state["tasks"],
+            "errors": state["errors"],
+            "active": get_active_tasks()
+        }
     
     @app.get("/ask_for_task")
     async def ask():

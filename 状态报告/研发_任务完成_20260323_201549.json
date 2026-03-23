@@ -1,0 +1,19 @@
+{
+  "task_id": "AUTO-DEV-TODO",
+  "bot_type": "dev",
+  "完成时间": "2026-03-23T20:15:00+08:00",
+  "扫描结果": "发现8个TODO已创建到飞书任务板",
+  "产出文件列表": [
+    "飞书任务板: TODO-001 ~ TODO-008"
+  ],
+  "TODO清单": [
+    "TODO-IMG-001: image_generator.py:94 - 图生图模式(ControlNet/img2img)",
+    "TODO-IMG-002: image_generator.py:184 - 图生图",
+    "TODO-IMG-003: image_generator.py:207 - 局部重绘",
+    "TODO-IMG-004: image_generator.py:227 - LoRA特征注入",
+    "TODO-AUDIO-001: audio_service.py:168 - CosyVoice API",
+    "TODO-AUDIO-002: audio_service.py:194 - Azure TTS",
+    "TODO-ROUTE-001: routes.py:267 - 异步任务队列",
+    "TODO-ROUTE-002: routes.py:345 - 异步任务队列"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "task_id": "REQ-001-PM",
+  "bot_type": "dev",
+  "完成时间": "$(date +%Y-%m-%dT%H:%M:%S+08:00)",
+  "git_commit": "待手动push",
+  "产出文件列表": [
+    "/opt/AiComic/apps/backend/api/auth.py",
+    "/opt/AiComic/apps/backend/api/users.py (更新)",
+    "/opt/AiComic/apps/backend/api/routes.py (更新)"
+  ],
+  "Server_B执行时长": "约3分钟",
+  "新API接口": [
+    "POST /api/auth/login - 用户登录",
+    "POST /api/auth/refresh - Token刷新",
+    "POST /api/auth/logout - 用户登出",
+    "GET /api/users/me - 获取当前用户信息",
+    "PATCH /api/users/me - 更新当前用户信息"
+  ],
+  "状态": "完成，待部署验证"
+}

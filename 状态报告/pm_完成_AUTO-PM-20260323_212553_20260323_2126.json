@@ -1,0 +1,11 @@
+{
+  "task_id": "AUTO-PM-20260323_212553",
+  "完成时间": "2026-03-23T21:26:00+08:00",
+  "bot_type": "pm",
+  "auto_task_type": "competitor_scan",
+  "产出文件": [
+    "/opt/AiComic/docs/竞品监控_20260323_v2.md"
+  ],
+  "summary": "竞品扫描完成，覆盖Leinad、白日梦AI、Pika、NovelAI、AI Dungeon的动态及行业趋势洞察",
+  "备注": "网络搜索功能暂不可用，基于知识库输出"
+}

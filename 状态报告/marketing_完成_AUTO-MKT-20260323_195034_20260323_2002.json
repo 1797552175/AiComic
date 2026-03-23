@@ -1,0 +1,15 @@
+{
+  "task_id": "AUTO-MKT-20260323_195034",
+  "bot_type": "marketing",
+  "status": "completed",
+  "completed_at": "2026-03-23T20:02:00+08:00",
+  "auto_task_type": "marketing_gap",
+  "result": "代码库清洁",
+  "summary": "第4次扫描确认：近7天98个文件，4个产品功能原型均有营销方案，覆盖率100%",
+  "auto_completion_files": [
+    "自动补全_动态漫动效_20260323.md",
+    "自动补全_异步任务系统_20260323.md",
+    "自动补全_用户体系_20260325.md",
+    "自动补全_角色一致性_20260323.md"
+  ]
+}
