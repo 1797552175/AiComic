@@ -1,0 +1,8 @@
+{
+  "task_id": "TODO-ROUTE-001",
+  "bot_type": "dev",
+  "完成时间": "20260323_235950",
+  "产出文件列表": [],
+  "commit_hash": "",
+  "error": "__init__() got an unexpected keyword argument 'capture_output'"
+}

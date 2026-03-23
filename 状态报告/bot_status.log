@@ -1,0 +1,145 @@
+/bin/sh: /root/.openclaw/skills/monitor-status-1.0.0/scripts/check_status.sh: Permission denied
+/bin/sh: /root/.openclaw/skills/monitor-status-1.0.0/scripts/check_status.sh: Permission denied
+/bin/sh: /root/.openclaw/skills/monitor-status-1.0.0/scripts/check_status.sh: Permission denied
+/bin/sh: /root/.openclaw/skills/monitor-status-1.0.0/scripts/check_status.sh: Permission denied
+/bin/sh: /root/.openclaw/skills/monitor-status-1.0.0/scripts/check_status.sh: Permission denied
+/bin/sh: /root/.openclaw/skills/monitor-status-1.0.0/scripts/check_status.sh: Permission denied
+/bin/sh: /root/.openclaw/skills/monitor-status-1.0.0/scripts/check_status.sh: Permission denied
+/bin/sh: /root/.openclaw/skills/monitor-status-1.0.0/scripts/check_status.sh: Permission denied
+/bin/sh: /root/.openclaw/skills/monitor-status-1.0.0/scripts/check_status.sh: Permission denied
+/bin/sh: /root/.openclaw/skills/monitor-status-1.0.0/scripts/check_status.sh: Permission denied
+/bin/sh: /root/.openclaw/skills/monitor-status-1.0.0/scripts/check_status.sh: Permission denied
+/bin/sh: /root/.openclaw/skills/monitor-status-1.0.0/scripts/check_status.sh: Permission denied
+/bin/sh: /root/.openclaw/skills/monitor-status-1.0.0/scripts/check_status.sh: Permission denied
+/bin/sh: /root/.openclaw/skills/monitor-status-1.0.0/scripts/check_status.sh: Permission denied
+/bin/sh: /root/.openclaw/skills/monitor-status-1.0.0/scripts/check_status.sh: Permission denied
+/bin/sh: /root/.openclaw/skills/monitor-status-1.0.0/scripts/check_status.sh: Permission denied
+/bin/sh: /root/.openclaw/skills/monitor-status-1.0.0/scripts/check_status.sh: Permission denied
+/bin/sh: /root/.openclaw/skills/monitor-status-1.0.0/scripts/check_status.sh: Permission denied
+/bin/sh: /root/.openclaw/skills/monitor-status-1.0.0/scripts/check_status.sh: Permission denied
+/bin/sh: /root/.openclaw/skills/monitor-status-1.0.0/scripts/check_status.sh: Permission denied
+/bin/sh: /root/.openclaw/skills/monitor-status-1.0.0/scripts/check_status.sh: Permission denied
+/bin/sh: /root/.openclaw/skills/monitor-status-1.0.0/scripts/check_status.sh: Permission denied
+/bin/sh: /root/.openclaw/skills/monitor-status-1.0.0/scripts/check_status.sh: Permission denied
+/bin/sh: /root/.openclaw/skills/monitor-status-1.0.0/scripts/check_status.sh: Permission denied
+/bin/sh: /root/.openclaw/skills/monitor-status-1.0.0/scripts/check_status.sh: Permission denied
+/bin/sh: /root/.openclaw/skills/monitor-status-1.0.0/scripts/check_status.sh: Permission denied
+/bin/sh: /root/.openclaw/skills/monitor-status-1.0.0/scripts/check_status.sh: Permission denied
+/bin/sh: /root/.openclaw/skills/monitor-status-1.0.0/scripts/check_status.sh: Permission denied
+/bin/sh: /root/.openclaw/skills/monitor-status-1.0.0/scripts/check_status.sh: Permission denied
+/bin/sh: /root/.openclaw/skills/monitor-status-1.0.0/scripts/check_status.sh: Permission denied
+/bin/sh: /root/.openclaw/skills/monitor-status-1.0.0/scripts/check_status.sh: Permission denied
+/bin/sh: /root/.openclaw/skills/monitor-status-1.0.0/scripts/check_status.sh: Permission denied
+/bin/sh: /root/.openclaw/skills/monitor-status-1.0.0/scripts/check_status.sh: Permission denied
+/bin/sh: /root/.openclaw/skills/monitor-status-1.0.0/scripts/check_status.sh: Permission denied
+/bin/sh: /root/.openclaw/skills/monitor-status-1.0.0/scripts/check_status.sh: Permission denied
+/bin/sh: /root/.openclaw/skills/monitor-status-1.0.0/scripts/check_status.sh: Permission denied
+/bin/sh: /root/.openclaw/skills/monitor-status-1.0.0/scripts/check_status.sh: Permission denied
+🔍 Bot 状态监控
+
+⏰ 检查时间：2026-03-23 20:30:01
+
+  🟡 空闲 🤖 状态监控 [feishu] - 5分钟前
+  🟢 活跃 🛠️ 研发机器人 [feishu] - 2分钟前
+  🟡 空闲 📋 产品经理 - 13分钟前
+  🟡 空闲 🌐 网页聊天 [webchat] - 7分钟前
+  🕐 Cron 任务数：6
+  🟡 空闲 📢 营销机器人 [feishu] - 13分钟前
+
+✅ 检查完成
+🔍 Bot 状态监控
+
+⏰ 检查时间：2026-03-23 21:00:01
+
+  🔴 被锁定 🤖 状态监控 [feishu] - 30秒前
+  🟡 空闲 🛠️ 研发机器人 [feishu] - 26分钟前
+  🟡 空闲 📋 产品经理 [feishu] - 13分钟前
+  🟡 空闲 🌐 网页聊天 [webchat] - 12分钟前
+  🕐 Cron 任务数：6
+  🟡 空闲 📢 营销机器人 [feishu] - 12分钟前
+
+✅ 检查完成
+🔍 Bot 状态监控
+
+⏰ 检查时间：2026-03-23 21:30:01
+
+  🔴 被锁定 🤖 状态监控 [feishu] - 20秒前
+  🟢 活跃 🛠️ 研发机器人 [feishu] - 3分钟前
+  🔴 被锁定 📋 产品经理 [feishu] - 7秒前
+  🟡 空闲 🌐 网页聊天 [webchat] - 28分钟前
+  🕐 Cron 任务数：6
+  🟢 活跃 📢 营销机器人 [feishu] - 3分钟前
+
+✅ 检查完成
+🔍 Bot 状态监控
+
+⏰ 检查时间：2026-03-23 22:00:01
+
+  🔴 被锁定 🤖 状态监控 [feishu] - 1分钟前
+  🟡 空闲 🛠️ 研发机器人 - 19分钟前
+  🟢 活跃 📋 产品经理 [feishu] - 20秒前
+  🟡 空闲 🌐 网页聊天 [webchat] - 58分钟前
+  🕐 Cron 任务数：6
+  🟢 活跃 📢 营销机器人 [feishu] - 51秒前
+
+✅ 检查完成
+🔍 Bot 状态监控
+
+⏰ 检查时间：2026-03-23 22:30:02
+
+  🟡 空闲 🤖 状态监控 [feishu] - 6分钟前
+  🟢 活跃 🛠️ 研发机器人 - 2分钟前
+  🔴 被锁定 📋 产品经理 [feishu] - 47秒前
+  ⚠️ 离线 🌐 网页聊天 [webchat] - 88分钟前
+  🕐 Cron 任务数：6
+  🟢 活跃 📢 营销机器人 [feishu] - 3分钟前
+
+✅ 检查完成
+🔍 Bot 状态监控
+
+⏰ 检查时间：2026-03-23 23:00:01
+
+  🟢 活跃 🤖 状态监控 [feishu] - 4分钟前
+  🟢 活跃 🛠️ 研发机器人 [feishu] - 3分钟前
+  🟢 活跃 📋 产品经理 [feishu] - 4分钟前
+  🟡 空闲 🌐 网页聊天 [webchat] - 10分钟前
+  🕐 Cron 任务数：6
+  🟢 活跃 📢 营销机器人 [feishu] - 4分钟前
+
+✅ 检查完成
+🔍 Bot 状态监控
+
+⏰ 检查时间：2026-03-23 23:30:01
+
+  🟢 活跃 🤖 状态监控 [feishu] - 2分钟前
+  🟡 空闲 🛠️ 研发机器人 [feishu] - 8分钟前
+  🟡 空闲 📋 产品经理 [feishu] - 34分钟前
+  🟡 空闲 🌐 网页聊天 [webchat] - 6分钟前
+  🕐 Cron 任务数：6
+  🟡 空闲 📢 营销机器人 [feishu] - 34分钟前
+
+✅ 检查完成
+🔍 Bot 状态监控
+
+⏰ 检查时间：2026-03-24 00:00:01
+
+  🔴 被锁定 🤖 状态监控 [feishu] - 5分钟前
+  🔴 被锁定 🛠️ 研发机器人 [feishu] - 1分钟前
+  ⚠️ 离线 📋 产品经理 [feishu] - 64分钟前
+  🔴 被锁定 🌐 网页聊天 [webchat] - 2分钟前
+  🕐 Cron 任务数：6
+  ⚠️ 离线 📢 营销机器人 [feishu] - 64分钟前
+
+✅ 检查完成
+🔍 Bot 状态监控
+
+⏰ 检查时间：2026-03-24 00:30:01
+
+  🟢 活跃 🤖 状态监控 [feishu] - 4分钟前
+  🔴 被锁定 🛠️ 研发机器人 [feishu] - 2分钟前
+  ⚠️ 离线 📋 产品经理 [feishu] - 94分钟前
+  🔴 被锁定 🌐 网页聊天 [webchat] - 3秒前
+  🕐 Cron 任务数：6
+  ⚠️ 离线 📢 营销机器人 [feishu] - 94分钟前
+
+✅ 检查完成
