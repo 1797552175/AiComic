@@ -181,11 +181,44 @@ class ImageGenerator:
         Returns:
             {"image_url": str, "thumbnail_url": str, "seed": int}
         """
-        # TODO: 实现图生图
-        # 1. 下载参考图
-        # 2. 构造 img2img 请求（init_image + text_prompt）
-        # 3. 调用SD API
-        raise NotImplementedError("img2img not yet implemented")
+        # 图生图实现
+        import base64
+        try:
+            async with httpx.AsyncClient(timeout=self.timeout) as client:
+                init_image_b64 = source_image_url
+                if source_image_url.startswith("http"):
+                    ref_resp = await client.get(source_image_url)
+                    init_image_b64 = base64.b64encode(ref_resp.content).decode()
+                
+                style_prefix = self.STYLE_PRESETS.get(style, self.STYLE_PRESETS["anime"])
+                full_prompt = f"{style_prefix}, {prompt}"
+                
+                payload = {
+                    "text_prompts": [{"text": full_prompt, "weight": 1.0}],
+                    "init_image": init_image_b64,
+                    "image_strength": strength,
+                    "cfg_scale": 7.5,
+                    "steps": 30,
+                    "samples": 1
+                }
+                
+                response = await client.post(
+                    f"{self.base_url}/v1/generation/stable-diffusion-xl-1012-base/image-to-image",
+                    headers={"Authorization": f"Bearer {self.api_key}"},
+                    json=payload
+                )
+                result = response.json()
+                
+                if "artifacts" in result:
+                    img_data = result["artifacts"][0]["base64"]
+                    return {
+                        "image_url": f"data:image/png;base64,{img_data}",
+                        "thumbnail_url": f"data:image/png;base64,{img_data[:1000]}",
+                        "seed": result.get("seed", 0)
+                    }
+                return {"error": str(result)}
+        except Exception as e:
+            return {"error": str(e)}
 
     async def inpaint(
         self,
