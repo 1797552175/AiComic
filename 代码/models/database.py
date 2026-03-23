@@ -1,5 +1,5 @@
 """
-数据库模型 - SQLAlchemy + SQLite (本地开发/测试用)
+数据库模型 - SQLAlchemy 1.4 + SQLite (本地开发/测试用)
 生产环境请切换到 PostgreSQL
 """
 import uuid
@@ -11,24 +11,25 @@ from sqlalchemy import (
     Column, String, Text, Integer, Float, Boolean,
     DateTime, ForeignKey, JSON, Index, create_engine
 )
-from sqlalchemy.ext.asyncio import AsyncAttrs, create_async_engine, async_sessionmaker, AsyncSession
-from sqlalchemy.orm import DeclarativeBase, relationship, Mapped, mapped_column
+from sqlalchemy.orm import sessionmaker, relationship, declarative_base
 from sqlalchemy.sql import func
 
 # 获取数据库 URL（优先使用环境变量，默认为本地 SQLite）
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
-    "sqlite+aiosqlite:////tmp/aicomic.db"
+    "sqlite:////tmp/aicomic.db"
 )
 
 
-# 异步引擎
-engine = create_async_engine(DATABASE_URL, echo=False, pool_pre_ping=True)
-async_session = async_sessionmaker(engine, expire_on_commit=False)
+# 同步引擎
+engine = create_engine(DATABASE_URL, echo=False, pool_pre_ping=True)
 
+# 创建同步会话工厂
+SessionLocal = sessionmaker(
+    engine, expire_on_commit=False
+)
 
-class Base(AsyncAttrs, DeclarativeBase):
-    pass
+Base = declarative_base()
 
 
 # ========================
@@ -75,99 +76,102 @@ class Project(Base):
     """项目"""
     __tablename__ = "projects"
 
-    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    user_id: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
-    title: Mapped[str] = mapped_column(String(255), nullable=False)
-    status: Mapped[str] = mapped_column(String(32), default=ProjectStatus.DRAFT)
-    settings: Mapped[dict] = mapped_column(JSON, default=dict)
-    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
-    updated_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), onupdate=func.now())
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_id = Column(String(64), nullable=False, index=True)
+    title = Column(String(255), nullable=False)
+    status = Column(String(32), default=ProjectStatus.DRAFT)
+    settings = Column(JSON, default=dict)
+    created_at = Column(DateTime, server_default=func.now())
+    updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
 
-    characters: Mapped[List["Character"]] = relationship(back_populates="project", cascade="all, delete-orphan")
-    scenes: Mapped[List["Scene"]] = relationship(back_populates="project", cascade="all, delete-orphan")
+    characters = relationship("Character", back_populates="project", cascade="all, delete-orphan")
+    scenes = relationship("Scene", back_populates="project", cascade="all, delete-orphan")
 
 
 class Character(Base):
     """角色"""
     __tablename__ = "characters"
 
-    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    project_id: Mapped[str] = mapped_column(String(36), ForeignKey("projects.id", ondelete="CASCADE"), nullable=False)
-    name: Mapped[str] = mapped_column(String(64), nullable=False)
-    description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    lora_path: Mapped[Optional[str]] = mapped_column(String(512), nullable=True)
-    features_vector: Mapped[Optional[list]] = mapped_column(JSON, nullable=True)
-    reference_images: Mapped[list] = mapped_column(JSON, default=list)
-    emotion_default: Mapped[str] = mapped_column(String(32), default=DialogueEmotion.NEUTRAL)
-    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    project_id = Column(String(36), ForeignKey("projects.id", ondelete="CASCADE"), nullable=False)
+    name = Column(String(64), nullable=False)
+    description = Column(Text, nullable=True)
+    lora_path = Column(String(512), nullable=True)
+    features_vector = Column(JSON, nullable=True)
+    reference_images = Column(JSON, default=list)
+    emotion_default = Column(String(32), default=DialogueEmotion.NEUTRAL)
+    created_at = Column(DateTime, server_default=func.now())
 
-    project: Mapped["Project"] = relationship(back_populates="characters")
+    project = relationship("Project", back_populates="characters")
 
 
 class Scene(Base):
     """场景"""
     __tablename__ = "scenes"
 
-    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    project_id: Mapped[str] = mapped_column(String(36), ForeignKey("projects.id", ondelete="CASCADE"), nullable=False)
-    order_index: Mapped[int] = mapped_column(Integer, default=0)
-    location: Mapped[str] = mapped_column(String(255), nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    project_id = Column(String(36), ForeignKey("projects.id", ondelete="CASCADE"), nullable=False)
+    order_index = Column(Integer, default=0)
+    location = Column(String(255), nullable=False)
+    created_at = Column(DateTime, server_default=func.now())
 
-    project: Mapped["Project"] = relationship(back_populates="scenes")
-    shots: Mapped[List["Shot"]] = relationship(back_populates="scene", cascade="all, delete-orphan")
+    project = relationship("Project", back_populates="scenes")
+    shots = relationship("Shot", back_populates="scene", cascade="all, delete-orphan")
 
 
 class Shot(Base):
     """镜头"""
     __tablename__ = "shots"
 
-    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    scene_id: Mapped[str] = mapped_column(String(36), ForeignKey("scenes.id", ondelete="CASCADE"), nullable=False)
-    order_index: Mapped[int] = mapped_column(Integer, default=0)
-    type: Mapped[str] = mapped_column(String(32), default=ShotType.MEDIUM)
-    duration: Mapped[float] = mapped_column(Float, default=3.0)
-    keywords: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    image_url: Mapped[Optional[str]] = mapped_column(String(512), nullable=True)
-    motion_data: Mapped[dict] = mapped_column(JSON, default=dict)
-    status: Mapped[str] = mapped_column(String(32), default=ShotStatus.PENDING)
-    retry_count: Mapped[int] = mapped_column(Integer, default=0)
-    error_message: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    scene_id = Column(String(36), ForeignKey("scenes.id", ondelete="CASCADE"), nullable=False)
+    order_index = Column(Integer, default=0)
+    type = Column(String(32), default=ShotType.MEDIUM)
+    duration = Column(Float, default=3.0)
+    keywords = Column(Text, nullable=True)
+    description = Column(Text, nullable=True)
+    image_url = Column(String(512), nullable=True)
+    motion_data = Column(JSON, default=dict)
+    status = Column(String(32), default=ShotStatus.PENDING)
+    retry_count = Column(Integer, default=0)
+    error_message = Column(Text, nullable=True)
+    created_at = Column(DateTime, server_default=func.now())
 
-    scene: Mapped["Scene"] = relationship(back_populates="shots")
-    dialogues: Mapped[List["Dialogue"]] = relationship(back_populates="shot", cascade="all, delete-orphan")
+    scene = relationship("Scene", back_populates="shots")
+    dialogues = relationship("Dialogue", back_populates="shot", cascade="all, delete-orphan")
 
 
 class Dialogue(Base):
     """对话/旁白"""
     __tablename__ = "dialogues"
 
-    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    shot_id: Mapped[str] = mapped_column(String(36), ForeignKey("shots.id", ondelete="CASCADE"), nullable=False)
-    character_name: Mapped[str] = mapped_column(String(64), nullable=False)
-    text: Mapped[str] = mapped_column(Text, nullable=False)
-    emotion: Mapped[str] = mapped_column(String(32), default=DialogueEmotion.NEUTRAL)
-    audio_url: Mapped[Optional[str]] = mapped_column(String(512), nullable=True)
-    lip_sync_data: Mapped[dict] = mapped_column(JSON, default=dict)
-    order_index: Mapped[int] = mapped_column(Integer, default=0)
-    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    shot_id = Column(String(36), ForeignKey("shots.id", ondelete="CASCADE"), nullable=False)
+    character_name = Column(String(64), nullable=False)
+    text = Column(Text, nullable=False)
+    emotion = Column(String(32), default=DialogueEmotion.NEUTRAL)
+    audio_url = Column(String(512), nullable=True)
+    lip_sync_data = Column(JSON, default=dict)
+    order_index = Column(Integer, default=0)
+    created_at = Column(DateTime, server_default=func.now())
 
-    shot: Mapped["Shot"] = relationship(back_populates="dialogues")
+    shot = relationship("Shot", back_populates="dialogues")
 
 
 # ========================
 # 数据库初始化
 # ========================
 
-async def init_db():
+def init_db():
     """初始化数据库表"""
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+    with engine.begin() as conn:
+        Base.metadata.create_all(conn)
 
 
-async def get_db():
+def get_db():
     """获取数据库会话"""
-    async with async_session() as session:
-        yield session
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

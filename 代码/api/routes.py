@@ -3,7 +3,7 @@ API 路由
 """
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Session
 from sqlalchemy import select
 
 from models.database import get_db, Project, Character, Scene, Shot, Dialogue
@@ -26,9 +26,9 @@ router = APIRouter()
 # ========================
 
 @router.post("/projects", response_model=ProjectResponse)
-async def create_project(
+def create_project(
     project: ProjectCreate,
-    db: AsyncSession = Depends(get_db)
+    db: Session = Depends(get_db)
 ):
     """创建新项目"""
     db_project = Project(
@@ -37,15 +37,15 @@ async def create_project(
         settings=project.settings
     )
     db.add(db_project)
-    await db.commit()
-    await db.refresh(db_project)
+    db.commit()
+    db.refresh(db_project)
     return db_project
 
 
 @router.get("/projects/{project_id}", response_model=ProjectResponse)
-async def get_project(project_id: str, db: AsyncSession = Depends(get_db)):
+def get_project(project_id: str, db: Session = Depends(get_db)):
     """获取项目详情"""
-    result = await db.execute(select(Project).where(Project.id == project_id))
+    result = db.execute(select(Project).where(Project.id == project_id))
     project = result.scalar_one_or_none()
     if not project:
         raise HTTPException(status_code=404, detail="项目不存在")
@@ -53,13 +53,13 @@ async def get_project(project_id: str, db: AsyncSession = Depends(get_db)):
 
 
 @router.put("/projects/{project_id}", response_model=ProjectResponse)
-async def update_project(
+def update_project(
     project_id: str,
     update: ProjectUpdate,
-    db: AsyncSession = Depends(get_db)
+    db: Session = Depends(get_db)
 ):
     """更新项目"""
-    result = await db.execute(select(Project).where(Project.id == project_id))
+    result = db.execute(select(Project).where(Project.id == project_id))
     project = result.scalar_one_or_none()
     if not project:
         raise HTTPException(status_code=404, detail="项目不存在")
@@ -71,8 +71,8 @@ async def update_project(
     if update.settings is not None:
         project.settings = update.settings
 
-    await db.commit()
-    await db.refresh(project)
+    db.commit()
+    db.refresh(project)
     return project
 
 
@@ -81,14 +81,13 @@ async def update_project(
 # ========================
 
 @router.post("/projects/{project_id}/characters", response_model=CharacterResponse)
-async def create_character(
+def create_character(
     project_id: str,
     character: CharacterCreate,
-    db: AsyncSession = Depends(get_db)
+    db: Session = Depends(get_db)
 ):
     """创建角色"""
-    # 检查项目是否存在
-    result = await db.execute(select(Project).where(Project.id == project_id))
+    result = db.execute(select(Project).where(Project.id == project_id))
     if not result.scalar_one_or_none():
         raise HTTPException(status_code=404, detail="项目不存在")
 
@@ -100,15 +99,15 @@ async def create_character(
         reference_images=character.reference_images
     )
     db.add(db_character)
-    await db.commit()
-    await db.refresh(db_character)
+    db.commit()
+    db.refresh(db_character)
     return db_character
 
 
 @router.get("/projects/{project_id}/characters", response_model=List[CharacterResponse])
-async def list_characters(project_id: str, db: AsyncSession = Depends(get_db)):
+def list_characters(project_id: str, db: Session = Depends(get_db)):
     """获取角色列表"""
-    result = await db.execute(
+    result = db.execute(
         select(Character).where(Character.project_id == project_id)
     )
     return result.scalars().all()
@@ -119,28 +118,20 @@ async def list_characters(project_id: str, db: AsyncSession = Depends(get_db)):
 # ========================
 
 @router.post("/projects/{project_id}/parse-script", response_model=ScriptParseResponse)
-async def parse_script(
+def parse_script(
     project_id: str,
     request: ScriptParseRequest,
     background_tasks: BackgroundTasks,
-    db: AsyncSession = Depends(get_db)
+    db: Session = Depends(get_db)
 ):
-    """
-    解析剧本
-    将文本剧本解析为场景、镜头、角色结构
-    """
-    # 检查项目是否存在
-    result = await db.execute(select(Project).where(Project.id == project_id))
+    """解析剧本"""
+    result = db.execute(select(Project).where(Project.id == project_id))
     project = result.scalar_one_or_none()
     if not project:
         raise HTTPException(status_code=404, detail="项目不存在")
 
-    # 调用解析服务
-    parsed = await script_parser.parse(request.script_text, request.style)
+    parsed = script_parser.parse(request.script_text, request.style)
 
-    # 保存到数据库
-    # 1. 创建角色
-    char_map = {}
     for char_data in parsed["characters"]:
         char = Character(
             project_id=project_id,
@@ -149,11 +140,9 @@ async def parse_script(
             emotion_default=char_data.get("emotion_default", "neutral")
         )
         db.add(char)
-        char_map[char_data["name"]] = char
 
-    await db.flush()
+    db.flush()
 
-    # 2. 创建场景和镜头
     for scene_data in parsed["scenes"]:
         scene = Scene(
             project_id=project_id,
@@ -161,7 +150,7 @@ async def parse_script(
             location=scene_data["location"]
         )
         db.add(scene)
-        await db.flush()
+        db.flush()
 
         for shot_data in scene_data.get("shots", []):
             shot = Shot(
@@ -173,9 +162,8 @@ async def parse_script(
                 description=shot_data.get("description", "")
             )
             db.add(shot)
-            await db.flush()
+            db.flush()
 
-            # 创建对话
             for idx, dial_data in enumerate(shot_data.get("dialogue", [])):
                 dialogue = Dialogue(
                     shot_id=shot.id,
@@ -186,10 +174,8 @@ async def parse_script(
                 )
                 db.add(dialogue)
 
-    # 3. 更新项目状态
     project.status = "draft"
-
-    await db.commit()
+    db.commit()
 
     return ScriptParseResponse(
         project_id=project_id,
@@ -200,22 +186,21 @@ async def parse_script(
 
 
 @router.get("/projects/{project_id}/storyboard")
-async def get_storyboard(project_id: str, db: AsyncSession = Depends(get_db)):
+def get_storyboard(project_id: str, db: Session = Depends(get_db)):
     """获取项目分镜列表"""
-    # 获取所有场景和镜头
-    result = await db.execute(select(Scene).where(Scene.project_id == project_id))
+    result = db.execute(select(Scene).where(Scene.project_id == project_id))
     scenes = result.scalars().all()
 
     storyboard = []
     for scene in scenes:
-        result = await db.execute(
+        result = db.execute(
             select(Shot).where(Shot.scene_id == scene.id).order_by(Shot.order_index)
         )
         shots = result.scalars().all()
 
         scene_shots = []
         for shot in shots:
-            result = await db.execute(
+            result = db.execute(
                 select(Dialogue).where(Dialogue.shot_id == shot.id).order_by(Dialogue.order_index)
             )
             dialogues = result.scalars().all()
@@ -231,20 +216,12 @@ async def get_storyboard(project_id: str, db: AsyncSession = Depends(get_db)):
                 "status": shot.status,
                 "motion_data": shot.motion_data,
                 "dialogue": [
-                    {
-                        "character": d.character_name,
-                        "text": d.text,
-                        "emotion": d.emotion
-                    }
+                    {"character": d.character_name, "text": d.text, "emotion": d.emotion}
                     for d in dialogues
                 ]
             })
 
-        storyboard.append({
-            "id": scene.id,
-            "location": scene.location,
-            "shots": scene_shots
-        })
+        storyboard.append({"id": scene.id, "location": scene.location, "shots": scene_shots})
 
     return {"project_id": project_id, "storyboard": storyboard}
 
@@ -254,17 +231,13 @@ async def get_storyboard(project_id: str, db: AsyncSession = Depends(get_db)):
 # ========================
 
 @router.post("/projects/{project_id}/shots/generate-batch", response_model=ShotGenerateResponse)
-async def generate_shots_batch(
+def generate_shots_batch(
     project_id: str,
     request: ShotGenerateRequest,
     background_tasks: BackgroundTasks,
-    db: AsyncSession = Depends(get_db)
+    db: Session = Depends(get_db)
 ):
-    """
-    批量生成镜头画面
-    实际生成是异步的，这里返回任务ID
-    """
-    # TODO: 实现异步任务队列
+    """批量生成镜头画面"""
     return ShotGenerateResponse(
         task_id="task_placeholder",
         status="processing",
@@ -273,14 +246,14 @@ async def generate_shots_batch(
 
 
 @router.put("/projects/{project_id}/shots/{shot_id}")
-async def update_shot(
+def update_shot(
     project_id: str,
     shot_id: str,
     update: ShotUpdate,
-    db: AsyncSession = Depends(get_db)
+    db: Session = Depends(get_db)
 ):
     """更新镜头信息"""
-    result = await db.execute(select(Shot).where(Shot.id == shot_id))
+    result = db.execute(select(Shot).where(Shot.id == shot_id))
     shot = result.scalar_one_or_none()
     if not shot:
         raise HTTPException(status_code=404, detail="镜头不存在")
@@ -296,7 +269,7 @@ async def update_shot(
     if update.order_index is not None:
         shot.order_index = update.order_index
 
-    await db.commit()
+    db.commit()
     return {"message": "更新成功"}
 
 
@@ -305,25 +278,21 @@ async def update_shot(
 # ========================
 
 @router.post("/projects/{project_id}/shots/{shot_id}/apply-motion")
-async def apply_motion(
+def apply_motion(
     project_id: str,
     shot_id: str,
     request: MotionApplyRequest,
-    db: AsyncSession = Depends(get_db)
+    db: Session = Depends(get_db)
 ):
     """应用动态效果到镜头"""
-    result = await db.execute(select(Shot).where(Shot.id == shot_id))
+    result = db.execute(select(Shot).where(Shot.id == shot_id))
     shot = result.scalar_one_or_none()
     if not shot:
         raise HTTPException(status_code=404, detail="镜头不存在")
 
-    motion_data = {
-        "type": request.motion_type,
-        "params": request.motion_params
-    }
+    motion_data = {"type": request.motion_type, "params": request.motion_params}
     shot.motion_data = motion_data
-
-    await db.commit()
+    db.commit()
     return {"message": "动态效果已应用", "motion_data": motion_data}
 
 
@@ -332,17 +301,13 @@ async def apply_motion(
 # ========================
 
 @router.post("/projects/{project_id}/compose", response_model=ComposeResponse)
-async def compose_video(
+def compose_video(
     project_id: str,
     request: ComposeRequest,
     background_tasks: BackgroundTasks,
-    db: AsyncSession = Depends(get_db)
+    db: Session = Depends(get_db)
 ):
-    """
-    合成最终视频
-    实际合成是异步的，这里返回任务ID
-    """
-    # TODO: 实现异步任务队列
+    """合成最终视频"""
     return ComposeResponse(
         task_id="task_placeholder",
         status="processing",
@@ -355,12 +320,12 @@ async def compose_video(
 # ========================
 
 @router.get("/options/motion-types")
-async def get_motion_types():
+def get_motion_types():
     """获取可选的运动类型"""
     return storyboard_generator.get_motion_options()
 
 
 @router.get("/options/shot-types")
-async def get_shot_types():
+def get_shot_types():
     """获取可选的镜头类型"""
     return storyboard_generator.get_shot_type_options()
