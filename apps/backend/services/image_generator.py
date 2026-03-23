@@ -262,21 +262,94 @@ class ImageGenerator:
         self,
         source_image_url: str,
         mask_image_url: str,
-        prompt: str
+        prompt: str,
+        style: str = "anime",
+        quality: str = "hd",
+        negative_prompt: Optional[str] = None
     ) -> Dict[str, Any]:
         """
-        局部重绘：只重绘被mask遮挡的区域
+        局部重绘：基于原图和遮罩进行局部修改
 
         Args:
-            source_image_url: 原图URL
-            mask_image_url: mask图URL（白色=重绘区域）
-            prompt: 新描述词
+            source_image_url: 原图URL（支持 file://, http://, s3://）
+            mask_image_url: 遮罩图URL，白色区域=需要重绘的部分
+            prompt: 重绘区域的描述词
+            style: 风格 (anime/realistic/cyberpunk/ink/bw)
+            quality: 质量等级 (standard/hd/uhd)
+            negative_prompt: 负面提示词
 
         Returns:
-            {"image_url": str}
+            {"image_url": str, "seed": int, "resolution": str}
         """
-        # TODO: 实现局部重绘
-        raise NotImplementedError("inpaint not yet implemented")
+        preset = self.QUALITY_PRESETS.get(quality, self.QUALITY_PRESETS["hd"])
+        style_prefix = self.STYLE_PRESETS.get(style, self.STYLE_PRESETS["anime"])
+
+        full_prompt = f"{style_prefix}, {prompt}"
+
+        default_neg = (
+            "low quality, blurry, distorted, deformed, "
+            "bad anatomy, watermark, text, signature, "
+            "multiple heads, extra limbs, poorly drawn hands"
+        )
+        neg_prompt = negative_prompt or default_neg
+
+        # 下载并编码原图和遮罩
+        source_base64 = await self._download_and_encode_image(source_image_url)
+        mask_base64 = await self._download_and_encode_image(mask_image_url)
+
+        w, h = preset["resolution"][0], preset["resolution"][1]
+
+        # Stability AI 局部重绘 API
+        payload = {
+            "text_prompts": [
+                {"text": full_prompt, "weight": 1.0},
+                {"text": neg_prompt, "weight": -1.0}
+            ],
+            "init_image": source_base64,
+            "mask": mask_base64,
+            "cfg_scale": preset["cfg"],
+            "height": h,
+            "width": w,
+            "steps": preset["steps"],
+            "samples": 1
+        }
+
+        try:
+            async with httpx.AsyncClient(timeout=self.timeout) as client:
+                response = await client.post(
+                    f"{self.base_url}/v1/generation/stable-diffusion-xl-1024-v1-0/image-to-image-masking",
+                    headers={
+                        "Authorization": f"Bearer {self.api_key}",
+                        "Content-Type": "application/json"
+                    },
+                    json=payload
+                )
+                response.raise_for_status()
+                result = response.json()
+
+                artifacts = result.get("artifacts", [])
+                if artifacts:
+                    result_base64 = artifacts[0]["base64"]
+                    seed = artifacts[0].get("seed", 0)
+                    image_data = base64.b64decode(result_base64)
+
+                    image_url = await self._save_image(image_data, f"{uuid.uuid4()}.png")
+
+                    return {
+                        "image_url": image_url,
+                        "seed": seed,
+                        "prompt": full_prompt,
+                        "resolution": f"{w}x{h}",
+                        "source_image": source_image_url,
+                        "mask_image": mask_image_url
+                    }
+
+                raise ValueError("No artifacts returned from SD inpaint API")
+
+        except httpx.HTTPStatusError as e:
+            raise RuntimeError(f"SD inpaint API error: {e.response.status_code} - {e.response.text}")
+        except Exception as e:
+            raise RuntimeError(f"inpaint generation failed: {str(e)}")
 
     async def apply_lora(
         self,

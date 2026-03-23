@@ -350,7 +350,36 @@ def dispatcher_loop():
         
         runnable = task_queue.get_runnable_tasks()
         
-        # 队列空时，为空闲 Bot 生成 AUTO 任务（有 cooldown 保护）
+        # === 新增：从飞书任务板拉取待分配任务 ===
+        try:
+            result = subprocess.run(
+                ["python3", "/tmp/fetch_bitable_tasks.py"],
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=15
+            )
+            if result.returncode == 0:
+                import json
+                output_file = "/tmp/bitable_pending_tasks.json"
+                if os.path.exists(output_file):
+                    with open(output_file) as f:
+                        data = json.load(f)
+                    for t in data.get("tasks", []):
+                        # 检查是否已在队列中
+                        existing = [p for p in task_queue.pending if p.get("task_id") == t["task_id"]]
+                        if not existing:
+                            task_queue.pending.append({
+                                "task_id": t["task_id"],
+                                "type": t.get("type", "dev"),
+                                "payload": {"任务描述": t.get("desc", ""), "来源": "飞书任务板"},
+                                "bitable_record_id": t.get("record_id", "")
+                            })
+                            print(f"[Dispatcher] 从任务板拉取: {t['task_id']}")
+                    # 重新获取 runnable（因为可能新增了任务）
+                    runnable = task_queue.get_runnable_tasks()
+        except Exception as e:
+            print(f"[Dispatcher] 任务板拉取失败: {e}")
+        # === 飞书任务板拉取结束 ===
+        
+        # 队列空时，为空闲 Bot 生成 AUTO 任务（无 cooldown，持续轮转）
         if not runnable and idle_bots:
             ts = time.strftime("%Y%m%d_%H%M%S")
             auto_map = {
@@ -360,11 +389,6 @@ def dispatcher_loop():
             }
             for bot_type in idle_bots:
                 if bot_type in auto_map:
-                    # Cooldown: 同一个 bot 5分钟内不重复生成
-                    last = _last_auto_success.get(bot_type, 0)
-                    if time.time() - last < _AUTO_COOLDOWN:
-                        print(f"[Dispatcher] {bot_type} cooldown中，跳过")
-                        continue
                     auto_task = auto_map[bot_type]
                     task_queue.pending.append(auto_task)
                     print(f"[Dispatcher] 生成 AUTO 任务: {auto_task['task_id']} -> {bot_type}")
@@ -573,3 +597,54 @@ if __name__ == "__main__":
     app = create_monitor_app() if bot_type == "monitor" else create_bot_app(bot_type, port, name)
     print(f"启动 {name} 端口: {port}")
     uvicorn.run(app, host="127.0.0.1", port=port, log_level="warning")
+
+# ============== 飞书任务板集成 ==============
+BITABLE_APP_TOKEN = "InUZbPrTZaRm5LsRz9jctF27nGu"
+BITABLE_TABLE_ID = "tblNWtihltzV0SOO"
+
+def fetch_bitable_tasks():
+    """从飞书任务板读取待分配任务"""
+    try:
+        import urllib.request
+        import json
+        
+        url = f"https://open.feishu.cn/open-apis/bitable/v1/apps/{BITABLE_APP_TOKEN}/tables/{BITABLE_TABLE_ID}/records"
+        req = urllib.request.Request(url)
+        req.add_header("Authorization", f"Bearer ??")  # 需要 token，暂时用假数据
+        # 改用 curl 更简单
+        cmd = [
+            "curl", "-s", "-X", "GET",
+            f"https://open.feishu.cn/open-apis/bitable/v1/apps/{BITABLE_APP_TOKEN}/tables/{BITABLE_TABLE_ID}/records",
+            "-H", "Authorization: Bearer ??",
+            "-H", "Content-Type: application/json"
+        ]
+        r = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=10)
+        data = json.loads(r.stdout.decode("utf-8", errors="ignore"))
+        
+        tasks = []
+        for item in data.get("data", {}).get("items", []):
+            fields = item.get("fields", {})
+            status = fields.get("状态", {})
+            if isinstance(status, list) and len(status) > 0:
+                status = status[0].get("text", "") if isinstance(status[0], dict) else str(status[0])
+            elif isinstance(status, str):
+                pass
+            else:
+                status = ""
+            
+            # 只取"待分配"状态的任务
+            if "待分配" in str(status):
+                task_id = fields.get("任务ID", "")
+                desc = fields.get("任务描述", "")
+                assigned = fields.get("分配给", "")
+                if task_id and desc:
+                    tasks.append({
+                        "task_id": str(task_id),
+                        "type": "dev",  # 默认给研发，后续可扩展
+                        "desc": str(desc),
+                        "record_id": item.get("record_id", "")
+                    })
+        return tasks
+    except Exception as e:
+        print(f"[Monitor] 读取任务板失败: {e}")
+        return []

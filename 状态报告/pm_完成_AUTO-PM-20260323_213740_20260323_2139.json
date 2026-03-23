@@ -1,0 +1,10 @@
+{
+  "task_id": "AUTO-PM-20260323_213740",
+  "完成时间": "2026-03-23T21:39:00+08:00",
+  "bot_type": "pm",
+  "auto_task_type": "competitor_scan",
+  "产出文件": [
+    "/opt/AiComic/docs/竞品监控_20260323_问题排查版.md"
+  ],
+  "summary": "问题排查+竞品分析：发现任务堆积原因是Dispatcher分发逻辑问题"
+}
