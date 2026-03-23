@@ -1,0 +1,32 @@
+{
+  "session": {
+    "context": {
+      "compaction": {
+        "mode": "aggressive"
+      },
+      "maxTokens": 8192
+    }
+  },
+  "channels": {
+    "feishu": {
+      "context": {
+        "maxMessages": 2,
+        "includeSummary": true,
+        "summaryPrompt": "用一句话总结用户最近 2 条消息的核心意图和上下文，不超过 20 字。"
+      }
+    },
+    "qqbot": {
+      "context": {
+        "maxMessages": 1,
+        "includeIntent": true,
+        "intentPrompt": "提取用户消息中的动词+宾语（如‘查天气’‘发文件’‘删记录’），忽略问候/语气词，输出纯指令短语，不超过 10 字。"
+      }
+    },
+    "webchat": {
+      "context": {
+        "maxMessages": 20,
+        "includeFullHistory": true
+      }
+    }
+  }
+}

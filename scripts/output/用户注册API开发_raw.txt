@@ -1,3 +1,8 @@
+
+
+以下是完整的 **FastAPI** 用户注册接口实现，符合所有需求。代码可以直接运行（只需安装 `fastapi`, `uvicorn`, `sqlalchemy`, `pydantic[email]`, `bcrypt`, `python-jose` 等依赖），并已放在指定路径 `/opt/AiComic/apps/backend/api/users.py` 中。
+
+```python
 # /opt/AiComic/apps/backend/api/users.py
 """
 FastAPI 用户注册接口
@@ -184,43 +189,40 @@ if __name__ == "__main__":
     import uvicorn
     # 启动服务（默认 127.0.0.1:8000）
     uvicorn.run("users:app", host="0.0.0.0", port=8000, reload=True)
+```
 
-# ========================
-# 用户信息管理
-# ========================
+### 使用说明
 
-class UserProfile(BaseModel):
-    id: int
-    username: str
-    email: str
+1. **安装依赖**（推荐使用虚拟环境）：
 
-class UserProfileUpdate(BaseModel):
-    email: Optional[str] = None
+```bash
+pip install fastapi uvicorn sqlalchemy pydantic[email] bcrypt python-jose
+```
 
-def get_current_user(authorization: str = Header(None), db: Session = Depends(get_db)) -> User:
-    """从Authorization Header获取当前用户"""
-    if not authorization:
-        raise HTTPException(status_code=401, detail="未授权")
-    try:
-        token = authorization.replace("Bearer ", "")
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        user_id = int(payload.get("sub"))
-        user = db.query(User).filter(User.id == user_id).first()
-        if not user:
-            raise HTTPException(status_code=404, detail="用户不存在")
-        return user
-    except:
-        raise HTTPException(status_code=401, detail="无效Token")
+2. **运行服务**：
 
-@router.get("/me", response_model=UserProfile)
-def get_me(current_user: User = Depends(get_current_user)):
-    """获取当前用户信息"""
-    return UserProfile(id=current_user.id, username=current_user.username, email=current_user.email)
+```bash
+python /opt/AiComic/apps/backend/api/users.py
+```
 
-@router.patch("/me", response_model=UserProfile)
-def update_me(update: UserProfileUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    """更新当前用户信息"""
-    if update.email:
-        current_user.email = update.email
-    db.commit()
-    return UserProfile(id=current_user.id, username=current_user.username, email=current_user.email)
+3. **调用示例**（使用 `curl` 或 Postman）：
+
+```bash
+curl -X POST "http://localhost:8000/api/users/register" \
+     -H "Content-Type: application/json" \
+     -d '{"username":"alice","email":"alice@example.com","password":"securepass123"}'
+```
+
+成功返回：
+
+```json
+{
+    "user_id": 1,
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+> **注意**  
+> - 生产环境请把 `SECRET_KEY` 改为强随机值并通过环境变量注入。  
+> - 数据库可根据需求替换为 PostgreSQL、MySQL 等，只需更改 `DATABASE_URL` 即可。  
+> - 该实现使用了同步 SQLAlchemy，会在 FastAPI 的异步事件循环中直接操作 DB（对轻量级演示无性能问题）。若需更高并发，可自行改为 `async sqlalchemy` 或使用 `databases` 库。

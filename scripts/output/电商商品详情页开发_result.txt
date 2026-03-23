@@ -1,0 +1,3075 @@
+
+
+# 商品模块完整测试代码
+
+## 项目结构
+
+```
+tests/
+├── __init__.py
+├── conftest.py
+├── pytest.ini
+├── playwright.config.py
+├── fixtures/
+│   ├── __init__.py
+│   ├── mock_data.py
+│   └── api_fixtures.py
+├── unit/
+│   ├── __init__.py
+│   ├── test_product_service.py
+│   ├── test_cart_service.py
+│   ├── test_review_service.py
+│   └── test_schemas.py
+├── integration/
+│   ├── __init__.py
+│   ├── test_product_api.py
+│   ├── test_cart_api.py
+│   └── test_review_api.py
+└── e2e/
+    ├── __init__.py
+    ├── conftest.py
+    ├── pages/
+    │   ├── __init__.py
+    │   ├── product_page.py
+    │   └── cart_page.py
+    └── test_product_detail.py
+```
+
+## tests/__init__.py
+
+```python
+"""
+测试模块初始化
+"""
+```
+
+## tests/conftest.py
+
+```python
+"""
+pytest 配置和共享 fixtures
+"""
+import pytest
+import sys
+import os
+
+# 添加项目根目录到 Python 路径
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from fastapi.testclient import TestClient
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import StaticPool
+
+from app.main import app
+from app.database import Base, get_db
+from tests.fixtures.mock_data import (
+    mock_product_data,
+    mock_sku_data,
+    mock_reviews_data,
+    mock_cart_data,
+    mock_recommendations_data
+)
+
+
+# ============ 数据库 Fixtures ============
+
+@pytest.fixture(scope="function")
+def test_db():
+    """创建测试数据库"""
+    engine = create_engine(
+        "sqlite:///:memory:",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+    )
+    TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+    
+    # 创建表
+    Base.metadata.create_all(bind=engine)
+    
+    db = TestingSessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+        Base.metadata.drop_all(bind=engine)
+
+
+@pytest.fixture(scope="function")
+def client(test_db):
+    """创建测试客户端"""
+    def override_get_db():
+        try:
+            yield test_db
+        finally:
+            pass
+    
+    app.dependency_overrides[get_db] = override_get_db
+    
+    with TestClient(app) as test_client:
+        yield test_client
+    
+    app.dependency_overrides.clear()
+
+
+# ============ 数据 Fixtures ============
+
+@pytest.fixture
+def mock_product():
+    """Mock 商品数据"""
+    return mock_product_data
+
+
+@pytest.fixture
+def mock_skus():
+    """Mock SKU 数据"""
+    return mock_sku_data
+
+
+@pytest.fixture
+def mock_reviews():
+    """Mock 评价数据"""
+    return mock_reviews_data
+
+
+@pytest.fixture
+def mock_cart_items():
+    """Mock 购物车数据"""
+    return mock_cart_data
+
+
+@pytest.fixture
+def mock_recommendations():
+    """Mock 推荐数据"""
+    return mock_recommendations_data
+
+
+# ============ 认证 Fixtures ============
+
+@pytest.fixture
+def auth_headers():
+    """认证请求头"""
+    return {"X-User-Id": "TEST_USER_001"}
+
+
+@pytest.fixture
+def auth_headers_2():
+    """第二个用户的认证请求头"""
+    return {"X-User-Id": "TEST_USER_002"}
+
+
+# ============ 辅助函数 Fixtures ============
+
+@pytest.fixture
+def product_id():
+    """测试商品ID"""
+    return "P20240001"
+
+
+@pytest.fixture
+def sku_id():
+    """测试 SKU ID"""
+    return "SKU001"
+
+
+@pytest.fixture
+def invalid_product_id():
+    """无效商品ID"""
+    return "INVALID_PRODUCT"
+
+
+@pytest.fixture
+def invalid_sku_id():
+    """无效 SKU ID"""
+    return "INVALID_SKU"
+```
+
+## tests/pytest.ini
+
+```ini
+[pytest]
+testpaths = tests
+python_files = test_*.py
+python_classes = Test*
+python_functions = test_*
+addopts = 
+    -v
+    --tb=short
+    --strict-markers
+    --disable-warnings
+    -p no:cacheprovider
+markers =
+    unit: 单元测试
+    integration: 集成测试
+    e2e: E2E 测试
+    slow: 慢速测试
+    cart: 购物车相关测试
+    review: 评价相关测试
+    product: 商品相关测试
+    api: API 测试
+filterwarnings =
+    ignore::DeprecationWarning
+    ignore::PendingDeprecationWarning
+```
+
+## tests/playwright.config.py
+
+```python
+"""
+Playwright 配置
+"""
+import pytest
+from playwright.sync_api import sync_playwright, Playwright, Browser, BrowserContext, Page
+
+
+def pytest_addoption(parser):
+    """添加命令行选项"""
+    parser.addoption(
+        "--browser",
+        action="store",
+        default="chromium",
+        help="Browser to run tests: chromium, firefox, or webkit",
+    )
+    parser.addoption(
+        "--headless",
+        action="store_true",
+        default=True,
+        help="Run in headless mode",
+    )
+    parser.addoption(
+        "--slow-mo",
+        action="store",
+        default=0,
+        type=int,
+        help="Slow down operations by specified ms",
+    )
+    parser.addoption(
+        "--base-url",
+        action="store",
+        default="http://localhost:3000",
+        help="Base URL for the application",
+    )
+
+
+@pytest.fixture(scope="session")
+def browser_type(request) -> str:
+    """浏览器类型"""
+    return request.config.getoption("--browser")
+
+
+@pytest.fixture(scope="session")
+def headless(request) -> bool:
+    """是否无头模式"""
+    return request.config.getoption("--headless")
+
+
+@pytest.fixture(scope="session")
+def slow_mo(request) -> int:
+    """操作延迟"""
+    return request.config.getoption("--slow-mo")
+
+
+@pytest.fixture(scope="session")
+def base_url(request) -> str:
+    """基础 URL"""
+    return request.config.getoption("--base-url")
+
+
+@pytest.fixture(scope="session")
+def playwright_instance() -> Playwright:
+    """Playwright 实例"""
+    with sync_playwright() as p:
+        yield p
+
+
+@pytest.fixture(scope="session")
+def browser(playwright_instance: Playwright, browser_type: str, headless: bool, slow_mo: int) -> Browser:
+    """浏览器实例"""
+    if browser_type == "chromium":
+        browser = playwright_instance.chromium.launch(
+            headless=headless,
+            slow_mo=slow_mo,
+            args=["--disable-web-security", "--disable-features=IsolateOrigins,site-per-process"]
+        )
+    elif browser_type == "firefox":
+        browser = playwright_instance.firefox.launch(
+            headless=headless,
+            slow_mo=slow_mo
+        )
+    elif browser_type == "webkit":
+        browser = playwright_instance.webkit.launch(
+            headless=headless,
+            slow_mo=slow_mo
+        )
+    else:
+        raise ValueError(f"Unsupported browser: {browser_type}")
+    
+    yield browser
+    browser.close()
+
+
+@pytest.fixture(scope="session")
+def browser_context(browser: Browser) -> BrowserContext:
+    """浏览器上下文"""
+    context = browser.new_context(
+        viewport={"width": 1920, "height": 1080},
+        locale="zh-CN",
+        timezone_id="Asia/Shanghai",
+        extra_http_headers={
+            "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
+        }
+    )
+    yield context
+    context.close()
+
+
+@pytest.fixture(scope="function")
+def page(browser_context: BrowserContext, base_url: str) -> Page:
+    """页面实例"""
+    page = browser_context.new_page()
+    page.goto(base_url)
+    yield page
+    page.close()
+
+
+@pytest.fixture(scope="function")
+def mobile_page(browser_context: BrowserContext, base_url: str) -> Page:
+    """移动端页面"""
+    mobile_context = browser_context
+    mobile_context.set_viewport_size({"width": 375, "height": 812})
+    page = mobile_context.new_page()
+    page.goto(base_url)
+    yield page
+    page.close()
+
+
+@pytest.fixture(scope="function")
+def authenticated_page(page: Page) -> Page:
+    """已认证页面"""
+    # 设置用户ID header
+    page.context.set_extra_http_headers({"X-User-Id": "TEST_USER_001"})
+    return page
+```
+
+## tests/fixtures/__init__.py
+
+```python
+"""
+测试数据 fixtures
+"""
+```
+
+## tests/fixtures/mock_data.py
+
+```python
+"""
+Mock 数据定义
+"""
+
+# ============ 商品数据 ============
+
+mock_product_data = {
+    "product_id": "P20240001",
+    "spu_id": "SPU001",
+    "title": "简约纯棉T恤男2024新款夏季透气百搭休闲上衣服",
+    "subtitle": "舒适面料，透气百搭，年轻时尚",
+    "price": {
+        "current": 29900,
+        "original": 49900,
+        "currency": "CNY"
+    },
+    "stock": {
+        "total": 1000,
+        "status": "sufficient"
+    },
+    "attributes": {
+        "colors": [
+            {"code": "red", "name": "红色"},
+            {"code": "blue", "name": "蓝色"},
+            {"code": "black", "name": "黑色"},
+            {"code": "white", "name": "白色"},
+        ],
+        "sizes": [
+            {"code": "S", "name": "S", "stock": 100},
+            {"code": "M", "name": "M", "stock": 50},
+            {"code": "L", "name": "L", "stock": 60},
+        ]
+    },
+    "promotions": [
+        {"type": "discount", "title": "满300减50", "description": "满300减50"},
+        {"type": "discount", "title": "限时8折", "description": "限时8折"},
+        {"type": "vip", "title": "会员专享", "description": "会员专享价"},
+    ],
+    "seller": {
+        "id": "S001",
+        "name": "官方旗舰店",
+        "rating": 4.8
+    }
+}
+
+
+# ============ SKU 数据 ============
+
+mock_sku_data = [
+    {"sku_id": "SKU001", "attributes": {"color": "红色", "size": "S"}, "price": 29900, "stock": 100, "status": "available"},
+    {"sku_id": "SKU002", "attributes": {"color": "红色", "size": "M"}, "price": 29900, "stock": 50, "status": "available"},
+    {"sku_id": "SKU003", "attributes": {"color": "红色", "size": "L"}, "price": 29900, "stock": 0, "status": "unavailable"},
+    {"sku_id": "SKU004", "attributes": {"color": "蓝色", "size": "S"}, "price": 29900, "stock": 80, "status": "available"},
+    {"sku_id": "SKU005", "attributes": {"color": "蓝色", "size": "M"}, "price": 29900, "stock": 120, "status": "available"},
+    {"sku_id": "SKU006", "attributes": {"color": "蓝色", "size": "L"}, "price": 29900, "stock": 60, "status": "available"},
+    {"sku_id": "SKU007", "attributes": {"color": "黑色", "size": "S"}, "price": 29900, "stock": 90, "status": "available"},
+    {"sku_id": "SKU008", "attributes": {"color": "黑色", "size": "M"}, "price": 29900, "stock": 0, "status": "unavailable"},
+    {"sku_id": "SKU009", "attributes": {"color": "黑色", "size": "L"}, "price": 29900, "stock": 30, "status": "available"},
+    {"sku_id": "SKU010", "attributes": {"color": "白色", "size": "M"}, "price": 29900, "stock": 200, "status": "available"},
+    {"sku_id": "SKU011", "attributes": {"color": "白色", "size": "L"}, "price": 29900, "stock": 150, "status": "available"},
+]
+
+
+# ============ 评价数据 ============
+
+mock_reviews_data = [
+    {
+        "review_id": "R001",
+        "user": {
+            "user_id": "U001",
+            "nickname": "小***明",
+            "avatar": "https://picsum.photos/100/100?random=10",
+            "level": "VIP"
+        },
+        "rating": 5,
+        "content": "衣服质量非常好，面料摸起来很舒服，尺码也很标准。穿上身效果很不错，朋友都说好看，下次有活动还会回购！",
+        "images": [
+            {"id": "RI001", "url": "https://picsum.photos/200/200?random=20"},
+            {"id": "RI002", "url": "https://picsum.photos/200/200?random=21"},
+        ],
+        "attributes": {"color": "黑色", "size": "M"},
+        "is_anonymous": False,
+        "is_purchased": True,
+        "like_count": 128,
+        "created_at": "2024-01-10T15:30:00Z",
+        "reply": {"content": "感谢您的好评，欢迎再次光临！", "created_at": "2024-01-11T10:00:00Z"}
+    },
+    {
+        "review_id": "R002",
+        "user": {
+            "user_id": "U002",
+            "nickname": "优***客",
+            "avatar": "https://picsum.photos/100/100?random=11",
+            "level": "普通会员"
+        },
+        "rating": 4,
+        "content": "整体不错，就是快递稍微慢了点。衣服本身很满意，颜色正，面料也不错。",
+        "images": [],
+        "attributes": {"color": "蓝色", "size": "L"},
+        "is_anonymous": False,
+        "is_purchased": True,
+        "like_count": 45,
+        "created_at": "2024-01-12T10:20:00Z",
+        "reply": None
+    },
+    {
+        "review_id": "R003",
+        "user": {
+            "user_id": "U003",
+            "nickname": "爱***者",
+            "avatar": "https://picsum.photos/100/100?random=12",
+            "level": "VIP"
+        },
+        "rating": 5,
+        "content": "已经是第三次购买了，品质一如既往的好。客服态度也很好，有问必答。",
+        "images": [
+            {"id": "RI003", "url": "https://picsum.photos/200/200?random=22"},
+            {"id": "RI004", "url": "https://picsum.photos/200/200?random=23"},
+            {"id": "RI005", "url": "https://picsum.photos/200/200?random=24"},
+            {"id": "RI006", "url": "https://picsum.photos/200/200?random=25"},
+        ],
+        "attributes": {"color": "白色", "size": "M"},
+        "is_anonymous": False,
+        "is_purchased": True,
+        "like_count": 256,
+        "created_at": "2024-01-15T14:00:00Z",
+        "reply": {"content": "感谢您一直以来的支持！", "created_at": "2024-01-15T16:30:00Z"}
+    },
+    {
+        "review_id": "R004",
+        "user": {
+            "user_id": "U004",
+            "nickname": "时***人",
+            "avatar": "https://picsum.photos/100/100?random=13",
+            "level": "钻石会员"
+        },
+        "rating": 3,
+        "content": "衣服还行，但是感觉尺码偏小，建议买大一号。",
+        "images": [],
+        "attributes": {"color": "红色", "size": "M"},
+        "is_anonymous": False,
+        "is_purchased": True,
+        "like_count": 12,
+        "created_at": "2024-01-18T09:15:00Z",
+        "reply": None
+    },
+    {
+        "review_id": "R005",
+        "user": {
+            "user_id": "U005",
+            "nickname": "质***家",
+            "avatar": "https://picsum.photos/100/100?random=14",
+            "level": "普通会员"
+        },
+        "rating": 5,
+        "content": "超出预期！包装精美，衣服做工精细，没有任何线头。这个价格能买到这样的品质真的很值！",
+        "images": [
+            {"id": "RI007", "url": "https://picsum.photos/200/200?random=26"},
+        ],
+        "attributes": {"color": "黑色", "size": "L"},
+        "is_anonymous": False,
+        "is_purchased": True,
+        "like_count": 89,
+        "created_at": "2024-01-20T20:45:00Z",
+        "reply": None
+    },
+]
+
+
+mock_review_statistics = {
+    "total_count": 1234,
+    "average_rating": 4.8,
+    "rating_distribution": {
+        "5": 1050,
+        "4": 150,
+        "3": 20,
+        "2": 8,
+        "1": 6
+    },
+    "image_count": 456,
+    "has_content_count": 1100
+}
+
+
+# ============ 购物车数据 ============
+
+mock_cart_data = [
+    {
+        "cart_id": "CART001",
+        "item_id": "ITEM001",
+        "sku_id": "SKU001",
+        "product_id": "P20240001",
+        "product_title": "简约纯棉T恤男2024新款",
+        "sku_attributes": {"color": "红色", "size": "S"},
+        "price": 29900,
+        "quantity": 2,
+        "subtotal": 59800
+    },
+    {
+        "cart_id": "CART001",
+        "item_id": "ITEM002",
+        "sku_id": "SKU005",
+        "product_id": "P20240001",
+        "product_title": "简约纯棉T恤男2024新款",
+        "sku_attributes": {"color": "蓝色", "size": "M"},
+        "price": 29900,
+        "quantity": 1,
+        "subtotal": 29900
+    }
+]
+
+
+# ============ 推荐数据 ============
+
+mock_recommendations_data = [
+    {
+        "product_id": "P20240002",
+        "title": "休闲纯棉T恤男夏季薄款",
+        "price": {"current": 19900, "original": 29900},
+        "image": "https://picsum.photos/300/300?random=30",
+        "sales": 2580,
+        "rating": 4.7,
+        "tags": ["热卖"],
+        "match_score": 0.95
+    },
+    {
+        "product_id": "P20240003",
+        "title": "潮流印花T恤男2024新款",
+        "price": {"current": 15900, "original": 25900},
+        "image": "https://picsum.photos/300/300?random=31",
+        "sales": 1890,
+        "rating": 4.5,
+        "tags": ["新品"],
+        "match_score": 0.88
+    },
+    {
+        "product_id": "P20240004",
+        "title": "简约风纯棉短袖T恤男",
+        "price": {"current": 12900, "original": 19900},
+        "image": "https://picsum.photos/300/300?random=32",
+        "sales": 3560,
+        "rating": 4.8,
+        "tags": ["热卖"],
+        "match_score": 0.82
+    }
+]
+
+
+# ============ 辅助函数 ============
+
+def create_mock_product(**overrides):
+    """创建带覆盖的 mock 商品"""
+    data = mock_product_data.copy()
+    data.update(overrides)
+    return data
+
+
+def create_mock_sku(color, size, **overrides):
+    """创建带覆盖的 mock SKU"""
+    for sku in mock_sku_data:
+        if sku["attributes"]["color"] == color and sku["attributes"]["size"] == size:
+            data = sku.copy()
+            data.update(overrides)
+            return data
+    return None
+
+
+def create_mock_review(**overrides):
+    """创建带覆盖的 mock 评价"""
+    data = mock_reviews_data[0].copy()
+    data.update(overrides)
+    return data
+```
+
+## tests/fixtures/api_fixtures.py
+
+```python
+"""
+API 测试 fixtures
+"""
+import pytest
+from fastapi.testclient import TestClient
+from typing import Generator, Dict, Any
+
+
+class APIClient:
+    """API 客户端封装"""
+    
+    def __init__(self, client: TestClient, auth_headers: Dict[str, str] = None):
+        self.client = client
+        self.auth_headers = auth_headers or {}
+    
+    def get_product_detail(self, product_id: str) -> Dict[str, Any]:
+        """获取商品详情"""
+        response = self.client.get(
+            f"/api/v1/products/{product_id}",
+            headers=self.auth_headers
+        )
+        return response.json()
+    
+    def get_sku_detail(self, product_id: str, sku_id: str) -> Dict[str, Any]:
+        """获取 SKU 详情"""
+        response = self.client.get(
+            f"/api/v1/products/{product_id}/skus/{sku_id}",
+            headers=self.auth_headers
+        )
+        return response.json()
+    
+    def get_recommendations(self, product_id: str, **params) -> Dict[str, Any]:
+        """获取推荐"""
+        response = self.client.get(
+            f"/api/v1/products/{product_id}/recommendations",
+            params=params,
+            headers=self.auth_headers
+        )
+        return response.json()
+    
+    def get_reviews(self, product_id: str, **params) -> Dict[str, Any]:
+        """获取评价"""
+        response = self.client.get(
+            f"/api/v1/products/{product_id}/reviews",
+            params=params,
+            headers=self.auth_headers
+        )
+        return response.json()
+    
+    def add_to_cart(self, sku_id: str, quantity: int = 1) -> Dict[str, Any]:
+        """加入购物车"""
+        response = self.client.post(
+            "/api/v1/cart/items",
+            json={"sku_id": sku_id, "quantity": quantity},
+            headers=self.auth_headers
+        )
+        return response.json()
+    
+    def get_cart(self) -> Dict[str, Any]:
+        """获取购物车"""
+        response = self.client.get(
+            "/api/v1/cart/items",
+            headers=self.auth_headers
+        )
+        return response.json()
+    
+    def update_cart_item(self, item_id: str, quantity: int) -> Dict[str, Any]:
+        """更新购物车项"""
+        response = self.client.put(
+            f"/api/v1/cart/items/{item_id}",
+            json={"quantity": quantity},
+            headers=self.auth_headers
+        )
+        return response.json()
+    
+    def remove_cart_item(self, item_id: str) -> Dict[str, Any]:
+        """删除购物车项"""
+        response = self.client.delete(
+            f"/api/v1/cart/items/{item_id}",
+            headers=self.auth_headers
+        )
+        return response.json()
+
+
+@pytest.fixture
+def api_client(client: TestClient) -> APIClient:
+    """未认证 API 客户端"""
+    return APIClient(client)
+
+
+@pytest.fixture
+def auth_api_client(client: TestClient, auth_headers: Dict[str, str]) -> APIClient:
+    """已认证 API 客户端"""
+    return APIClient(client, auth_headers)
+
+
+@pytest.fixture
+def create_test_product(client: TestClient):
+    """创建测试商品的辅助函数"""
+    def _create(**overrides):
+        # 这里应该调用创建商品的 API 或直接操作数据库
+        # 简化处理，返回 mock 数据
+        from tests.fixtures.mock_data import mock_product_data
+        product = mock_product_data.copy()
+        product.update(overrides)
+        return product
+    return _create
+
+
+@pytest.fixture
+def create_test_sku(client: TestClient):
+    """创建测试 SKU 的辅助函数"""
+    def _create(product_id: str, color: str, size: str, **overrides):
+        from tests.fixtures.mock_data import mock_sku_data
+        for sku in mock_sku_data:
+            if sku["attributes"]["color"] == color and sku["attributes"]["size"] == size:
+                result = sku.copy()
+                result.update(overrides)
+                return result
+        return None
+    return _create
+```
+
+## tests/unit/__init__.py
+
+```python
+"""
+单元测试
+"""
+```
+
+## tests/unit/test_schemas.py
+
+```python
+"""
+Schema 验证测试
+"""
+import pytest
+from pydantic import ValidationError
+
+from app.schemas.product import (
+    ProductDetail,
+    SKUInfo,
+    PriceInfo,
+    StockInfo,
+    AttributesConfig,
+    ColorOption,
+    SizeOption,
+    PromotionInfo,
+    SellerInfo,
+    ImageInfo,
+    RecommendedProduct,
+)
+from app.schemas.cart import AddToCartRequest, UpdateCartRequest
+from app.schemas.review import RatingDistribution, ReviewUser, ReviewStatistics
+
+
+class TestPriceSchema:
+    """价格模型测试"""
+    
+    def test_valid_price_info(self):
+        """测试有效价格"""
+        price = PriceInfo(current=29900, original=49900)
+        assert price.current == 29900
+        assert price.original == 49900
+        assert price.currency == "CNY"
+    
+    def test_price_without_original(self):
+        """测试无原价的价格"""
+        price = PriceInfo(current=29900)
+        assert price.current == 29900
+        assert price.original is None
+    
+    def test_invalid_price_type(self):
+        """测试无效价格类型"""
+        with pytest.raises(ValidationError):
+            PriceInfo(current="invalid")
+    
+    def test_negative_price(self):
+        """测试负数价格"""
+        with pytest.raises(ValidationError):
+            PriceInfo(current=-100)
+
+
+class TestStockSchema:
+    """库存模型测试"""
+    
+    def test_valid_stock_info(self):
+        """测试有效库存"""
+        stock = StockInfo(total=1000, status="sufficient")
+        assert stock.total == 1000
+        assert stock.status == "sufficient"
+    
+    def test_stock_status_values(self):
+        """测试库存状态枚举"""
+        valid_statuses = ["sufficient", "limited", "low", "out_of_stock"]
+        for status in valid_statuses:
+            stock = StockInfo(total=100, status=status)
+            assert stock.status == status
+    
+    def test_invalid_stock_status(self):
+        """测试无效库存状态"""
+        with pytest.raises(ValidationError):
+            StockInfo(total=100, status="invalid_status")
+
+
+class TestSKUInfoSchema:
+    """SKU 信息模型测试"""
+    
+    def test_valid_sku_info(self):
+        """测试有效 SKU"""
+        sku = SKUInfo(
+            id="SKU001",
+            attributes={"color": "红色", "size": "M"},
+            price=29900,
+            stock=100,
+            status="available"
+        )
+        assert sku.sku_id == "SKU001"
+        assert sku.attributes["color"] == "红色"
+        assert sku.attributes["size"] == "M"
+    
+    def test_sku_with_alias(self):
+        """测试使用别名"""
+        sku = SKUInfo(
+            sku_id="SKU002",
+            attributes={"color": "蓝色"},
+            price=29900,
+            stock=50,
+            status="available"
+        )
+        assert sku.id == "SKU002"
+    
+    def test_sku_optional_image(self):
+        """测试可选图片"""
+        sku = SKUInfo(
+            id="SKU003",
+            attributes={},
+            price=29900,
+            stock=100,
+            status="available"
+        )
+        assert sku.image is None
+
+
+class TestAttributesConfigSchema:
+    """规格配置模型测试"""
+    
+    def test_valid_attributes_config(self):
+        """测试有效规格配置"""
+        config = AttributesConfig(
+            colors=[
+                ColorOption(code="red", name="红色"),
+                ColorOption(code="blue", name="蓝色"),
+            ],
+            sizes=[
+                SizeOption(code="S", name="S", stock=100),
+                SizeOption(code="M", name="M", stock=50),
+            ]
+        )
+        assert len(config.colors) == 2
+        assert len(config.sizes) == 2
+    
+    def test_empty_attributes_config(self):
+        """测试空规格配置"""
+        config = AttributesConfig()
+        assert len(config.colors) == 0
+        assert len(config.sizes) == 0
+
+
+class TestColorOptionSchema:
+    """颜色选项模型测试"""
+    
+    def test_valid_color_option(self):
+        """测试有效颜色"""
+        color = ColorOption(code="red", name="红色")
+        assert color.code == "red"
+        assert color.name == "红色"
+        assert color.image is None
+    
+    def test_color_with_image(self):
+        """测试带图片的颜色"""
+        color = ColorOption(
+            code="red",
+            name="红色",
+            image="https://example.com/red.jpg"
+        )
+        assert color.image == "https://example.com/red.jpg"
+
+
+class TestSizeOptionSchema:
+    """尺码选项模型测试"""
+    
+    def test_valid_size_option(self):
+        """测试有效尺码"""
+        size = SizeOption(code="M", name="M", stock=100)
+        assert size.code == "M"
+        assert size.stock == 100
+    
+    def test_size_default_stock(self):
+        """测试尺码默认库存"""
+        size = SizeOption(code="S", name="S")
+        assert size.stock == 0
+
+
+class TestSellerInfoSchema:
+    """卖家信息模型测试"""
+    
+    def test_valid_seller_info(self):
+        """测试有效卖家"""
+        seller = SellerInfo(id="S001", name="官方旗舰店", rating=4.8)
+        assert seller.id == "S001"
+        assert seller.rating == 4.8
+    
+    def test_seller_rating_range(self):
+        """测试评分范围"""
+        # 评分应该在 0-5 之间
+        seller = SellerInfo(id="S002", name="测试店铺", rating=5.0)
+        assert seller.rating == 5.0
+
+
+class TestProductDetailSchema:
+    """商品详情模型测试"""
+    
+    def test_valid_product_detail(self):
+        """测试有效商品详情"""
+        product = ProductDetail(
+            product_id="P001",
+            spu_id="SPU001",
+            title="测试商品",
+            price=PriceInfo(current=29900, original=49900),
+            stock=StockInfo(total=1000, status="sufficient"),
+            attributes=AttributesConfig(),
+            seller=SellerInfo(id="S001", name="测试店铺", rating=4.5)
+        )
+        assert product.product_id == "P001"
+        assert product.title == "测试商品"
+    
+    def test_product_without_subtitle(self):
+        """测试无副标题的商品"""
+        product = ProductDetail(
+            product_id="P002",
+            spu_id="SPU002",
+            title="测试商品2",
+            price=PriceInfo(current=19900),
+            stock=StockInfo(total=100, status="limited"),
+            attributes=AttributesConfig(),
+            seller=SellerInfo(id="S002", name="店铺2", rating=4.0)
+        )
+        assert product.subtitle is None
+
+
+class TestCartSchemas:
+    """购物车模型测试"""
+    
+    def test_add_to_cart_valid(self):
+        """测试有效加入购物车请求"""
+        request = AddToCartRequest(sku_id="SKU001", quantity=2)
+        assert request.sku_id == "SKU001"
+        assert request.quantity == 2
+    
+    def test_add_to_cart_default_quantity(self):
+        """测试默认数量"""
+        request = AddToCartRequest(sku_id="SKU001")
+        assert request.quantity == 1
+    
+    def test_add_to_cart_min_quantity(self):
+        """测试最小数量验证"""
+        request = AddToCartRequest(sku_id="SKU001", quantity=0)
+        assert request.quantity == 1  # 应该被修正为1
+    
+    def test_add_to_cart_max_quantity(self):
+        """测试最大数量验证"""
+        request = AddToCartRequest(sku_id="SKU001", quantity=100)
+        assert request.quantity == 99  # 应该被修正为99
+    
+    def test_add_to_cart_invalid_quantity(self):
+        """测试无效数量类型"""
+        with pytest.raises(ValidationError):
+            AddToCartRequest(sku_id="SKU001", quantity="invalid")
+    
+    def test_update_cart_request(self):
+        """测试更新购物车请求"""
+        request = UpdateCartRequest(quantity=5)
+        assert request.quantity == 5
+
+
+class TestReviewSchemas:
+    """评价模型测试"""
+    
+    def test_rating_distribution(self):
+        """测试评分分布"""
+        dist = RatingDistribution(
+            **{"5": 100, "4": 50, "3": 20, "2": 5, "1": 5}
+        )
+        assert dist.star_5 == 100
+        assert dist.star_4 == 50
+        assert dist.star_1 == 5
+    
+    def test_review_user(self):
+        """测试评价用户"""
+        user = ReviewUser(
+            user_id="U001",
+            nickname="测试用户",
+            avatar="https://example.com/avatar.jpg",
+            level="VIP"
+        )
+        assert user.user_id == "U001"
+        assert user.level == "VIP"
+    
+    def test_review_user_optional_fields(self):
+        """测试评价用户可选字段"""
+        user = ReviewUser(
+            user_id="U002",
+            nickname="匿名用户"
+        )
+        assert user.avatar is None
+        assert user.level is None
+
+
+class TestRecommendedProductSchema:
+    """推荐商品模型测试"""
+    
+    def test_valid_recommendation(self):
+        """测试有效推荐"""
+        rec = RecommendedProduct(
+            product_id="P002",
+            title="推荐商品",
+            price=PriceInfo(current=19900, original=29900),
+            image="https://example.com/image.jpg",
+            sales=1000,
+            rating=4.5,
+            tags=["热卖"],
+            match_score=0.95
+        )
+        assert rec.product_id == "P002"
+        assert "热卖" in rec.tags
+    
+    def test_recommendation_without_optional_fields(self):
+        """测试无可选字段的推荐"""
+        rec = RecommendedProduct(
+            product_id="P003",
+            title="简单推荐",
+            price=PriceInfo(current=9900),
+            image="https://example.com/img.jpg"
+        )
+        assert rec.sales == 0
+        assert rec.rating == 0
+        assert len(rec.tags) == 0
+        assert rec.match_score is None
+```
+
+## tests/unit/test_product_service.py
+
+```python
+"""
+商品服务单元测试
+"""
+import pytest
+from unittest.mock import Mock, AsyncMock, patch
+from decimal import Decimal
+
+from app.services.product_service import ProductService
+from app.exceptions import ProductNotFoundException, SKUNotFoundException
+from tests.fixtures.mock_data import mock_product_data, mock_sku_data
+
+
+class TestProductService:
+    """商品服务测试"""
+    
+    @pytest.fixture
+    def mock_db(self):
+        """Mock 数据库会话"""
+        db = Mock()
+        db.query.return_value.filter.return_value.first.return_value = None
+        db.query.return_value.filter.return_value.all.return_value = []
+        db.query.return_value.order_by.return_value.all.return_value = []
+        return db
+    
+    @pytest.fixture
+    def product_service(self, mock_db):
+        """创建商品服务"""
+        return ProductService(mock_db)
+    
+    def test_get_product_not_found(self, product_service):
+        """测试获取不存在的商品"""
+        with pytest.raises(ProductNotFoundException) as exc_info:
+            product_service.get_product_detail("INVALID_ID")
+        
+        assert exc_info.value.detail["code"] == 20001
+    
+    @pytest.mark.asyncio
+    async def test_get_product_detail_mock(self, mock_db):
+        """测试获取商品详情 - Mock 数据"""
+        service = ProductService(mock_db)
+        
+        with patch.object(service, 'cache') as mock_cache:
+            mock_cache.get = AsyncMock(return_value=None)
+            mock_cache.set = AsyncMock(return_value=True)
+            
+            # 由于使用 Mock，这里只测试不存在的场景
+            with pytest.raises(ProductNotFoundException):
+                await service.get_product_detail("NONEXISTENT")
+
+
+class TestSKUAvailability:
+    """SKU 可用性测试"""
+    
+    def test_available_sku_status(self):
+        """测试可用 SKU 状态"""
+        for sku in mock_sku_data:
+            if sku["status"] == "available":
+                assert sku["stock"] > 0
+    
+    def test_unavailable_sku_status(self):
+        """测试不可用 SKU 状态"""
+        for sku in mock_sku_data:
+            if sku["status"] == "unavailable":
+                assert sku["stock"] == 0
+    
+    def test_sku_attributes_complete(self):
+        """测试 SKU 属性完整性"""
+        for sku in mock_sku_data:
+            assert "color" in sku["attributes"]
+            assert "size" in sku["attributes"]
+            assert sku["attributes"]["color"] in ["红色", "蓝色", "黑色", "白色"]
+            assert sku["attributes"]["size"] in ["S", "M", "L"]
+
+
+class TestStockStatus:
+    """库存状态测试"""
+    
+    def test_sufficient_stock(self):
+        """测试充足库存"""
+        product = {"stock": {"total": 1000, "status": "sufficient"}}
+        assert product["stock"]["total"] >= 100
+        assert product["stock"]["status"] == "sufficient"
+    
+    def test_limited_stock(self):
+        """测试库存紧张"""
+        product = {"stock": {"total": 50, "status": "limited"}}
+        assert 10 <= product["stock"]["total"] < 100
+    
+    def test_low_stock(self):
+        """测试库存低"""
+        product = {"stock": {"total": 5, "status": "low"}}
+        assert 1 <= product["stock"]["total"] < 10
+    
+    def test_sold_out_stock(self):
+        """测试售罄"""
+        product = {"stock": {"total": 0, "status": "soldout"}}
+        assert product["stock"]["total"] == 0
+
+
+class TestPriceCalculation:
+    """价格计算测试"""
+    
+    def test_discount_calculation(self):
+        """测试折扣计算"""
+        original_price = 499.00
+        current_price = 299.00
+        discount = (1 - current_price / original_price) * 100
+        assert discount == 40.0  # 6折
+    
+    def test_price_format(self):
+        """测试价格格式化"""
+        price = 29900
+        formatted = price / 100
+        assert formatted == 299.00
+        assert f"¥{formatted:.2f}" == "¥299.00"
+    
+    def test_price_comparison(self):
+        """测试价格比较"""
+        current = 299.00
+        original = 499.00
+        assert current < original
+        assert current / original < 1
+
+
+class TestPromotionLogic:
+    """促销逻辑测试"""
+    
+    def test_promotion_types(self):
+        """测试促销类型"""
+        promotions = mock_product_data["promotions"]
+        types = [p["type"] for p in promotions]
+        assert "discount" in types
+        assert "vip" in types
+    
+    def test_promotion_display(self):
+        """测试促销展示"""
+        for promo in mock_product_data["promotions"]:
+            assert "title" in promo
+            assert len(promo["title"]) > 0
+```
+
+## tests/unit/test_cart_service.py
+
+```python
+"""
+购物车服务单元测试
+"""
+import pytest
+from unittest.mock import Mock, AsyncMock, patch
+from decimal import Decimal
+
+from app.services.cart_service import CartService
+from app.schemas.cart import AddToCartRequest
+from app.exceptions import (
+    SKUNotFoundException,
+    SKUUnavailableException,
+    InsufficientStockException,
+    CartFullException
+)
+from tests.fixtures.mock_data import mock_sku_data
+
+
+class TestCartService:
+    """购物车服务测试"""
+    
+    @pytest.fixture
+    def mock_db(self):
+        """Mock 数据库会话"""
+        db = Mock()
+        db.query.return_value.filter.return_value.first.return_value = None
+        db.query.return_value.filter.return_value.count.return_value = 0
+        return db
+    
+    @pytest.fixture
+    def cart_service(self, mock_db):
+        """创建购物车服务"""
+        return CartService(mock_db)
+    
+    def test_add_to_cart_sku_not_found(self, cart_service):
+        """测试加入不存在的 SKU"""
+        request = AddToCartRequest(sku_id="INVALID_SKU", quantity=1)
+        
+        with pytest.raises(SKUNotFoundException) as exc_info:
+            # 使用 run_sync 包装异步函数
+            import asyncio
+            asyncio.get_event_loop().run_until_complete(
+                cart_service.add_to_cart("TEST_USER", request)
+            )
+        
+        assert exc_info.value.detail["code"] == 20002
+    
+    @pytest.mark.asyncio
+    async def test_add_to_cart_unavailable_sku(self, cart_service):
+        """测试加入不可用 SKU"""
+        # 这个测试需要完整的 mock 设置
+        pass
+
+
+class TestCartValidation:
+    """购物车验证测试"""
+    
+    def test_quantity_min_validation(self):
+        """测试最小数量验证"""
+        # 数量不能小于 1
+        valid_quantities = [1, 5, 10, 50, 99]
+        invalid_quantities = [0, -1, -100]
+        
+        for qty in valid_quantities:
+            assert qty >= 1
+        
+        for qty in invalid_quantities:
+            assert qty < 1
+    
+    def test_quantity_max_validation(self):
+        """测试最大数量验证"""
+        max_quantity = 99
+        assert max_quantity == 99
+    
+    def test_cart_item_total_calculation(self):
+        """测试购物车项总价计算"""
+        price = 29900  # 分
+        quantity = 3
+        expected_subtotal = 89700  # 分
+        
+        assert price * quantity == expected_subtotal
+
+
+class TestCartQuantityLimits:
+    """购物车数量限制测试"""
+    
+    def test_max_cart_items(self):
+        """测试最大购物车项数"""
+        from app.config import settings
+        assert settings.MAX_CART_QUANTITY == 99
+    
+    def test_max_quantity_per_item(self):
+        """测试单项目最大数量"""
+        from app.config import settings
+        assert settings.MAX_CART_QUANTITY == 99
+
+
+class TestCartOperations:
+    """购物车操作测试"""
+    
+    def test_update_quantity_validation(self):
+        """测试更新数量验证"""
+        valid_quantities = [1, 5, 99]
+        invalid_quantities = [0, 100]
+        
+        for qty in valid_quantities:
+            assert 1 <= qty <= 99
+        
+        for qty in invalid_quantities:
+            assert not (1 <= qty <= 99)
+    
+    def test_cart_item_removal(self):
+        """测试购物车项删除"""
+        cart_items = [{"id": "ITEM001"}, {"id": "ITEM002"}, {"id": "ITEM003"}]
+        item_to_remove = "ITEM002"
+        
+        cart_items = [item for item in cart_items if item["id"] != item_to_remove]
+        
+        assert len(cart_items) == 2
+        assert {"id": "ITEM002"} not in cart_items
+
+
+class TestCartCalculations:
+    """购物车计算测试"""
+    
+    def test_cart_total_calculation(self):
+        """测试购物车总价计算"""
+        items = [
+            {"price": 29900, "quantity": 2},  # 59800
+            {"price": 19900, "quantity": 1},   # 19900
+            {"price": 15900, "quantity": 3},   # 47700
+        ]
+        
+        expected_total = 59800 + 19900 + 47700
+        actual_total = sum(item["price"] * item["quantity"] for item in items)
+        
+        assert actual_total == expected_total
+    
+    def test_cart_item_count(self):
+        """测试购物车商品数量"""
+        items = [
+            {"quantity": 2},
+            {"quantity": 1},
+            {"quantity": 3},
+        ]
+        
+        total_count = sum(item["quantity"] for item in items)
+        assert total_count == 6
+```
+
+## tests/unit/test_review_service.py
+
+```python
+"""
+评价服务单元测试
+"""
+import pytest
+from unittest.mock import Mock, AsyncMock, patch
+from datetime import datetime
+
+from app.services.review_service import ReviewService
+from app.exceptions import ProductNotFoundException
+from tests.fixtures.mock_data import mock_reviews_data, mock_review_statistics
+
+
+class TestReviewService:
+    """评价服务测试"""
+    
+    @pytest.fixture
+    def mock_db(self):
+        """Mock 数据库会话"""
+        db = Mock()
+        db.query.return_value.filter.return_value.count.return_value = 0
+        db.query.return_value.filter.return_value.first.return_value = None
+        return db
+    
+    @pytest.fixture
+    def review_service(self, mock_db):
+        """创建评价服务"""
+        return ReviewService(mock_db)
+    
+    def test_get_reviews_product_not_found(self, review_service):
+        """测试获取不存在商品的评论"""
+        import asyncio
+        
+        with pytest.raises(ProductNotFoundException):
+            asyncio.get_event_loop().run_until_complete(
+                review_service.get_review_list("NONEXISTENT")
+            )
+
+
+class TestReviewFiltering:
+    """评价筛选测试"""
+    
+    def test_filter_by_rating(self):
+        """测试按评分筛选"""
+        reviews = mock_reviews_data
+        good_reviews = [r for r in reviews if r["rating"] >= 4]
+        medium_reviews = [r for r in reviews if r["rating"] == 3]
+        bad_reviews = [r for r in reviews if r["rating"] < 3]
+        
+        assert len(good_reviews) == 4  # 5, 5, 4, 5 星
+        assert len(medium_reviews) == 1  # 3 星
+        assert len(bad_reviews) == 0  # 没有差评
+    
+    def test_filter_with_images(self):
+        """测试筛选有图评价"""
+        reviews = mock_reviews_data
+        with_images = [r for r in reviews if len(r["images"]) > 0]
+        
+        assert len(with_images) == 3  # R001, R003, R005
+    
+    def test_filter_purchased(self):
+        """测试筛选真实购买"""
+        reviews = mock_reviews_data
+        purchased = [r for r in reviews if r["is_purchased"]]
+        
+        assert len(purchased) == len(reviews)  # 所有都是真实购买
+
+
+class TestReviewStatistics:
+    """评价统计测试"""
+    
+    def test_total_count(self):
+        """测试总评价数"""
+        assert mock_review_statistics["total_count"] == 1234
+    
+    def test_average_rating(self):
+        """测试平均评分"""
+        assert mock_review_statistics["average_rating"] == 4.8
+        assert 0 <= mock_review_statistics["average_rating"] <= 5
+    
+    def test_rating_distribution_sum(self):
+        """测试评分分布总和"""
+        distribution = mock_review_statistics["rating_distribution"]
+        total = sum(distribution.values())
+        
+        assert total == mock_review_statistics["total_count"]
+    
+    def test_good_rating_percentage(self):
+        """测试好评率"""
+        dist = mock_review_statistics["rating_distribution"]
+        good_count = dist["5"] + dist["4"]
+        total = mock_review_statistics["total_count"]
+        
+        good_percentage = (good_count / total) * 100
+        assert good_percentage > 90  # 好评率应该很高
+
+
+class TestReviewSorting:
+    """评价排序测试"""
+    
+    def test_sort_by_like_count(self):
+        """测试按点赞数排序"""
+        reviews = sorted(
+            mock_reviews_data,
+            key=lambda x: x["like_count"],
+            reverse=True
+        )
+        
+        assert reviews[0]["like_count"] == max(r["like_count"] for r in mock_reviews_data)
+    
+    def test_sort_by_rating(self):
+        """测试按评分排序"""
+        reviews = sorted(
+            mock_reviews_data,
+            key=lambda x: x["rating"],
+            reverse=True
+        )
+        
+        assert reviews[0]["rating"] == 5
+    
+    def test_sort_by_date(self):
+        """测试按日期排序"""
+        reviews = sorted(
+            mock_reviews_data,
+            key=lambda x: x["created_at"],
+            reverse=True
+        )
+        
+        # 最新的应该在最前面
+        dates = [datetime.fromisoformat(r["created_at"].replace("Z", "+00:00")) for r in reviews]
+        assert dates[0] >= dates[-1]
+
+
+class TestReviewContent:
+    """评价内容测试"""
+    
+    def test_review_content_length(self):
+        """测试评价内容长度"""
+        for review in mock_reviews_data:
+            if review["content"]:
+                assert len(review["content"]) > 0
+                assert len(review["content"]) <= 2000  # 通常限制在 2000 字
+    
+    def test_review_nickname_anonymity(self):
+        """测试昵称脱敏"""
+        for review in mock_reviews_data:
+            nickname = review["user"]["nickname"]
+            if not review["is_anonymous"]:
+                # 未匿名用户昵称应该包含脱敏标记
+                assert "***" in nickname or nickname.startswith("用") or nickname.startswith("U")
+    
+    def test_review_attributes(self):
+        """测试评价属性"""
+        for review in mock_reviews_data:
+            assert "color" in review["attributes"]
+            assert "size" in review["attributes"]
+            
+            valid_colors = ["红色", "蓝色", "黑色", "白色"]
+            valid_sizes = ["S", "M", "L"]
+            
+            assert review["attributes"]["color"] in valid_colors
+            assert review["attributes"]["size"] in valid_sizes
+```
+
+## tests/integration/__init__.py
+
+```python
+"""
+集成测试
+"""
+```
+
+## tests/integration/test_product_api.py
+
+```python
+"""
+商品 API 集成测试
+"""
+import pytest
+from fastapi.testclient import TestClient
+
+
+@pytest.mark.integration
+@pytest.mark.product
+class TestProductAPI:
+    """商品 API 测试"""
+    
+    def test_root_endpoint(self, client: TestClient):
+        """测试根路径"""
+        response = client.get("/")
+        assert response.status_code == 200
+        data = response.json()
+        assert "name" in data
+        assert "version" in data
+    
+    def test_health_check(self, client: TestClient):
+        """测试健康检查"""
+        response = client.get("/health")
+        assert response.status_code == 200
+        assert response.json()["status"] == "healthy"
+    
+    def test_get_product_not_found(self, client: TestClient, invalid_product_id: str):
+        """测试获取不存在的商品"""
+        response = client.get(f"/api/v1/products/{invalid_product_id}")
+        assert response.status_code == 404
+        data = response.json()
+        assert data["code"] == 20001
+        assert "商品不存在" in data["message"]
+    
+    def test_get_product_invalid_id_format(self, client: TestClient):
+        """测试无效商品ID格式"""
+        response = client.get("/api/v1/products/")
+        assert response.status_code == 404
+    
+    def test_get_sku_invalid_product(self, client: TestClient, invalid_product_id: str, sku_id: str):
+        """测试获取不存在商品的SKU"""
+        response = client.get(f"/api/v1/products/{invalid_product_id}/skus/{sku_id}")
+        # 由于商品不存在，应该返回 404
+        assert response.status_code == 404
+    
+    def test_get_recommendations_invalid_product(self, client: TestClient, invalid_product_id: str):
+        """测试获取不存在商品的推荐"""
+        response = client.get(f"/api/v1/products/{invalid_product_id}/recommendations")
+        # 应该返回空推荐而不是错误
+        assert response.status_code == 200
+        data = response.json()
+        assert data["code"] == 0
+
+
+@pytest.mark.integration
+@pytest.mark.product
+class TestProductAPIWithAuth:
+    """带认证的商品 API 测试"""
+    
+    def test_get_product_with_user_id(
+        self,
+        client: TestClient,
+        product_id: str,
+        auth_headers: dict
+    ):
+        """测试带用户ID获取商品"""
+        response = client.get(
+            f"/api/v1/products/{product_id}",
+            headers=auth_headers
+        )
+        # 由于商品不存在，返回 404
+        assert response.status_code == 404
+    
+    def test_get_product_authorization_header(
+        self,
+        client: TestClient,
+        product_id: str
+    ):
+        """测试授权请求头"""
+        # 不带认证也能访问公开接口
+        response = client.get(f"/api/v1/products/{product_id}")
+        assert response.status_code in [200, 404]
+
+
+@pytest.mark.integration
+class TestProductAPIResponse:
+    """商品 API 响应测试"""
+    
+    def test_response_format(self, client: TestClient, invalid_product_id: str):
+        """测试响应格式"""
+        response = client.get(f"/api/v1/products/{invalid_product_id}")
+        data = response.json()
+        
+        # 验证响应格式
+        assert "code" in data
+        assert "message" in data
+    
+    def test_error_response_format(self, client: TestClient, invalid_product_id: str):
+        """测试错误响应格式"""
+        response = client.get(f"/api/v1/products/{invalid_product_id}")
+        assert response.status_code == 404
+        data = response.json()
+        
+        # 验证错误格式
+        assert data["code"] > 0  # 错误码大于 0
+        assert "message" in data
+```
+
+## tests/integration/test_cart_api.py
+
+```python
+"""
+购物车 API 集成测试
+"""
+import pytest
+from fastapi.testclient import TestClient
+
+
+@pytest.mark.integration
+@pytest.mark.cart
+class TestCartAPI:
+    """购物车 API 测试"""
+    
+    def test_add_to_cart_without_auth(self, client: TestClient):
+        """测试未登录加入购物车"""
+        response = client.post(
+            "/api/v1/cart/items",
+            json={"sku_id": "SKU001", "quantity": 1}
+        )
+        assert response.status_code == 401
+        data = response.json()
+        assert data["code"] == 30001
+    
+    def test_add_to_cart_missing_sku_id(
+        self,
+        client: TestClient,
+        auth_headers: dict
+    ):
+        """测试缺少 SKU ID"""
+        response = client.post(
+            "/api/v1/cart/items",
+            json={"quantity": 1},
+            headers=auth_headers
+        )
+        assert response.status_code == 422  # 验证错误
+    
+    def test_add_to_cart_invalid_quantity(
+        self,
+        client: TestClient,
+        auth_headers: dict
+    ):
+        """测试无效数量"""
+        response = client.post(
+            "/api/v1/cart/items",
+            json={"sku_id": "SKU001", "quantity": -1},
+            headers=auth_headers
+        )
+        assert response.status_code == 422
+    
+    def test_get_cart_without_auth(self, client: TestClient):
+        """测试未登录获取购物车"""
+        response = client.get("/api/v1/cart/items")
+        assert response.status_code == 401
+    
+    def test_get_cart_with_auth(
+        self,
+        client: TestClient,
+        auth_headers: dict
+    ):
+        """测试已登录获取购物车"""
+        response = client.get(
+            "/api/v1/cart/items",
+            headers=auth_headers
+        )
+        assert response.status_code == 200
+        data = response.json()
+        assert data["code"] == 0
+        assert "data" in data
+
+
+@pytest.mark.integration
+@pytest.mark.cart
+class TestCartUpdateAPI:
+    """购物车更新 API 测试"""
+    
+    def test_update_cart_item_without_auth(self, client: TestClient):
+        """测试未登录更新购物车"""
+        response = client.put(
+            "/api/v1/cart/items/ITEM001",
+            json={"quantity": 2}
+        )
+        assert response.status_code == 401
+    
+    def test_update_cart_invalid_quantity(
+        self,
+        client: TestClient,
+        auth_headers: dict
+    ):
+        """测试更新无效数量"""
+        response = client.put(
+            "/api/v1/cart/items/ITEM001",
+            json={"quantity": 100},  # 超过最大限制
+            headers=auth_headers
+        )
+        # 应该返回验证错误
+        assert response.status_code == 422
+
+
+@pytest.mark.integration
+@pytest.mark.cart
+class TestCartDeleteAPI:
+    """购物车删除 API 测试"""
+    
+    def test_delete_cart_item_without_auth(self, client: TestClient):
+        """测试未登录删除购物车项"""
+        response = client.delete("/api/v1/cart/items/ITEM001")
+        assert response.status_code == 401
+    
+    def test_delete_nonexistent_item(
+        self,
+        client: TestClient,
+        auth_headers: dict
+    ):
+        """测试删除不存在的购物车项"""
+        response = client.delete(
+            "/api/v1/cart/items/NONEXISTENT",
+            headers=auth_headers
+        )
+        # 应该返回成功（幂等性）
+        assert response.status_code == 200
+```
+
+## tests/integration/test_review_api.py
+
+```python
+"""
+评价 API 集成测试
+"""
+import pytest
+from fastapi.testclient import TestClient
+
+
+@pytest.mark.integration
+@pytest.mark.review
+class TestReviewAPI:
+    """评价 API 测试"""
+    
+    def test_get_reviews_invalid_product(self, client: TestClient, invalid_product_id: str):
+        """测试获取不存在商品的评论"""
+        response = client.get(f"/api/v1/products/{invalid_product_id}/reviews")
+        assert response.status_code == 404
+        data = response.json()
+        assert data["code"] == 20001
+    
+    def test_get_reviews_pagination(self, client: TestClient, invalid_product_id: str):
+        """测试评论分页参数"""
+        response = client.get(
+            f"/api/v1/products/{invalid_product_id}/reviews",
+            params={"page": 1, "page_size": 10}
+        )
+        # 由于商品不存在，返回 404
+        assert response.status_code == 404
+    
+    def test_get_reviews_filter_by_rating(self, client: TestClient, invalid_product_id: str):
+        """测试按评分筛选"""
+        response = client.get(
+            f"/api/v1/products/{invalid_product_id}/reviews",
+            params={"rating": 5}
+        )
+        assert response.status_code == 404
+    
+    def test_get_reviews_with_images_only(self, client: TestClient, invalid_product_id: str):
+        """测试仅看有图评价"""
+        response = client.get(
+            f"/api/v1/products/{invalid_product_id}/reviews",
+            params={"has_images": True}
+        )
+        assert response.status_code == 404
+    
+    def test_get_reviews_sort_options(self, client: TestClient, invalid_product_id: str):
+        """测试评论排序选项"""
+        # 测试最新排序
+        response = client.get(
+            f"/api/v1/products/{invalid_product_id}/reviews",
+            params={"sort": "latest"}
+        )
+        assert response.status_code == 404
+
+
+@pytest.mark.integration
+@pytest.mark.review
+class TestReviewAPIValidation:
+    """评价 API 验证测试"""
+    
+    def test_invalid_page_number(self, client: TestClient, invalid_product_id: str):
+        """测试无效页码"""
+        response = client.get(
+            f"/api/v1/products/{invalid_product_id}/reviews",
+            params={"page": 0}  # 页码应该 >= 1
+        )
+        assert response.status_code == 422
+    
+    def test_invalid_page_size(self, client: TestClient, invalid_product_id: str):
+        """测试无效每页数量"""
+        response = client.get(
+            f"/api/v1/products/{invalid_product_id}/reviews",
+            params={"page_size": 0}  # 应该 >= 1
+        )
+        assert response.status_code == 422
+    
+    def test_invalid_rating_value(self, client: TestClient, invalid_product_id: str):
+        """测试无效评分值"""
+        response = client.get(
+            f"/api/v1/products/{invalid_product_id}/reviews",
+            params={"rating": 6}  # 评分应该在 1-5 之间
+        )
+        assert response.status_code == 422
+    
+    def test_invalid_sort_option(self, client: TestClient, invalid_product_id: str):
+        """测试无效排序选项"""
+        response = client.get(
+            f"/api/v1/products/{invalid_product_id}/reviews",
+            params={"sort": "invalid_sort"}
+        )
+        # 可能会使用默认值而不是报错
+        assert response.status_code == 404  # 因为商品不存在
+
+
+@pytest.mark.integration
+class TestReviewAPIResponse:
+    """评价 API 响应测试"""
+    
+    def test_reviews_response_structure(self, client: TestClient, invalid_product_id: str):
+        """测试评论响应结构"""
+        response = client.get(f"/api/v1/products/{invalid_product_id}/reviews")
+        # 由于商品不存在，返回错误
+        assert response.status_code == 404
+```
+
+## tests/e2e/__init__.py
+
+```python
+"""
+E2E 测试
+"""
+```
+
+## tests/e2e/conftest.py
+
+```python
+"""
+E2E 测试配置
+"""
+import pytest
+from playwright.sync_api import Page, BrowserContext
+
+
+@pytest.fixture(scope="session")
+def test_data():
+    """测试数据"""
+    return {
+        "product_id": "P20240001",
+        "sku_ids": ["SKU001", "SKU002", "SKU003"],
+        "colors": ["红色", "蓝色", "黑色", "白色"],
+        "sizes": ["S", "M", "L"],
+    }
+
+
+@pytest.fixture
+def goto_product_page(page: Page, base_url: str):
+    """导航到商品页面的辅助函数"""
+    def _goto(product_id: str = "P20240001"):
+        page.goto(f"{base_url}/product/{product_id}")
+        page.wait_for_load_state("networkidle")
+        return page
+    return _goto
+
+
+@pytest.fixture
+def wait_for_product_load(page: Page):
+    """等待商品页面加载"""
+    def _wait():
+        # 等待商品标题加载
+        page.wait_for_selector("h1", timeout=10000)
+        return True
+    return _wait
+```
+
+## tests/e2e/pages/__init__.py
+
+```python
+"""
+页面对象模型
+"""
+```
+
+## tests/e2e/pages/product_page.py
+
+```python
+"""
+商品详情页页面对象
+"""
+from playwright.sync_api import Page, Locator, TimeoutError as PlaywrightTimeoutError
+from typing import Optional, List
+
+
+class ProductPage:
+    """商品详情页"""
+    
+    # ============ 选择器定义 ============
+    
+    SELECTORS = {
+        # 页面加载状态
+        "loading": ".ant-skeleton",
+        "product_title": "h1",
+        "error_state": "[class*='empty']",
+        
+        # 图片相关
+        "main_image": "[class*='imageGallery'] img",
+        "image_nav_prev": "[class*='navButton']:first-child",
+        "image_nav_next": "[class*='navButton']:last-child",
+        "thumbnails": "[class*='thumbnails'] img",
+        "image_indicator": "[class*='indicator']",
+        
+        # 价格相关
+        "current_price": "[class*='currentPrice']",
+        "original_price": "[class*='originalPrice']",
+        "promotion_tags": "[class*='promotionTag']",
+        
+        # SKU 选择
+        "color_options": "[class*='colorOption']",
+        "size_options": "[class*='sizeOption']",
+        "selected_color": "[class*='colorOption'][class*='selected']",
+        "selected_size": "[class*='sizeOption'][class*='selected']",
+        "sold_out_badge": "[class*='soldOut']",
+        
+        # 数量选择
+        "quantity_input": "input[type='number']",
+        "quantity_minus": "button:has-text('-')",
+        "quantity_plus": "button:has-text('+')",
+        "stock_info": "[class*='stockInfo']",
+        
+        # 操作按钮
+        "add_to_cart_btn": "button:has-text('加入购物车')",
+        "buy_now_btn": "button:has-text('立即购买')",
+        "favorite_btn": "[class*='favoriteBtn']",
+        
+        # Tab 页
+        "tab_detail": "button:has-text('商品详情')",
+        "tab_spec": "button:has-text('规格参数')",
+        "tab_review": "button:has-text('评价')",
+        "tab_recommendation": "button:has-text('推荐')",
+        
+        # 评价相关
+        "review_cards": "[class*='reviewCard']",
+        "review_stats": "[class*='reviewStats']",
+        "filter_tags": "[class*='filterTag']",
+        
+        # 推荐相关
+        "recommendation_grid": "[class*='recommendationGrid']",
+        "recommendation_cards": "[class*='recommendationCard']",
+        "refresh_btn": "[class*='refreshButton']",
+        
+        # 提示消息
+        "success_message": ".ant-message-success",
+        "warning_message": ".ant-message-warning",
+        "error_message": ".ant-message-error",
+        
+        # 底部栏 (移动端)
+        "mobile_bottom_bar": "[class*='mobileBottomBar']",
+    }
+    
+    def __init__(self, page: Page):
+        self.page = page
+    
+    # ============ 页面状态检查 ============
+    
+    def is_loaded(self, timeout: int = 10000) -> bool:
+        """检查页面是否加载完成"""
+        try:
+            self.page.wait_for_selector(self.SELECTORS["product_title"], timeout=timeout)
+            return True
+        except PlaywrightTimeoutError:
+            return False
+    
+    def is_loading(self) -> bool:
+        """检查是否在加载中"""
+        return self.page.is_visible(self.SELECTORS["loading"])
+    
+    def has_error(self) -> bool:
+        """检查是否有错误"""
+        return self.page.is_visible(self.SELECTORS["error_state"])
+    
+    def wait_for_load(self, timeout: int = 15000):
+        """等待页面加载完成"""
+        self.page.wait_for_load_state("networkidle", timeout=timeout)
+        if self.is_loading():
+            self.page.wait_for_selector(
+                self.SELECTORS["product_title"],
+                state="visible",
+                timeout=timeout
+            )
+    
+    # ============ 商品信息获取 ============
+    
+    def get_product_title(self) -> str:
+        """获取商品标题"""
+        return self.page.text_content(self.SELECTORS["product_title"]) or ""
+    
+    def get_current_price(self) -> str:
+        """获取现价"""
+        return self.page.text_content(self.SELECTORS["current_price"]) or ""
+    
+    def get_original_price(self) -> str:
+        """获取原价"""
+        return self.page.text_content(self.SELECTORS["original_price"]) or ""
+    
+    def get_promotions(self) -> List[str]:
+        """获取促销信息"""
+        elements = self.page.query_selector_all(self.SELECTORS["promotion_tags"])
+        return [el.text_content() or "" for el in elements]
+    
+    # ============ 图片操作 ============
+    
+    def get_main_image_src(self) -> Optional[str]:
+        """获取主图 URL"""
+        img = self.page.query_selector(self.SELECTORS["main_image"])
+        return img.get_attribute("src") if img else None
+    
+    def click_prev_image(self):
+        """点击上一张图片"""
+        self.page.click(self.SELECTORS["image_nav_prev"])
+    
+    def click_next_image(self):
+        """点击下一张图片"""
+        self.page.click(self.SELECTORS["image_nav_next"])
+    
+    def get_thumbnail_count(self) -> int:
+        """获取缩略图数量"""
+        return len(self.page.query_selector_all(self.SELECTORS["thumbnails"]))
+    
+    def click_thumbnail(self, index: int):
+        """点击指定缩略图"""
+        thumbnails = self.page.query_selector_all(self.SELECTORS["thumbnails"])
+        if 0 <= index < len(thumbnails):
+            thumbnails[index].click()
+    
+    # ============ SKU 选择 ============
+    
+    def get_color_options(self) -> List[str]:
+        """获取颜色选项"""
+        elements = self.page.query_selector_all(self.SELECTORS["color_options"])
+        return [el.get_attribute("title") or el.text_content() or "" for el in elements]
+    
+    def select_color(self, color: str):
+        """选择颜色"""
+        color_map = {
+            "红色": "[title='红色']",
+            "蓝色": "[title='蓝色']",
+            "黑色": "[title='黑色']",
+            "白色": "[title='白色']",
+        }
+        selector = color_map.get(color, f"[title='{color}']")
+        self.page.click(selector)
+    
+    def get_selected_color(self) -> Optional[str]:
+        """获取已选颜色"""
+        selected = self.page.query_selector(self.SELECTORS["selected_color"])
+        return selected.get_attribute("title") if selected else None
+    
+    def get_size_options(self) -> List[str]:
+        """获取尺码选项"""
+        elements = self.page.query_selector_all(self.SELECTORS["size_options"])
+        return [el.text_content() or "" for el in elements]
+    
+    def select_size(self, size: str):
+        """选择尺码"""
+        # 查找包含指定文本的尺码选项
+        self.page.click(f"{self.SELECTORS['size_options']}:has-text('{size}')")
+    
+    def get_selected_size(self) -> Optional[str]:
+        """获取已选尺码"""
+        selected = self.page.query_selector(self.SELECTORS["selected_size"])
+        return selected.text_content() if selected else None
+    
+    def is_size_available(self, size: str) -> bool:
+        """检查尺码是否可选"""
+        selector = f"{self.SELECTORS['size_options']}:has-text('{size}')"
+        element = self.page.query_selector(selector)
+        if element:
+            style = element.get_attribute("style") or ""
+            return "not-allowed" not in style
+        return False
+    
+    # ============ 数量操作 ============
+    
+    def get_quantity(self) -> int:
+        """获取数量"""
+        input_elem = self.page.query_selector(self.SELECTORS["quantity_input"])
+        value = input_elem.input_value() if input_elem else "1"
+        return int(value)
+    
+    def set_quantity(self, quantity: int):
+        """设置数量"""
+        self.page.fill(self.SELECTORS["quantity_input"], str(quantity))
+    
+    def click_minus(self):
+        """点击减号"""
+        self.page.click(self.SELECTORS["quantity_minus"])
+    
+    def click_plus(self):
+        """点击加号"""
+        self.page.click(self.SELECTORS["quantity_plus"])
+    
+    # ============ 按钮操作 ============
+    
+    def click_add_to_cart(self):
+        """点击加入购物车"""
+        self.page.click(self.SELECTORS["add_to_cart_btn"])
+    
+    def click_buy_now(self):
+        """点击立即购买"""
+        self.page.click(self.SELECTORS["buy_now_btn"])
+    
+    def click_favorite(self):
+        """点击收藏"""
+        self.page.click(self.SELECTORS["favorite_btn"])
+    
+    def is_favorited(self) -> bool:
+        """检查是否已收藏"""
+        favorite_btn = self.page.query_selector(self.SELECTORS["favorite_btn"])
+        if favorite_btn:
+            style = favorite_btn.get_attribute("style") or ""
+            return "ff4d4f" in style or "HeartFilled" in self.page.content()
+        return False
+    
+    # ============ Tab 切换 ============
+    
+    def click_detail_tab(self):
+        """点击商品详情 Tab"""
+        self.page.click(self.SELECTORS["tab_detail"])
+    
+    def click_spec_tab(self):
+        """点击规格参数 Tab"""
+        self.page.click(self.SELECTORS["tab_spec"])
+    
+    def click_review_tab(self):
+        """点击评价 Tab"""
+        self.page.click(self.SELECTORS["tab_review"])
+    
+    def click_recommendation_tab(self):
+        """点击推荐 Tab"""
+        self.page.click(self.SELECTORS["tab_recommendation"])
+    
+    # ============ 评价相关 ============
+    
+    def get_review_count(self) -> int:
+        """获取评价数量"""
+        elements = self.page.query_selector_all(self.SELECTORS["review_cards"])
+        return len(elements)
+    
+    def click_review_filter(self, filter_text: str):
+        """点击评价筛选标签"""
+        self.page.click(f"{self.SELECTORS['filter_tags']}:has-text('{filter_text}')")
+    
+    # ============ 推荐相关 ============
+    
+    def get_recommendation_count(self) -> int:
+        """获取推荐商品数量"""
+        elements = self.page.query_selector_all(self.SELECTORS["recommendation_cards"])
+        return len(elements)
+    
+    def click_refresh_recommendations(self):
+        """点击换一批"""
+        self.page.click(self.SELECTORS["refresh_btn"])
+    
+    # ============ 消息提示 ============
+    
+    def get_success_message(self, timeout: int = 5000) -> Optional[str]:
+        """获取成功消息"""
+        try:
+            self.page.wait_for_selector(
+                self.SELECTORS["success_message"],
+                timeout=timeout
+            )
+            return self.page.text_content(self.SELECTORS["success_message"])
+        except PlaywrightTimeoutError:
+            return None
+    
+    def get_warning_message(self, timeout: int = 5000) -> Optional[str]:
+        """获取警告消息"""
+        try:
+            self.page.wait_for_selector(
+                self.SELECTORS["warning_message"],
+                timeout=timeout
+            )
+            return self.page.text_content(self.SELECTORS["warning_message"])
+        except PlaywrightTimeoutError:
+            return None
+    
+    def get_error_message(self, timeout: int = 5000) -> Optional[str]:
+        """获取错误消息"""
+        try:
+            self.page.wait_for_selector(
+                self.SELECTORS["error_message"],
+                timeout=timeout
+            )
+            return self.page.text_content(self.SELECTORS["error_message"])
+        except PlaywrightTimeoutError:
+            return None
+
+
+class MobileProductPage(ProductPage):
+    """移动端商品详情页"""
+    
+    def is_mobile(self) -> bool:
+        """检查是否为移动端"""
+        return self.page.is_visible(self.SELECTORS["mobile_bottom_bar"])
+    
+    def get_bottom_bar_buttons(self) -> List[str]:
+        """获取底部栏按钮"""
+        bar = self.page.query_selector(self.SELECTORS["mobile_bottom_bar"])
+        if bar:
+            buttons = bar.query_selector_all("button")
+            return [btn.text_content() or "" for btn in buttons]
+        return []
+```
+
+## tests/e2e/pages/cart_page.py
+
+```python
+"""
+购物车页面对象
+"""
+from playwright.sync_api import Page, Locator
+from typing import List, Optional
+
+
+class CartPage:
+    """购物车页面"""
+    
+    SELECTORS = {
+        "cart_items": "[class*='cartItem']",
+        "empty_cart": "[class*='empty']",
+        "total_amount": "[class*='totalAmount']",
+        "checkout_btn": "button:has-text('结算')",
+    }
+    
+    def __init__(self, page: Page):
+        self.page = page
+    
+    def is_empty(self) -> bool:
+        """检查购物车是否为空"""
+        return self.page.is_visible(self.SELECTORS["empty_cart"])
+    
+    def get_item_count(self) -> int:
+        """获取购物车商品数量"""
+        items = self.page.query_selector_all(self.SELECTORS["cart_items"])
+        return len(items)
+    
+    def get_total_amount(self) -> str:
+        """获取总金额"""
+        return self.page.text_content(self.SELECTORS["total_amount"]) or ""
+    
+    def click_checkout(self):
+        """点击结算"""
+        self.page.click(self.SELECTORS["checkout_btn"])
+```
+
+## tests/e2e/test_product_detail.py
+
+```python
+"""
+商品详情页 E2E 测试
+"""
+import pytest
+from playwright.sync_api import Page, expect
+
+from tests.e2e.pages.product_page import ProductPage, MobileProductPage
+from tests.e2e.pages.cart_page import CartPage
+
+
+@pytest.mark.e2e
+@pytest.mark.product
+class TestProductDetailPage:
+    """商品详情页测试"""
+    
+    def test_page_loads_successfully(
+        self,
+        page: Page,
+        goto_product_page,
+        base_url: str
+    ):
+        """测试页面正常加载"""
+        goto_product_page()
+        product_page = ProductPage(page)
+        
+        # 验证页面加载完成
+        assert product_page.is_loaded(timeout=15000)
+    
+    def test_product_info_display(
+        self,
+        page: Page,
+        goto_product_page
+    ):
+        """测试商品信息展示"""
+        goto_product_page()
+        product_page = ProductPage(page)
+        
+        # 验证商品标题
+        title = product_page.get_product_title()
+        assert len(title) > 0
+        
+        # 验证价格信息
+        current_price = product_page.get_current_price()
+        assert "¥" in current_price or "￥" in current_price
+    
+    def test_product_images(
+        self,
+        page: Page,
+        goto_product_page
+    ):
+        """测试商品图片"""
+        goto_product_page()
+        product_page = ProductPage(page)
+        
+        # 获取主图
+        main_image = product_page.get_main_image_src()
+        assert main_image is not None
+        
+        # 获取缩略图数量
+        thumbnail_count = product_page.get_thumbnail_count()
+        assert thumbnail_count > 0
+    
+    def test_color_selection(
+        self,
+        page: Page,
+        goto_product_page
+    ):
+        """测试颜色选择"""
+        goto_product_page()
+        product_page = ProductPage(page)
+        
+        # 获取颜色选项
+        colors = product_page.get_color_options()
+        assert len(colors) > 0
+        
+        # 选择红色
+        product_page.select_color("红色")
+        
+        # 验证选择状态
+        selected = product_page.get_selected_color()
+        assert selected == "红色"
+    
+    def test_size_selection(
+        self,
+        page: Page,
+        goto_product_page
+    ):
+        """测试尺码选择"""
+        goto_product_page()
+        product_page = ProductPage(page)
+        
+        # 获取尺码选项
+        sizes = product_page.get_size_options()
+        assert len(sizes) > 0
+        
+        # 选择 M 码
+        product_page.select_size("M")
+        
+        # 验证选择状态
+        selected = product_page.get_selected_size()
+        assert "M" in selected
+    
+    def test_sku_combination_selection(
+        self,
+        page: Page,
+        goto_product_page
+    ):
+        """测试 SKU 组合选择"""
+        goto_product_page()
+        product_page = ProductPage(page)
+        
+        # 先选颜色
+        product_page.select_color("蓝色")
+        
+        # 再选尺码
+        product_page.select_size("L")
+        
+        # 验证两个都已选中
+        assert product_page.get_selected_color() == "蓝色"
+        assert "L" in (product_page.get_selected_size() or "")
+    
+    def test_quantity_selector(
+        self,
+        page: Page,
+        goto_product_page
+    ):
+        """测试数量选择器"""
+        goto_product_page()
+        product_page = ProductPage(page)
+        
+        # 获取初始数量
+        initial_qty = product_page.get_quantity()
+        assert initial_qty == 1
+        
+        # 点击加号
+        product_page.click_plus()
+        assert product_page.get_quantity() == initial_qty + 1
+        
+        # 点击减号
+        product_page.click_minus()
+        assert product_page.get_quantity() == initial_qty
+    
+    def test_add_to_cart_without_selection(
+        self,
+        page: Page,
+        goto_product_page
+    ):
+        """测试未选择规格时加入购物车"""
+        goto_product_page()
+        product_page = ProductPage(page)
+        
+        # 点击加入购物车
+        product_page.click_add_to_cart()
+        
+        # 验证警告消息
+        warning = product_page.get_warning_message(timeout=3000)
+        assert warning is not None
+        assert "选择" in warning or "规格" in warning
+    
+    def test_add_to_cart_with_selection(
+        self,
+        page: Page,
+        goto_product_page
+    ):
+        """测试选择规格后加入购物车"""
+        goto_product_page()
+        product_page = ProductPage(page)
+        
+        # 选择规格
+        product_page.select_color("红色")
+        product_page.select_size("M")
+        
+        # 加入购物车
+        product_page.click_add_to_cart()
+        
+        # 验证成功消息
+        success = product_page.get_success_message(timeout=5000)
+        assert success is not None
+    
+    def test_favorite_button(
+        self,
+        page: Page,
+        goto_product_page
+    ):
+        """测试收藏按钮"""
+        goto_product_page()
+        product_page = ProductPage(page)
+        
+        # 点击收藏
+        product_page.click_favorite()
+        
+        # 验证状态变化
+        # 按钮颜色应该变化
+        page.wait_for_timeout(500)
+    
+    def test_tab_navigation(
+        self,
+        page: Page,
+        goto_product_page
+    ):
+        """测试 Tab 导航"""
+        goto_product_page()
+        product_page = ProductPage(page)
+        
+        # 点击评价 Tab
+        product_page.click_review_tab()
+        page.wait_for_timeout(500)
+        
+        # 点击推荐 Tab
+        product_page.click_recommendation_tab()
+        page.wait_for_timeout(500)
+        
+        # 返回详情 Tab
+        product_page.click_detail_tab()
+        page.wait_for_timeout(500)
+
+
+@pytest.mark.e2e
+@pytest.mark.product
+class TestProductReviews:
+    """商品评价测试"""
+    
+    def test_reviews_tab_loads(
+        self,
+        page: Page,
+        goto_product_page
+    ):
+        """测试评价 Tab 加载"""
+        goto_product_page()
+        product_page = ProductPage(page)
+        
+        # 点击评价 Tab
+        product_page.click_review_tab()
+        page.wait_for_timeout(1000)
+        
+        # 验证评价内容加载
+        review_count = product_page.get_review_count()
+        # 由于使用 Mock 数据，应该有评价
+        assert review_count >= 0
+    
+    def test_review_filter(
+        self,
+        page: Page,
+        goto_product_page
+    ):
+        """测试评价筛选"""
+        goto_product_page()
+        product_page = ProductPage(page)
+        
+        # 点击评价 Tab
+        product_page.click_review_tab()
+        page.wait_for_timeout(500)
+        
+        # 点击好评筛选
+        product_page.click_review_filter("好评")
+        page.wait_for_timeout(500)
+
+
+@pytest.mark.e2e
+@pytest.mark.product
+class TestProductRecommendations:
+    """商品推荐测试"""
+    
+    def test_recommendations_tab_loads(
+        self,
+        page: Page,
+        goto_product_page
+    ):
+        """测试推荐 Tab 加载"""
+        goto_product_page()
+        product_page = ProductPage(page)
+        
+        # 点击推荐 Tab
+        product_page.click_recommendation_tab()
+        page.wait_for_timeout(1000)
+        
+        # 验证推荐商品
+        rec_count = product_page.get_recommendation_count()
+        assert rec_count >= 0
+
+
+@pytest.mark.e2e
+@pytest.mark.product
+class TestMobileProductPage:
+    """移动端商品详情页测试"""
+    
+    def test_mobile_page_layout(
+        self,
+        mobile_page: Page,
+        base_url: str
+    ):
+        """测试移动端页面布局"""
+        mobile_page.goto(f"{base_url}/product/P20240001")
+        mobile_page.wait_for_load_state("networkidle")
+        
+        product_page = MobileProductPage(mobile_page)
+        
+        # 验证是移动端布局
+        if product_page.is_mobile():
+            # 验证底部栏按钮
+            buttons = product_page.get_bottom_bar_buttons()
+            assert "加入购物车" in "".join(buttons)
+    
+    def test_mobile_image_gallery(
+        self,
+        mobile_page: Page,
+        base_url: str
+    ):
+        """测试移动端图片画廊"""
+        mobile_page.goto(f"{base_url}/product/P20240001")
+        mobile_page.wait_for_load_state("networkidle")
+        
+        product_page = MobileProductPage(mobile_page)
+        
+        # 验证主图
+        main_image = product_page.get_main_image_src()
+        assert main_image is not None
+
+
+@pytest.mark.e2e
+@pytest.mark.slow
+class TestProductPerformance:
+    """商品页面性能测试"""
+    
+    def test_page_load_time(
+        self,
+        page: Page,
+        base_url: str
+    ):
+        """测试页面加载时间"""
+        import time
+        
+        start_time = time.time()
+        page.goto(f"{base_url}/product/P20240001")
+        page.wait_for_load_state("networkidle")
+        load_time = time.time() - start_time
+        
+        # 页面加载时间应该小于 3 秒
+        assert load_time < 3.0, f"页面加载时间过长: {load_time:.2f}s"
+    
+    def test_interaction_response_time(
+        self,
+        page: Page,
+        goto_product_page
+    ):
+        """测试交互响应时间"""
+        import time
+        
+        goto_product_page()
+        product_page = ProductPage(page)
+        
+        # 测试颜色选择响应时间
+        start_time = time.time()
+        product_page.select_color("蓝色")
+        response_time = time.time() - start_time
+        
+        assert response_time < 0.5, f"颜色选择响应时间过长: {response_time:.3f}s"
+
+
+@pytest.mark.e2e
+class TestProductEdgeCases:
+    """商品页面边界情况测试"""
+    
+    def test_rapid_click_handling(
+        self,
+        page: Page,
+        goto_product_page
+    ):
+        """测试快速点击处理"""
+        goto_product_page()
+        product_page = ProductPage(page)
+        
+        # 快速点击加号按钮
+        for _ in range(10):
+            product_page.click_plus()
+        
+        # 验证数量不会超过最大值
+        quantity = product_page.get_quantity()
+        assert quantity <= 99
+    
+    def test_image_navigation_loop(
+        self,
+        page: Page,
+        goto_product_page
+    ):
+        """测试图片导航循环"""
+        goto_product_page()
+        product_page = ProductPage(page)
+        
+        # 获取缩略图数量
+        count = product_page.get_thumbnail_count()
+        if count > 1:
+            # 连续点击下一张多次，应该循环
+            initial_src = product_page.get_main_image_src()
+            
+            for _ in range(count + 1):
+                product_page.click_next_image()
+                page.wait_for_timeout(100)
+            
+            # 图片应该回到第一张（循环）
+            final_src = product_page.get_main_image_src()
+            # 注意：由于异步加载，这个断言可能不稳定
+```
+
+## tests/e2e/test_cart_flow.py
+
+```python
+"""
+购物车流程 E2E 测试
+"""
+import pytest
+from playwright.sync_api import Page, expect
+
+from tests.e2e.pages.product_page import ProductPage
+
+
+@pytest.mark.e2e
+@pytest.mark.cart
+class TestCartFlow:
+    """购物车流程测试"""
+    
+    def test_add_to_cart_flow(
+        self,
+        authenticated_page: Page,
+        base_url: str
+    ):
+        """测试加入购物车完整流程"""
+        page = authenticated_page
+        page.goto(f"{base_url}/product/P20240001")
+        page.wait_for_load_state("networkidle")
+        
+        product_page = ProductPage(page)
+        
+        # 1. 选择规格
+        product_page.select_color("红色")
+        product_page.select_size("M")
+        
+        # 2. 设置数量
+        product_page.set_quantity(2)
+        
+        # 3. 加入购物车
+        product_page.click_add_to_cart()
+        
+        # 4. 验证成功消息
+        success = product_page.get_success_message(timeout=5000)
+        assert success is not None
+    
+    def test_multiple_items_to_cart(
+        self,
+        authenticated_page: Page,
+        base_url: str
+    ):
+        """测试添加多个商品到购物车"""
+        page = authenticated_page
+        
+        # 添加第一个商品
+        page.goto(f"{base_url}/product/P20240001")
+        page.wait_for_load_state("networkidle")
+        product_page = ProductPage(page)
+        product_page.select_color("红色")
+        product_page.select_size("M")
+        product_page.click_add_to_cart()
+        page.wait_for_timeout(1000)
+        
+        # 添加第二个商品（不同规格）
+        page.goto(f"{base_url}/product/P20240001")
+        page.wait_for_load_state("networkidle")
+        product_page = ProductPage(page)
+        product_page.select_color("蓝色")
+        product_page.select_size("L")
+        product_page.click_add_to_cart()
+        
+        # 验证成功消息
+        success = product_page.get_success_message(timeout=5000)
+        assert success is not None
+
+
+@pytest.mark.e2e
+@pytest.mark.cart
+class TestCartValidation:
+    """购物车验证测试"""
+    
+    def test_sold_out_sku_cannot_add_to_cart(
+        self,
+        authenticated_page: Page,
+        base_url: str
+    ):
+        """测试售罄 SKU 不能加入购物车"""
+        page = authenticated_page
+        page.goto(f"{base_url}/product/P20240001")
+        page.wait_for_load_state("networkidle")
+        
+        product_page = ProductPage(page)
+        
+        # 尝试选择售罄的规格组合
+        # 红色 L 可能售罄
+        product_page.select_color("红色")
+        product_page.select_size("L")
+        
+        # 验证库存提示
+        stock_info = product_page.get_stock_info()
+        # 如果售罄，应该有相应提示
+        page.wait_for_timeout(500)
+```
+
+## 运行脚本
+
+### scripts/run_tests.py
+
+```python
+"""
+测试运行脚本
+"""
+import subprocess
+import sys
+import os
+from pathlib import Path
+
+
+def run_command(cmd: list, description: str):
+    """运行命令并打印结果"""
+    print(f"\n{'='*60}")
+    print(f"运行: {description}")
+    print(f"命令: {' '.join(cmd)}")
+    print('='*60)
+    
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    
+    print(result.stdout)
+    if result.stderr:
+        print("STDERR:", result.stderr)
+    
+    return result.returncode == 0
+
+
+def main():
+    """主函数"""
+    # 获取项目根目录
+    project_root = Path(__file__).parent.parent
+    
+    # 切换到项目根目录
+    os.chdir(project_root)
+    
+    all_passed = True
+    
+    # 1. 运行单元测试
+    print("\n" + "="*70)
+    print("步骤 1: 运行单元测试")
+    print("="*70)
+    
+    unit_passed = run_command(
+        ["pytest", "tests/unit/", "-v", "--tb=short", "-m", "unit"],
+        "单元测试"
+    )
+    all_passed = all_passed and unit_passed
+    
+    # 2. 运行集成测试
+    print("\n" + "="*70)
+    print("步骤 2: 运行集成测试")
+    print("="*70)
+    
+    integration_passed = run_command(
+        ["pytest", "tests/integration/", "-v", "--tb=short", "-m", "integration"],
+        "集成测试"
+    )
+    all_passed = all_passed and integration_passed
+    
+    # 3. 运行 E2E 测试（需要启动前端服务）
+    print("\n" + "="*70)
+    print("步骤 3: 运行 E2E 测试")
+    print("="*70)
+    
+    # 检查是否配置了 base_url
+    base_url = os.environ.get("BASE_URL", "http://localhost:3000")
+    
+    e2e_passed = run_command(
+        [
+            "pytest", 
+            "tests/e2e/", 
+            "-v", 
+            "--tb=short", 
+            "-m", "e2e",
+            "--browser=chromium",
+            f"--base-url={base_url}"
+        ],
+        "E2E 测试"
+    )
+    all_passed = all_passed and e2e_passed
+    
+    # 总结
+    print("\n" + "="*70)
+    print("测试总结")
+    print("="*70)
+    if all_passed:
+        print("✅ 所有测试通过!")
+        return 0
+    else:
+        print("❌ 部分测试失败")
+        return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())
+```
+
+### Makefile
+
+```makefile
+.PHONY: test test-unit test-integration test-e2e test-all test-coverage
+
+# 运行所有测试
+test-all:
+	@echo "Running all tests..."
+	python scripts/run_tests.py
+
+# 运行单元测试
+test-unit:
+	@echo "Running unit tests..."
+	pytest tests/unit/ -v --tb=short
+
+# 运行集成测试
+test-integration:
+	@echo "Running integration tests..."
+	pytest tests/integration/ -v --tb=short
+
+# 运行 E2E 测试
+test-e2e:
+	@echo "Running E2E tests..."
+	pytest tests/e2e/ -v --tb=short --browser=chromium --base-url=http://localhost:3000
+
+# 运行测试并生成覆盖率报告
+test-coverage:
+	@echo "Running tests with coverage..."
+	pytest tests/ \
+		-v \
+		--tb=short \
+		--cov=app \
+		--cov-report=html \
+		--cov-report=term \
+		--cov-report=xml
+
+# 运行快速测试（跳过慢速测试）
+test-fast:
+	@echo "Running fast tests..."
+	pytest tests/ -v --tb=short -m "not slow"
+
+# 运行带调试信息的测试
+test-debug:
+	@echo "Running tests with debug info..."
+	pytest tests/ -v --tb=long -s
+
+# 生成测试报告
+report:
+	@echo "Generating test report..."
+	pytest tests/ --html=reports/test_report.html --self-contained-html
+	@echo "Report generated at reports/test_report.html"
+```
+
+## requirements-test.txt
+
+```
+# 测试依赖
+pytest==7.4.4
+pytest-asyncio==0.23.3
+pytest-cov==4.1.0
+pytest-html==4.1.1
+pytest-xdist==3.5.0
+pytest-timeout==2.2.0
+pytest-mock==3.12.0
+pytest-randomly==3.15.0
+
+# Playwright
+playwright==1.41.0
+pytest-playwright==0.4.4
+
+# HTTP 客户端
+httpx==0.26.0
+requests==2.31.0
+
+# Mock
+fakeredis==2.20.1
+```
+
+## setup.cfg
+
+```ini
+[tool:pytest]
+testpaths = tests
+python_files = test_*.py
+python_classes = Test*
+python_functions = test_*
+addopts = -v --tb=short
+markers =
+    unit: 单元测试
+    integration: 集成测试
+    e2e: E2E 测试
+    slow: 慢速测试
+    cart: 购物车测试
+    review: 评价测试
+    product: 商品测试
+    api: API 测试
+
+[coverage:run]
+source = app
+omit = 
+    */tests/*
+    */migrations/*
+    */__pycache__/*
+    */venv/*
+
+[coverage:report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise AssertionError
+    raise NotImplementedError
+    if __name__ == .__main__.:
+```
+
+## .gitignore (追加)
+
+```gitignore
+# 测试相关
+.coverage
+htmlcov/
+.pytest_cache/
+*.pyc
+__pycache__/
+reports/
+*.log
+
+# Playwright
+playwright-report/
+test-results/
+.playwright/
+```

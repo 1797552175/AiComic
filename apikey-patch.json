@@ -1,0 +1,15 @@
+{
+  "models": {
+    "providers": {
+      "xiaomi": {
+        "apiKey": "sk-540ac2adf3654c099ad2670836e5592c"
+      },
+      "qwen3": {
+        "apiKey": "sk-540ac2adf3654c099ad2670836e5592c"
+      },
+      "glm": {
+        "apiKey": "sk-540ac2adf3654c099ad2670836e5592c"
+      }
+    }
+  }
+}

@@ -364,3 +364,7 @@ async def get_motion_types():
 async def get_shot_types():
     """获取可选的镜头类型"""
     return storyboard_generator.get_shot_type_options()
+
+
+# 注册认证路由
+app.include_router(auth_router)

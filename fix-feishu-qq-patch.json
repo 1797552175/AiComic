@@ -1,0 +1,15 @@
+{
+  "channels": {
+    "qqbot": {
+      "model": {
+        "id": "qwen/qwen-plus"
+      }
+    },
+    "feishu": {
+      "features": {
+        "json_mode": false,
+        "function_calling": false
+      }
+    }
+  }
+}

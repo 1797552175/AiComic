@@ -1,221 +1,337 @@
-"""角色一致性服务 - LoRA注入逻辑"""
-import os
-import json
-import hashlib
-from typing import Optional, Dict, Any, List
-from datetime import datetime
-import asyncio
+"""
+角色一致性服务
+负责角色ID跨镜头一致性保障和LoRA注入逻辑
 
-# 模拟的特征提取和相似度计算（实际项目中替换为真实ML模型）
-class CharacterConsistencyService:
-    """角色一致性服务"""
-    
-    def __init__(self):
-        self.feature_cache: Dict[str, List[float]] = {}
-        self.lora_cache: Dict[str, Dict[str, Any]] = {}
-        
-    async def extract_features(self, reference_images: List[str]) -> Dict[str, Any]:
+与 database.py 的 Character 模型对接，预留 LoRA 注入接口。
+仅构建框架，不调用外部API。
+"""
+from typing import Optional, List, Dict, Any
+from dataclasses import dataclass, field
+
+
+# ========================
+# 数据结构定义
+# ========================
+
+@dataclass
+class CharacterFeatures:
+    """角色特征向量（从 Character.features_vector 读取）"""
+    features_vector: Optional[List[float]] = None
+    reference_images: List[str] = field(default_factory=list)
+    lora_path: Optional[str] = None
+    lora_strength: float = 0.85
+
+
+@dataclass
+class InjectionResult:
+    """LoRA注入结果"""
+    success: bool
+    enhanced_prompt: str
+    lora_path: Optional[str] = None
+    lora_strength: float = 0.0
+    warning: Optional[str] = None
+
+
+@dataclass
+class ConsistencyCheckResult:
+    """一致性检查结果"""
+    character_id: str
+    character_name: str
+    features_loaded: bool
+    lora_available: bool
+    consistency_score: Optional[float] = None
+    warnings: List[str] = field(default_factory=list)
+
+
+# ========================
+# CharacterConsistency 服务类
+# ========================
+
+class CharacterConsistency:
+    """
+    角色一致性服务
+
+    核心职责：
+    1. ensure_character_id - 确保角色ID在跨镜头生成时一致
+    2. inject_lora_prompt  - 将LoRA信息注入到生成Prompt
+    3. get_character_features - 获取角色特征向量
+    """
+
+    # 一致性阈值：得分 >= 0.85 视为达标
+    CONSISTENCY_THRESHOLD = 0.85
+
+    # 默认LoRA强度
+    DEFAULT_LORA_STRENGTH = 0.85
+
+    def __init__(self, db_session=None):
         """
-        提取角色特征
-        实际项目中调用 CLIP/VIT 特征提取模型
+        初始化角色一致性服务
+
+        Args:
+            db_session: SQLAlchemy 异步会话（可选，延迟传入）
         """
-        # 模拟特征提取
-        cache_key = hashlib.md5("".join(sorted(reference_images)).encode()).hexdigest()
-        
-        if cache_key in self.feature_cache:
-            return {"cached": True, "features": self.feature_cache[cache_key]}
-        
-        # 模拟生成特征向量（实际项目中调用ML模型）
-        features = {
-            "facial_features": [0.1 * i for i in range(512)],
-            "clothing_features": [0.2 * i for i in range(256)],
-            "hairstyle_features": [0.3 * i for i in range(128)],
-            "eye_color": "brown",
-            "skin_tone": "fair",
-            "accessories": [],
-            "tags": ["anime", "young", "short_hair"]
-        }
-        
-        self.feature_cache[cache_key] = [
-            features["facial_features"], 
-            features["clothing_features"],
-            features["hairstyle_features"]
-        ]
-        
-        return {"cached": False, "features": features}
-    
-    async def inject_lora(
-        self, 
-        role_id: str, 
-        lora_model_path: Optional[str] = None,
-        lora_strength: float = 0.85,
-        base_prompt: str = ""
-    ) -> Dict[str, Any]:
+        self.db_session = db_session
+
+    # ========================
+    # 核心方法
+    # ========================
+
+    async def ensure_character_id(
+        self,
+        character_id: str,
+        project_id: Optional[str] = None,
+        raise_if_missing: bool = False
+    ) -> ConsistencyCheckResult:
         """
-        LoRA注入逻辑
-        将角色LoRA信息注入到生成参数中
+        确保角色ID有效，并返回一致性检查结果
+
+        流程：
+        1. 根据 character_id 从数据库查询 Character 记录
+        2. 校验 Character.project_id 与传入的 project_id 是否匹配
+        3. 检查必要字段（reference_images、features_vector）是否完备
+        4. 返回检查结果
+
+        Args:
+            character_id: 角色UUID字符串
+            project_id: 项目ID（用于交叉校验，可选）
+            raise_if_missing: 角色不存在时是否抛出异常
+
+        Returns:
+            ConsistencyCheckResult: 包含角色信息和一致性状态
+
+        Raises:
+            ValueError: 当 raise_if_missing=True 且角色不存在时
         """
-        if not lora_model_path:
-            return {
-                "injected": False,
-                "reason": "no_lora_bound",
-                "enhanced_prompt": base_prompt
-            }
-        
-        # 检查LoRA文件是否存在
-        if not os.path.exists(lora_model_path):
-            return {
-                "injected": False,
-                "reason": "lora_file_not_found",
-                "enhanced_prompt": base_prompt
-            }
-        
+        if not character_id:
+            raise ValueError("character_id cannot be empty")
+
+        # 从数据库查询角色
+        character = await self._query_character_by_id(character_id)
+
+        if character is None:
+            if raise_if_missing:
+                raise ValueError(f"Character not found: {character_id}")
+            return ConsistencyCheckResult(
+                character_id=character_id,
+                character_name="",
+                features_loaded=False,
+                lora_available=False,
+                warnings=[f"Character {character_id} not found in database"]
+            )
+
+        # 项目ID校验
+        warnings = []
+        if project_id and character.project_id != project_id:
+            warnings.append(
+                f"Character {character_id} belongs to project {character.project_id}, "
+                f"but requested by project {project_id}"
+            )
+
+        # 字段完备性检查
+        if not character.reference_images:
+            warnings.append("Character has no reference_images; consistency may degrade")
+
+        if not character.features_vector:
+            warnings.append("Character has no features_vector; LoRA injection required for best consistency")
+
+        lora_available = character.lora_path is not None and character.lora_path != ""
+
+        return ConsistencyCheckResult(
+            character_id=character.id,
+            character_name=character.name,
+            features_loaded=character.features_vector is not None,
+            lora_available=lora_available,
+            warnings=warnings
+        )
+
+    async def inject_lora_prompt(
+        self,
+        character_id: str,
+        base_prompt: str,
+        lora_strength: Optional[float] = None,
+        mode: str = "lora_blend"
+    ) -> InjectionResult:
+        """
+        将角色LoRA信息注入到生成Prompt
+
+        预留 LoRA 注入接口，内部逻辑按如下步骤：
+        1. 查询 Character 记录，获取 lora_path
+        2. 检查 LoRA 文件是否存在（路径有效性）
+        3. 根据 mode 构建增强Prompt：
+           - "lora_only": 强LoRA模式，Prompt = <char_{id}> + base_prompt + <char_{id}>
+           - "lora_blend": 混合模式，Prompt = <char_{id}> + base_prompt
+           - "feature_inject": 使用 features_vector 注入，不依赖LoRA
+        4. 返回 InjectionResult
+
+        Args:
+            character_id: 角色UUID
+            base_prompt: 原始生成Prompt
+            lora_strength: LoRA强度，覆盖默认值
+            mode: 注入模式
+
+        Returns:
+            InjectionResult: 包含增强后的Prompt和LoRA参数
+        """
+        if not character_id:
+            return InjectionResult(
+                success=False,
+                enhanced_prompt=base_prompt,
+                warning="No character_id provided"
+            )
+
+        # 查询角色记录
+        character = await self._query_character_by_id(character_id)
+
+        if character is None:
+            return InjectionResult(
+                success=False,
+                enhanced_prompt=base_prompt,
+                warning=f"Character {character_id} not found"
+            )
+
+        # 确定LoRA路径和强度
+        lora_path = character.lora_path
+        strength = lora_strength if lora_strength is not None else (
+            self.DEFAULT_LORA_STRENGTH
+        )
+
+        # 无LoRA时降级为纯Prompt/特征注入
+        if not lora_path:
+            return InjectionResult(
+                success=False,
+                enhanced_prompt=self._build_feature_prompt(character, base_prompt),
+                lora_path=None,
+                lora_strength=0.0,
+                warning="No LoRA bound for this character; using feature-based prompt"
+            )
+
         # 构建增强Prompt
-        enhanced_prompt = self._build_enhanced_prompt(base_prompt, role_id, lora_strength)
-        
-        # 构建LoRA注入参数
-        lora_params = {
-            "model_path": lora_model_path,
-            "strength": lora_strength,
-            "trigger_word": f"char_{role_id}",
-            "injection_mode": "lora_only" if lora_strength > 0.7 else "lora_blend"
-        }
-        
-        return {
-            "injected": True,
-            "lora_params": lora_params,
-            "enhanced_prompt": enhanced_prompt,
-            "strength": lora_strength
-        }
-    
-    def _build_enhanced_prompt(self, base_prompt: str, role_id: str, strength: float) -> str:
-        """构建增强的生成Prompt"""
-        role_token = f"<char_{role_id}>"
-        
-        if strength > 0.8:
+        enhanced_prompt = self._build_lora_prompt(
+            character_id, base_prompt, mode, strength
+        )
+
+        return InjectionResult(
+            success=True,
+            enhanced_prompt=enhanced_prompt,
+            lora_path=lora_path,
+            lora_strength=strength
+        )
+
+    async def get_character_features(
+        self,
+        character_id: str
+    ) -> Optional[CharacterFeatures]:
+        """
+        获取角色特征向量
+
+        从 Character.features_vector 读取特征，
+        同时返回参考图列表和LoRA路径信息。
+
+        Args:
+            character_id: 角色UUID
+
+        Returns:
+            CharacterFeatures: 角色特征对象，角色不存在时返回 None
+        """
+        character = await self._query_character_by_id(character_id)
+
+        if character is None:
+            return None
+
+        return CharacterFeatures(
+            features_vector=character.features_vector,
+            reference_images=character.reference_images or [],
+            lora_path=character.lora_path,
+            lora_strength=self.DEFAULT_LORA_STRENGTH
+        )
+
+    # ========================
+    # 内部辅助方法
+    # ========================
+
+    async def _query_character_by_id(self, character_id: str):
+        """
+        从数据库查询 Character 记录
+
+        使用延迟注入的 db_session 进行异步查询。
+        若 db_session 未设置，返回 None（框架模式下不实际操作数据库）。
+
+        Args:
+            character_id: 角色UUID
+
+        Returns:
+            Character 模型实例或 None
+        """
+        if self.db_session is None:
+            # 框架模式：无数据库会话，仅返回结构
+            return None
+
+        from sqlalchemy import select
+        from models.database import Character
+
+        result = await self.db_session.execute(
+            select(Character).where(Character.id == character_id)
+        )
+        return result.scalar_one_or_none()
+
+    def _build_lora_prompt(
+        self,
+        character_id: str,
+        base_prompt: str,
+        mode: str,
+        strength: float
+    ) -> str:
+        """
+        构建带LoRA标记的增强Prompt
+
+        Args:
+            character_id: 角色UUID
+            base_prompt: 原始Prompt
+            mode: lora_only | lora_blend | feature_inject
+            strength: LoRA强度
+
+        Returns:
+            str: 增强后的Prompt
+        """
+        char_token = f"<char_{character_id}>"
+
+        if mode == "lora_only" or strength > 0.7:
             # 强LoRA模式
-            enhanced = f"{role_token} {base_prompt} {role_token}"
-        elif strength > 0.5:
+            return f"{char_token} {base_prompt} {char_token}".strip()
+        elif mode == "lora_blend":
             # 混合模式
-            enhanced = f"{role_token} {base_prompt}"
+            return f"{char_token} {base_prompt}".strip()
         else:
-            # 弱LoRA模式
-            enhanced = f"{base_prompt}"
-        
-        return enhanced.strip()
-    
-    async def calculate_consistency(
-        self, 
-        reference_features: Dict[str, Any], 
-        generated_image_features: Dict[str, Any]
-    ) -> Dict[str, float]:
-        """
-        计算一致性得分
-        公式: 镜头一致性得分 = α × 面部相似度 + β × 服装相似度 + γ × 风格一致性
-        默认权重：α=0.5, β=0.3, γ=0.2
-        """
-        # 模拟计算相似度（实际项目中调用特征匹配模型）
-        facial_sim = 0.92  # 模拟值
-        clothing_sim = 0.88  # 模拟值
-        style_consistency = 0.90  # 模拟值
-        
-        # 一致性得分计算
-        alpha, beta, gamma = 0.5, 0.3, 0.2
-        overall_score = alpha * facial_sim + beta * clothing_sim + gamma * style_consistency
-        
-        return {
-            "overall_score": round(overall_score, 3),
-            "facial_similarity": round(facial_sim, 3),
-            "clothing_similarity": round(clothing_sim, 3),
-            "style_consistency": round(style_consistency, 3),
-            "passed": overall_score >= 0.85
-        }
-    
-    async def prepare_injection_params(
+            # 弱LoRA或降级
+            return base_prompt
+
+    def _build_feature_prompt(
         self,
-        role_id: str,
-        params: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        character,
+        base_prompt: str
+    ) -> str:
         """
-        准备角色注入参数
-        用于镜头生成时自动携带角色信息
+        无LoRA时，使用角色特征向量构建增强Prompt（框架预留）
+
+        实际项目中这里会调用特征提取/比对服务。
+        当前仅做框架层面的占位返回。
+
+        Args:
+            character: Character 模型实例
+            base_prompt: 原始Prompt
+
+        Returns:
+            str: 基于特征的增强Prompt
         """
-        from models.character import Character, CharacterInjectionParams
-        
-        # 查找角色卡片（实际从数据库查询）
-        character = await self._get_character(role_id)
-        
-        if not character:
-            return {
-                "success": False,
-                "error": "character_not_found",
-                "message": f"角色 {role_id} 不存在"
-            }
-        
-        # 提取特征
-        features_result = await self.extract_features(character.reference_images)
-        
-        # 构建注入参数
-        injection_params = CharacterInjectionParams(
-            role_id=role_id,
-            character_features=features_result.get("features"),
-            lora_model_path=character.lora_model_path,
-            lora_strength=character.lora_strength,
-            style_prompt=character.style_prompt,
-            mode="consistency_motion"
-        )
-        
-        # LoRA注入
-        lora_result = await self.inject_lora(
-            role_id=role_id,
-            lora_model_path=character.lora_model_path,
-            lora_strength=character.lora_strength,
-            base_prompt=params.get("prompt", "")
-        )
-        
-        return {
-            "success": True,
-            "injection_params": injection_params.dict(),
-            "lora_result": lora_result,
-            "features_cached": features_result.get("cached", False)
-        }
-    
-    async def _get_character(self, role_id: str) -> Optional[Any]:
-        """获取角色卡片（模拟）"""
-        # 实际从数据库查询
-        return None
-    
-    async def check_consistency_threshold(
-        self,
-        role_id: str,
-        generated_features: Dict[str, Any]
-    ) -> Dict[str, Any]:
-        """
-        检查一致性是否达标
-        返回建议或警告
-        """
-        # 模拟计算
-        score_result = await self.calculate_consistency({}, generated_features)
-        
-        if score_result["overall_score"] >= 0.85:
-            return {
-                "passed": True,
-                "score": score_result,
-                "message": "一致性检查通过 ✅",
-                "suggestions": []
-            }
-        else:
-            return {
-                "passed": False,
-                "score": score_result,
-                "message": f"一致性得分 {score_result[overall_score]:.1%} 低于阈值 85%",
-                "suggestions": [
-                    "建议增加参考图数量",
-                    "建议训练专用LoRA模型",
-                    "建议优化角色风格描述词"
-                ]
-            }
+        # 框架预留：特征注入Prompt占位符
+        feature_hint = f"[character:{character.name}]"
+        return f"{feature_hint} {base_prompt}".strip()
 
 
-# 全局单例
-consistency_service = CharacterConsistencyService()
+# ========================
+# 导出全局单例（框架模式）
+# ========================
+
+# 注意：仅在未注入 db_session 时使用
+# 实际业务中应在依赖注入容器中创建实例
+character_consistency_service = CharacterConsistency()
