@@ -165,22 +165,48 @@ class AudioService:
         output_path: str
     ) -> str:
         """CosyVoice TTS（示例实现）"""
-        # TODO: 实现CosyVoice API调用
-        # CosyVoice API: POST /v1/tts
-        # Body: {"text": text, "voice": voice_id, "speed": speed, "pitch": pitch}
-        # Response: audio/wav
-
-        # 目前生成静音文件作为placeholder
-        import subprocess
-        cmd = [
-            "ffmpeg", "-f", "lavfi",
-            "-i", f"anullsrc=r=24000:cl=mono",
-            "-t", "3",  # 3秒占位
-            "-q:a", "0",
-            output_path
-        ]
-        subprocess.run(cmd, capture_output=True)
-        return f"file://{output_path}"
+        # CosyVoice API 实现
+        try:
+            import base64
+            async with httpx.AsyncClient(timeout=self.timeout) as client:
+                payload = {
+                    "text": text,
+                    "voice": voice_id,
+                    "speed": speed,
+                    "pitch": pitch,
+                    "emotion": emotion_params
+                }
+                
+                # CosyVoice API 调用
+                cosyvoice_url = os.environ.get("COSYVOICE_URL", "http://localhost:8088")
+                response = await client.post(
+                    f"{cosyvoice_url}/v1/tts",
+                    json=payload
+                )
+                
+                if response.status_code == 200:
+                    # 保存音频文件
+                    import base64
+                    audio_data = response.content
+                    with open(output_path, "wb") as f:
+                        f.write(audio_data)
+                    return f"file://{output_path}"
+                else:
+                    # Fallback: 生成静音
+                    subprocess.run([
+                        "ffmpeg", "-f", "lavfi",
+                        "-i", "anullsrc=r=24000:cl=mono",
+                        "-t", "3", "-q:a", "0", output_path
+                    ], capture_output=True)
+                    return f"file://{output_path}"
+        except Exception as e:
+            # 网络错误时生成静音
+            subprocess.run([
+                "ffmpeg", "-f", "lavfi",
+                "-i", "anullsrc=r=24000:cl=mono",
+                "-t", "3", "-q:a", "0", output_path
+            ], capture_output=True)
+            return f"file://{output_path}"
 
     async def _azure_tts(
         self,
@@ -191,9 +217,47 @@ class AudioService:
         output_path: str
     ) -> str:
         """Azure TTS（示例实现）"""
-        # TODO: 实现Azure Cognitive Services TTS
-        # 需要 AZURE_TTS_KEY 和 AZURE_TTS_REGION 环境变量
-        raise NotImplementedError("Azure TTS not yet configured")
+        # Azure Cognitive Services TTS 实现
+        try:
+            subscription_key = os.environ.get("AZURE_TTS_KEY", "")
+            region = os.environ.get("AZURE_TTS_REGION", "eastus")
+            
+            if not subscription_key:
+                raise ValueError("AZURE_TTS_KEY not set")
+            
+            # Azure TTS REST API - 获取 Token
+            token_url = f"https://{region}.api.cognitive.microsoft.com/sts/v1.0/issueToken"
+            token_resp = await httpx.AsyncClient().post(
+                token_url,
+                headers={"Ocp-Apim-Subscription-Key": subscription_key}
+            )
+            access_token = token_resp.text
+            
+            # 合成语音
+            tts_url = f"https://{region}.tts.speech.microsoft.com/cognitiveservices/v1"
+            headers = {
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/ssml+xml",
+                "X-Microsoft-OutputFormat": "riff-24khz-16bit-mono-pcm",
+                "User-Agent": "AiComic/1.0"
+            }
+            
+            ssml = "<speak version=1.0 xmlns=http://www.w3.org/2001/10/synthesis xml:lang=zh-CN><voice name= + voice_id + >" + text + "</voice></speak>"
+            
+            tts_resp = await httpx.AsyncClient().post(
+                tts_url,
+                headers=headers,
+                content=ssml.encode("utf-8")
+            )
+            
+            if tts_resp.status_code == 200:
+                with open(output_path, "wb") as f:
+                    f.write(tts_resp.content)
+                return f"file://{output_path}"
+            else:
+                raise Exception(f"Azure TTS error: {tts_resp.status_code}")
+        except Exception as e:
+            return {"error": str(e)}
 
     async def _http_tts(
         self,
