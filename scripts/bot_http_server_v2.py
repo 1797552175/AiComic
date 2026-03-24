@@ -87,26 +87,32 @@ def fetch_bitable_tasks():
 
 # === 分发任务给 dev bot ===
 def dispatch_task_to_dev(task):
-    """通过 HTTP 调用 dev bot 执行任务"""
-    try:
-        import urllib.request
-        data = json.dumps({
-            "task_id": task["task_id"],
-            "task_type": "dev",
-            "payload": {"任务描述": task["desc"]}
-        }).encode("utf-8")
-        req = urllib.request.Request(
-            "http://localhost:8003/execute",
-            data=data,
-            headers={"Content-Type": "application/json"}
-        )
-        with urllib.request.urlopen(req, timeout=5):
-            pass
-        print(f"[Monitor] 已分发任务: {task['task_id']}")
-        return True
-    except Exception as e:
-        print(f"[Monitor] 分发失败: {e}")
-        return False
+    """通过 HTTP 调用 dev bot 执行任务（异步，不等待结果）"""
+    import threading
+
+    def _dispatch():
+        try:
+            import urllib.request
+            data = json.dumps({
+                "task_id": task["task_id"],
+                "task_type": "dev",
+                "payload": {"任务描述": task["desc"], "proto_file": task.get("proto_file", "")}
+            }).encode("utf-8")
+            req = urllib.request.Request(
+                "http://localhost:8003/execute",
+                data=data,
+                headers={"Content-Type": "application/json", "X-API-Key": "aicomic-shared-secret-key-2026"}
+            )
+            # 异步发送，不等待结果
+            with urllib.request.urlopen(req, timeout=10):
+                pass
+            print(f"[Monitor] 已分发任务: {task['task_id']}")
+        except Exception as e:
+            print(f"[Monitor] 分发失败: {e}")
+
+    thread = threading.Thread(target=_dispatch, daemon=True)
+    thread.start()
+    return True
 
 
 # === 原型扫描与任务创建 ===
@@ -551,6 +557,29 @@ def execute_fix_task(task_id, payload):
     return {"status": "completed", "message": "Fix deployed successfully"}
 
 
+def extract_proto_sections(content):
+    """从原型内容中提取关键章节"""
+    sections = {}
+    lines = content.split('\n')
+    current_section = '正文'
+    current_lines = []
+
+    for line in lines:
+        # 检测章节标题
+        if line.startswith('## ') or line.startswith('# '):
+            if current_lines:
+                sections[current_section] = '\n'.join(current_lines)
+            current_section = line.lstrip('# ')
+            current_lines = []
+        else:
+            current_lines.append(line)
+
+    if current_lines:
+        sections[current_section] = '\n'.join(current_lines)
+
+    return sections
+
+
 def execute_proto_task(task_id, payload):
     """Execute prototype implementation task - use CrewAI to implement the prototype"""
     print(f"[{BOT_TYPE}] 执行原型研发任务: {task_id}")
@@ -561,6 +590,16 @@ def execute_proto_task(task_id, payload):
     proto_path = None
 
     # Read prototype file if referenced
+    full_content = ""
+
+    # 如果 proto_file 为空，尝试从描述中提取
+    if not proto_file and description:
+        import re
+        match = re.search(r'原型[/\\]([^\\\/\n]+\.md)', description)
+        if match:
+            proto_file = match.group(1)
+            print(f"[{BOT_TYPE}] 从描述中提取proto_file: {proto_file}")
+
     if proto_file:
         proto_path = os.path.join(PROTOTYPE_DIR, proto_file)
         if os.path.exists(proto_path):
@@ -568,10 +607,37 @@ def execute_proto_task(task_id, payload):
                 with open(proto_path, 'r', encoding='utf-8', errors='ignore') as f:
                     proto_content = f.read()
                 print(f"[{BOT_TYPE}] 原型内容已读取: {len(proto_content)} 字符")
-                # Prepend to description
-                description = f"参考原型: {proto_file}\n\n{proto_content[:2000]}\n\n实现要求:\n{description}"
+
+                # 提取章节结构化信息
+                sections = extract_proto_sections(proto_content)
+
+                # 构建结构化的任务描述
+                task_parts = [
+                    f"【原型文件】{proto_file}",
+                    f"【参考路径】{proto_path}",
+                    "",
+                ]
+
+                # 添加各章节内容
+                for section_name in ['背景与目标', '一、背景与目标', '产品定位与目标', '功能清单', '二、功能清单', '功能需求', '界面描述', '三、界面设计', '验收标准', '四、验收标准']:
+                    if section_name in sections:
+                        task_parts.append(f"【{section_name}】")
+                        task_parts.append(sections[section_name][:3000])  # 限制每个章节长度
+                        task_parts.append("")
+
+                # 添加原始描述
+                if description:
+                    task_parts.append("【原始任务描述】")
+                    task_parts.append(description[:1000])
+
+                full_content = '\n'.join(task_parts)
+                description = full_content
+
             except Exception as e:
                 print(f"[{BOT_TYPE}] 读取原型失败: {e}")
+                description = f"参考原型: {proto_file}\n\n实现要求:\n{description}"
+        else:
+            description = f"参考原型文件不存在: {proto_path}\n\n实现要求:\n{description}"
 
     # Generate CrewAI script for this prototype
     script_id = str(uuid.uuid4())[:8]
@@ -654,8 +720,10 @@ def generate_proto_script(task_id, task_desc, output_file):
         "# Agent",
         "coder = Agent(role='Python Engineer', goal='Implement code based on prototype description', backstory='10 years Python experience, expert in FastAPI', verbose=True, llm=llm, tools=[shell])",
         "",
-        "task_description = 'Implement prototype: " + task_desc.replace("'", "\\'") + "'",
-        "task = Task(description=task_description, agent=coder, expected_output='Code and git commit')",
+        "# Use json.dumps to properly escape the multi-line task description",
+        "import json",
+        "task_description = json.dumps(" + json.dumps(task_desc, ensure_ascii=False) + ", ensure_ascii=False)",
+        "task = Task(description=json.loads(task_description), agent=coder, expected_output='Code and git commit')",
         "",
         "crew = Crew(agents=[coder], tasks=[task], process=Process.sequential, verbose=True)",
         "result = crew.kickoff()",
@@ -756,13 +824,19 @@ class Handler(BaseHTTPRequestHandler):
             STATE["completed"] += 1
             STATE["last_update"] = time.time()
 
-        self.send_response(200)
-        self.end_headers()
-        self.wfile.write(json.dumps({
-            "status": "ok",
-            "task_id": task_id,
-            "result": result
-        }).encode())
+        try:
+            self.send_response(200)
+            self.end_headers()
+            response_data = json.dumps({
+                "status": "ok",
+                "task_id": task_id,
+                "result": result
+            }).encode()
+            self.wfile.write(response_data)
+        except (BrokenPipeError, ConnectionResetError) as e:
+            print(f"[{BOT_TYPE}] 客户端连接已关闭，任务仍正常执行: {task_id}")
+        except Exception as e:
+            print(f"[{BOT_TYPE}] 发送响应失败: {e}")
 
     def _handle_ask_for_task(self, data):
         has_task = False
