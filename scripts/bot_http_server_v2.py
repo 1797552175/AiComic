@@ -111,8 +111,6 @@ def dispatch_task_to_dev(task):
 
             # 2. 更新任务状态为"进行中"
             update_task_status(task["record_id"], "进行中")
-            # 1. 更新任务状态为"进行中"
-            update_task_status(task["record_id"], "进行中")
 
             # 2. 发送任务到 Dev Bot
             import urllib.request
@@ -946,24 +944,20 @@ def execute_proto_task(task_id, payload):
 
 
 def generate_proto_script(task_id, task_desc, output_file):
-    """Generate CrewAI script for prototype implementation - 5 agents parallel execution."""
+    """Generate CrewAI script for prototype implementation with 4 concurrent agents."""
     import json
-    
-    # Escape single quotes in output_file path for Python string
+
     safe_out = output_file.replace("'", "\\'")
-    
-    # Use json.dumps to properly escape the task description for embedding in Python string
     task_desc_json = json.dumps(task_desc, ensure_ascii=False)
-    
-    # Build script using string concatenation
+
     script_lines = [
         "#!/usr/bin/env python3",
-        "\"\"\"CrewAI Prototype Task - " + str(task_id) + " (5 Agents Parallel)\"\"\"",
+        "\"\"\"CrewAI Prototype Task - " + str(task_id) + "\"\"\"",
         "import os",
         "import sys",
         "os.environ['OPENAI_API_KEY'] = os.environ.get('MINIMAX_API_KEY', '')",
         "",
-        "from crewai import Agent, Task, Crew, Process",
+        "from crewai import Agent, Task, Crew",
         "from crewai.llm import LLM",
         "from crewai.tools import BaseTool",
         "",
@@ -971,109 +965,39 @@ def generate_proto_script(task_id, task_desc, output_file):
         "",
         "class ShellTool(BaseTool):",
         "    name: str = 'shell'",
-        "    description: str = 'Execute shell command in /opt/AiComic'",
+        "    description: str = 'Execute shell command'",
         "",
         "    def _run(self, cmd: str):",
         "        import subprocess",
-        "        result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=180, cwd='/opt/AiComic')",
-        "        output = result.stdout + result.stderr",
-        "        print('[shell] $ ' + cmd[:100] + ' -> ' + str(result.returncode))",
-        "        return output",
+        "        result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=120, cwd='/opt/AiComic')",
+        "        return result.stdout + result.stderr",
         "",
         "shell = ShellTool()",
         "",
-        "# 5 Agents - All with shell tool access",
-        "frontend1 = Agent(",
-        "    role='Frontend Engineer 1',",
-        "    goal='Implement React/UI components based on prototype',",
-        "    backstory='5 years React/Next.js experience, expert in TypeScript',",
-        "    verbose=True,",
-        "    llm=llm,",
-        "    tools=[shell]",
-        ")",
+        "# 2 Frontend Engineers",
+        "frontend1 = Agent(role='Frontend Engineer 1', goal='Implement UI components in React', backstory='5 years React experience', verbose=True, llm=llm, tools=[shell])",
+        "frontend2 = Agent(role='Frontend Engineer 2', goal='Implement UI state management and API integration', backstory='5 years React experience', verbose=True, llm=llm, tools=[shell])",
         "",
-        "frontend2 = Agent(",
-        "    role='Frontend Engineer 2',",
-        "    goal='Implement UI components and integrate with backend APIs',",
-        "    backstory='5 years React/Vue experience, expert in responsive design',",
-        "    verbose=True,",
-        "    llm=llm,",
-        "    tools=[shell]",
-        ")",
+        "# 1 Backend Engineer",
+        "backend = Agent(role='Backend Engineer', goal='Implement FastAPI endpoints and database models', backstory='5 years Python/FastAPI experience', verbose=True, llm=llm, tools=[shell])",
         "",
-        "backend = Agent(",
-        "    role='Backend Engineer',",
-        "    goal='Implement FastAPI backend and database models',",
-        "    backstory='8 years Python/FastAPI experience, expert in PostgreSQL',",
-        "    verbose=True,",
-        "    llm=llm,",
-        "    tools=[shell]",
-        ")",
-        "",
-        "tester = Agent(",
-        "    role='Test Engineer',",
-        "    goal='Write unit tests and integration tests',",
-        "    backstory='4 years QA experience, expert in pytest',",
-        "    verbose=True,",
-        "    llm=llm,",
-        "    tools=[shell]",
-        ")",
-        "",
-        "devops = Agent(",
-        "    role='DevOps Engineer',",
-        "    goal='Ensure code is production-ready, git add/commit/push',",
-        "    backstory='5 years CI/CD experience, expert in Docker',",
-        "    verbose=True,",
-        "    llm=llm,",
-        "    tools=[shell]",
-        ")",
+        "# 1 DevOps Engineer",
+        "devops = Agent(role='DevOps Engineer', goal='Write tests and ensure deployable', backstory='3 years CI/CD experience', verbose=True, llm=llm, tools=[shell])",
         "",
         "task_description = " + task_desc_json,
         "",
-        "# Tasks - Frontend1 and Frontend2 work in parallel, then Backend, then Tester, then DevOps",
-        "task_fe1 = Task(",
-        "    description=task_description + '\\n\\n[Frontend1] Implement UI components in /opt/AiComic/apps/frontend/',",
-        "    agent=frontend1,",
-        "    expected_output='React components with clean code'",
-        ")",
+        "# 4 concurrent tasks",
+        "task1 = Task(description='[Frontend1] ' + task_description, agent=frontend1, expected_output='React components created')",
+        "task2 = Task(description='[Frontend2] ' + task_description, agent=frontend2, expected_output='State management done')",
+        "task3 = Task(description='[Backend] ' + task_description, agent=backend, expected_output='API endpoints created')",
+        "task4 = Task(description='[DevOps] ' + task_description, agent=devops, expected_output='Tests pass and code pushed')",
         "",
-        "task_fe2 = Task(",
-        "    description=task_description + '\\n\\n[Frontend2] Implement UI components and API integration in /opt/AiComic/apps/frontend/',",
-        "    agent=frontend2,",
-        "    expected_output='React components with API integration'",
-        ")",
-        "",
-        "task_be = Task(",
-        "    description=task_description + '\\n\\n[Backend] Implement API endpoints in /opt/AiComic/apps/backend/',",
-        "    agent=backend,",
-        "    expected_output='FastAPI endpoints with proper models'",
-        ")",
-        "",
-        "task_test = Task(",
-        "    description=task_description + '\\n\\n[Test] Write tests in /opt/AiComic/tests/',",
-        "    agent=tester,",
-        "    expected_output='pytest test files'",
-        ")",
-        "",
-        "task_devops = Task(",
-        "    description='Git add, commit and push all changes. Run: cd /opt/AiComic && git add . && git commit -m \"feat: ' + str(task_id) + ' - prototype implementation\" && git push',",
-        "    agent=devops,",
-        "    expected_output='Git push successful'",
-        ")",
-        "",
-        "# Parallel execution - FE1 and FE2 together, then sequential BE->Test->DevOps",
-        "crew = Crew(",
-        "    agents=[frontend1, frontend2, backend, tester, devops],",
-        "    tasks=[task_fe1, task_fe2, task_be, task_test, task_devops],",
-        "    process=Process.parallel,",
-        "    verbose=True",
-        ")",
+        "crew = Crew(agents=[frontend1, frontend2, backend, devops], tasks=[task1, task2, task3, task4], verbose=True)",
         "result = crew.kickoff()",
         "with open('" + safe_out + ".result', 'w') as f:",
         "    f.write(str(result))",
     ]
     return '\n'.join(script_lines)
-
 class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
     """支持并发的 HTTP 服务器，避免长任务阻塞 /health 检查"""
     daemon_threads = True
