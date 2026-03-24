@@ -2000,7 +2000,7 @@ class Handler(BaseHTTPRequestHandler):
         task_success = False
         try:
             if "TODO" in task_id:
-                result = execute_todo_task(task_id, payload, record_id)
+                result = execute_todo_task(task_id, payload)
             elif "DEPLOY" in task_id:
                 result = execute_deploy_task(task_id, payload)
             elif "FIX" in task_id:
