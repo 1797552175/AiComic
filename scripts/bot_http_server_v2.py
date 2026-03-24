@@ -39,32 +39,50 @@ STATE = {
 
 TASK_QUEUE = {"pending": [], "running": [], "completed": []}
 
+# SSH 连接池控制
+SSH_CONTROL_PATH = "/tmp/ssh_mux_%h_%p_%r"
+_ssh_connection_lock = False
 
-# === SSH 到 Server B ===
+
+# === SSH 到 Server B（带连接池和并发控制）===
 def ssh_exec(cmd, timeout=30):
-    """SSH 到 Server B 执行命令"""
-    ssh_cmd = [
-        "ssh", "-o", "StrictHostKeyChecking=no",
-        "-i", "/root/.ssh/id_ed25519",
-        "-o", f"ConnectTimeout={timeout // 3}",
-        f"root@{SERVER_B_HOST}", cmd
-    ]
+    """SSH 到 Server B 执行命令（带并发控制）"""
+    global _ssh_connection_lock
+    
+    # 等待锁（避免并发 SSH）
+    while _ssh_connection_lock:
+        import time
+        time.sleep(0.5)
+    
+    _ssh_connection_lock = True
     try:
-        result = subprocess.run(
-            ssh_cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            timeout=timeout
-        )
-        return (
-            result.stdout.decode("utf-8", errors="ignore"),
-            result.stderr.decode("utf-8", errors="ignore"),
-            result.returncode
-        )
-    except subprocess.TimeoutExpired:
-        return "", "SSH timeout", -1
-    except Exception as e:
-        return "", str(e), -1
+        ssh_cmd = [
+            "ssh", "-o", "StrictHostKeyChecking=no",
+            "-i", "/root/.ssh/id_ed25519",
+            "-o", f"ConnectTimeout={timeout // 3}",
+            "-o", f"ControlPath={SSH_CONTROL_PATH}",
+            "-o", "ControlMaster=auto",
+            "-o", "ControlPersist=60",
+            f"root@{SERVER_B_HOST}", cmd
+        ]
+        try:
+            result = subprocess.run(
+                ssh_cmd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                timeout=timeout
+            )
+            return (
+                result.stdout.decode("utf-8", errors="ignore"),
+                result.stderr.decode("utf-8", errors="ignore"),
+                result.returncode
+            )
+        except subprocess.TimeoutExpired:
+            return "", "SSH timeout", -1
+        except Exception as e:
+            return "", str(e), -1
+    finally:
+        _ssh_connection_lock = False
 
 
 # === 从飞书任务板读取待分配任务 ===
@@ -633,10 +651,13 @@ def execute_todo_task(task_id, payload):
     with open(local_script, "w") as f:
         f.write(script)
 
-    # SCP 上传到 Server B
+    # SCP 上传到 Server B（带限流）
     scp_cmd = [
         "scp", "-o", "StrictHostKeyChecking=no",
         "-i", "/root/.ssh/id_ed25519",
+        "-o", f"ControlPath={SSH_CONTROL_PATH}",
+        "-o", "ControlMaster=auto",
+        "-l", "10240",  # 限速 10Mbps
         local_script,
         f"root@{SERVER_B_HOST}:{script_file}"
     ]
@@ -764,32 +785,28 @@ def execute_fix_task(task_id, payload):
     return {"status": "completed", "message": "Fix deployed successfully"}
 
 
-def extract_proto_sections(content):
-    """从原型内容中提取关键章节"""
-    sections = {}
-    lines = content.split('\n')
-    current_section = '正文'
-    current_lines = []
-
-    for line in lines:
-        # 检测章节标题
-        if line.startswith('## ') or line.startswith('# '):
-            if current_lines:
-                sections[current_section] = '\n'.join(current_lines)
-            current_section = line.lstrip('# ')
-            current_lines = []
-        else:
-            current_lines.append(line)
-
-    if current_lines:
-        sections[current_section] = '\n'.join(current_lines)
-
-    return sections
-
 
 def execute_proto_task(task_id, payload):
     """Execute prototype implementation task - use CrewAI to implement the prototype"""
     print(f"[{BOT_TYPE}] 执行原型研发任务: {task_id}")
+
+    # 任务间隔保护：避免短时间连续提交任务导致负载飙升
+    import time
+    import os
+    task_interval_file = "/tmp/last_proto_task_time"
+    last_time = 0
+    if os.path.exists(task_interval_file):
+        try:
+            last_time = int(open(task_interval_file).read().strip())
+        except:
+            pass
+    current_time = int(time.time())
+    if current_time - last_time < 30:  # 至少间隔 30 秒
+        wait_time = 30 - (current_time - last_time)
+        print(f"[{BOT_TYPE}] 任务间隔保护，等待 {wait_time} 秒...")
+        time.sleep(wait_time)
+    with open(task_interval_file, "w") as f:
+        f.write(str(int(time.time())))
 
     # Get description from payload
     description = payload.get("description", "实现原型功能")
@@ -858,10 +875,13 @@ def execute_proto_task(task_id, payload):
     with open(local_script, "w") as f:
         f.write(script)
 
-    # Upload to Server B
+    # Upload to Server B (with rate limit)
     scp_cmd = [
         "scp", "-o", "StrictHostKeyChecking=no",
         "-i", "/root/.ssh/id_ed25519",
+        "-o", f"ControlPath={SSH_CONTROL_PATH}",
+        "-o", "ControlMaster=auto",
+        "-l", "10240",  # 限速 10Mbps
         local_script,
         f"root@{SERVER_B_HOST}:{script_file}"
     ]
@@ -944,7 +964,7 @@ def execute_proto_task(task_id, payload):
 
 
 def generate_proto_script(task_id, task_desc, output_file):
-    """Generate CrewAI script for prototype implementation with 4 concurrent agents."""
+    """Generate CrewAI script for prototype implementation with 6 concurrent agents."""
     import json
 
     safe_out = output_file.replace("'", "\\'")
@@ -978,21 +998,27 @@ def generate_proto_script(task_id, task_desc, output_file):
         "frontend1 = Agent(role='Frontend Engineer 1', goal='Implement UI components in React', backstory='5 years React experience', verbose=True, llm=llm, tools=[shell])",
         "frontend2 = Agent(role='Frontend Engineer 2', goal='Implement UI state management and API integration', backstory='5 years React experience', verbose=True, llm=llm, tools=[shell])",
         "",
-        "# 1 Backend Engineer",
-        "backend = Agent(role='Backend Engineer', goal='Implement FastAPI endpoints and database models', backstory='5 years Python/FastAPI experience', verbose=True, llm=llm, tools=[shell])",
+        "# 2 Backend Engineers",
+        "backend1 = Agent(role='Backend Engineer 1', goal='Implement FastAPI endpoints', backstory='5 years Python/FastAPI experience', verbose=True, llm=llm, tools=[shell])",
+        "backend2 = Agent(role='Backend Engineer 2', goal='Implement database models and SQL', backstory='5 years SQLAlchemy experience', verbose=True, llm=llm, tools=[shell])",
+        "",
+        "# 1 Test Engineer",
+        "tester = Agent(role='Test Engineer', goal='Write unit tests', backstory='3 years testing experience', verbose=True, llm=llm, tools=[shell])",
         "",
         "# 1 DevOps Engineer",
-        "devops = Agent(role='DevOps Engineer', goal='Write tests and ensure deployable', backstory='3 years CI/CD experience', verbose=True, llm=llm, tools=[shell])",
+        "devops = Agent(role='DevOps Engineer', goal='Verify code works, git commit/push', backstory='3 years CI/CD experience', verbose=True, llm=llm, tools=[shell])",
         "",
         "task_description = " + task_desc_json,
         "",
-        "# 4 concurrent tasks",
+        "# 6 concurrent tasks",
         "task1 = Task(description='[Frontend1] ' + task_description, agent=frontend1, expected_output='React components created')",
         "task2 = Task(description='[Frontend2] ' + task_description, agent=frontend2, expected_output='State management done')",
-        "task3 = Task(description='[Backend] ' + task_description, agent=backend, expected_output='API endpoints created')",
-        "task4 = Task(description='[DevOps] ' + task_description, agent=devops, expected_output='Tests pass and code pushed')",
+        "task3 = Task(description='[Backend1] ' + task_description, agent=backend1, expected_output='API endpoints created')",
+        "task4 = Task(description='[Backend2] ' + task_description, agent=backend2, expected_output='Database models created')",
+        "task5 = Task(description='[Test] ' + task_description, agent=tester, expected_output='Tests written')",
+        "task6 = Task(description='[DevOps] ' + task_description, agent=devops, expected_output='Code git pushed')",
         "",
-        "crew = Crew(agents=[frontend1, frontend2, backend, devops], tasks=[task1, task2, task3, task4], verbose=True)",
+        "crew = Crew(agents=[frontend1, frontend2, backend1, backend2, tester, devops], tasks=[task1, task2, task3, task4, task5, task6], verbose=True)",
         "result = crew.kickoff()",
         "with open('" + safe_out + ".result', 'w') as f:",
         "    f.write(str(result))",
