@@ -12,6 +12,8 @@ import threading
 
 # 保护 STATE 字典的线程安全访问
 state_lock = threading.Lock()
+# 保护 TASK_QUEUE 的线程安全访问
+task_queue_lock = threading.Lock()
 
 import subprocess
 import uuid
@@ -89,9 +91,30 @@ def fetch_bitable_tasks():
 def dispatch_task_to_dev(task):
     """通过 HTTP 调用 dev bot 执行任务（异步，不等待结果）"""
     import threading
+    import urllib.request
 
     def _dispatch():
         try:
+            # 1. 检查 Dev Bot 是否忙碌
+            try:
+                with urllib.request.urlopen("http://localhost:8003/status", timeout=5) as r:
+                    dev_state = json.loads(r.read())
+                if dev_state.get("status") == "busy":
+                    # Dev Bot 忙碌，将任务重新放回队列等待
+                    with task_queue_lock:
+                        TASK_QUEUE["pending"].insert(0, task)
+                    print(f"[Monitor] Dev Bot 忙碌，任务 {task['task_id']} 重新入队")
+                    update_task_status(task["record_id"], "待领取")
+                    return
+            except Exception as e:
+                print(f"[Monitor] 检查 Dev Bot 状态失败: {e}，仍尝试分发")
+
+            # 2. 更新任务状态为"进行中"
+            update_task_status(task["record_id"], "进行中")
+            # 1. 更新任务状态为"进行中"
+            update_task_status(task["record_id"], "进行中")
+
+            # 2. 发送任务到 Dev Bot
             import urllib.request
             data = json.dumps({
                 "task_id": task["task_id"],
@@ -109,10 +132,41 @@ def dispatch_task_to_dev(task):
             print(f"[Monitor] 已分发任务: {task['task_id']}")
         except Exception as e:
             print(f"[Monitor] 分发失败: {e}")
+            # 分发失败时更新状态为"待领取"
+            try:
+                update_task_status(task["record_id"], "待领取")
+            except:
+                pass
 
     thread = threading.Thread(target=_dispatch, daemon=True)
     thread.start()
     return True
+
+
+def update_task_status(record_id, status):
+    """更新飞书任务板状态"""
+    import urllib.request
+    with open('/root/.openclaw/openclaw.json') as f:
+        config = json.load(f)
+    feishu = config['channels']['feishu']
+
+    data = json.dumps({"app_id": feishu['appId'], "app_secret": feishu['appSecret']}).encode()
+    req = urllib.request.Request("https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal", data=data, headers={"Content-Type": "application/json"})
+    with urllib.request.urlopen(req, timeout=10) as resp:
+        token = json.loads(resp.read()).get("tenant_access_token", "")
+
+    APP_TOKEN = "InUZbPrTZaRm5LsRz9jctF27nGu"
+    TABLE_ID = "tblNWtihltzV0SOO"
+
+    update_url = f"https://open.feishu.cn/open-apis/bitable/v1/apps/{APP_TOKEN}/tables/{TABLE_ID}/records/{record_id}"
+    update_data = json.dumps({"fields": {"状态": status}}).encode()
+    req = urllib.request.Request(update_url, data=update_data, headers={"Authorization": "Bearer " + token, "Content-Type": "application/json"}, method='PUT')
+    with urllib.request.urlopen(req, timeout=10) as resp:
+        result = json.loads(resp.read())
+        if result.get("code") == 0:
+            print(f"[Monitor] 任务状态更新: {record_id[:10]}... -> {status}")
+        else:
+            print(f"[Monitor] 状态更新失败: {result.get('msg')}")
 
 
 # === 原型扫描与任务创建 ===
@@ -448,7 +502,8 @@ def fetch_and_process_missed_mentions():
                 "source": "missed_mention",
                 "msg_id": msg_id
             }
-            TASK_QUEUE["pending"].insert(0, task)
+            with task_queue_lock:
+                TASK_QUEUE["pending"].insert(0, task)
             print(f"[Monitor] 已将遗漏任务加入队列: {task['task_id']}")
 
         # 保存已处理的 message_id
@@ -485,11 +540,15 @@ def dispatcher_loop():
                 for task in tasks:
                     existing = [t for t in TASK_QUEUE["pending"] if t.get("task_id") == task["task_id"]]
                     if not existing:
-                        TASK_QUEUE["pending"].append(task)
+                        with task_queue_lock:
+                            TASK_QUEUE["pending"].append(task)
                         print(f"[Monitor] 新任务: {task['task_id']} - {task['desc'][:50]}")
-                if TASK_QUEUE["pending"]:
-                    task = TASK_QUEUE["pending"].pop(0)
-                    TASK_QUEUE["running"].append(task)
+                with task_queue_lock:
+                    has_pending = bool(TASK_QUEUE["pending"])
+                if has_pending:
+                    with task_queue_lock:
+                        task = TASK_QUEUE["pending"].pop(0)
+                        TASK_QUEUE["running"].append(task)
                     STATE["last_dispatch"] = time.time()
                     dispatch_task_to_dev(task)
             time.sleep(10)
@@ -826,25 +885,66 @@ def execute_proto_task(task_id, payload):
 
     # Check result
     result_file = f"{output_file}.result"
-    check_cmd = f"test -f {result_file} && cat {result_file} || echo 'NO_RESULT'"
+    log_file = f"{output_file}.log"
+    
+    # First check if result file exists
+    check_result_exists = f"test -f {result_file} && echo 'EXISTS' || echo 'NOT_EXISTS'"
+    exists_result, _, _ = ssh_exec(check_result_exists, timeout=10)
+    
+    if 'NOT_EXISTS' in exists_result:
+        # No result file - check log for errors
+        check_log = f"cat {log_file}"
+        log_content, _, _ = ssh_exec(check_log, timeout=10)
+        print(f"[{BOT_TYPE}] 无 result 文件，日志内容: {log_content[:1000]}")
+        
+        # Check for syntax errors
+        if 'SyntaxError' in log_content:
+            return {
+                "status": "failed",
+                "error": "脚本语法错误",
+                "log": log_content[:2000]
+            }
+        # Check for other errors
+        if code != 0 or 'Error' in log_content or 'Exception' in log_content:
+            return {
+                "status": "failed",
+                "error": f"CrewAI 执行失败 (退出码: {code})",
+                "log": log_content[:2000]
+            }
+        return {
+            "status": "failed",
+            "error": "未生成 result 文件",
+            "log": log_content[:2000]
+        }
+    
+    # Result file exists - read it
+    check_cmd = f"cat {result_file}"
     result_content, _, _ = ssh_exec(check_cmd, timeout=10)
     print(f"[{BOT_TYPE}] 执行结果: {result_content[:500]}")
-
+    
+    # Also check log for any warnings
+    check_log = f"tail -50 {log_file}"
+    log_content, _, _ = ssh_exec(check_log, timeout=10)
+    
     return {
         "status": "completed",
         "message": "Prototype task executed via CrewAI",
         "script": script_file,
-        "result": result_content[:500]
+        "result": result_content[:500],
+        "log": log_content[-500:] if log_content else ""
     }
 
 
 def generate_proto_script(task_id, task_desc, output_file):
     """Generate CrewAI script for prototype implementation."""
+    import json
+    
     # Escape single quotes in output_file path for Python string
     safe_out = output_file.replace("'", "\\'")
-    # Escape single quotes in task_desc for Python string
-    safe_desc = task_desc.replace("'", "\\'")
-
+    
+    # Use json.dumps to properly escape the task description for embedding in Python string
+    task_desc_json = json.dumps(task_desc, ensure_ascii=False)
+    
     # Build script using string concatenation
     script_lines = [
         "#!/usr/bin/env python3",
@@ -865,27 +965,30 @@ def generate_proto_script(task_id, task_desc, output_file):
         "",
         "    def _run(self, cmd: str):",
         "        import subprocess",
-        "        result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=60, cwd='/opt/AiComic')",
+        "        result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=120, cwd='/opt/AiComic')",
         "        return result.stdout + result.stderr",
         "",
         "shell = ShellTool()",
         "",
-        "# Backend Engineer Agent",
-        "backend = Agent(role='Backend Engineer', goal='Implement API endpoints and database models', backstory='5 years FastAPI experience', verbose=True, llm=llm, tools=[shell])",
+        "# Main Engineer Agent",
+        "engineer = Agent(",
+        "    role='Senior Full-Stack Engineer',",
+        "    goal='Implement the prototype according to the specification',",
+        "    backstory='Expert Python/React developer with 10 years experience',",
+        "    verbose=True,",
+        "    llm=llm,",
+        "    tools=[shell]",
+        ")",
         "",
-        "# Frontend Engineer Agent",
-        "frontend = Agent(role='Frontend Engineer', goal='Implement UI components', backstory='5 years React experience', verbose=True, llm=llm, tools=[shell])",
+        "task_description = " + task_desc_json,
         "",
-        "# DevOps Agent",
-        "devops = Agent(role='DevOps Engineer', goal='Write tests and ensure deployable', backstory='3 years CI/CD experience', verbose=True, llm=llm, tools=[shell])",
+        "task = Task(",
+        "    description=task_description,",
+        "    agent=engineer,",
+        "    expected_output='Complete code implementation with git commit'",
+        ")",
         "",
-        "task_description = '" + safe_desc + "'",
-        "",
-        "task1 = Task(description=task_description + '\\n\\n[Backend] Write code in /opt/AiComic/apps/backend/', agent=backend, expected_output='Backend code created')",
-        "task2 = Task(description=task_description + '\\n\\n[Frontend] Write code in /opt/AiComic/apps/frontend/', agent=frontend, expected_output='Frontend code created')",
-        "task3 = Task(description='Write tests. Run tests. Git add/commit/push.', agent=devops, expected_output='Tests pass and code pushed')",
-        "",
-        "crew = Crew(agents=[backend, frontend, devops], tasks=[task1, task2, task3], process=Process.parallel, verbose=True)",
+        "crew = Crew(agents=[engineer], tasks=[task], process=Process.sequential, verbose=True)",
         "result = crew.kickoff()",
         "with open('" + safe_out + ".result', 'w') as f:",
         "    f.write(str(result))",
@@ -964,21 +1067,28 @@ class Handler(BaseHTTPRequestHandler):
         payload = data.get("payload", {})
         task_type = data.get("task_type", "unknown")
 
-        if "TODO" in task_id:
-            result = execute_todo_task(task_id, payload)
-        elif "DEPLOY" in task_id:
-            # Deployment task - sync code and run docker-compose
-            result = execute_deploy_task(task_id, payload)
-        elif "FIX" in task_id:
-            # Fix task - run docker-compose build/pull on Server B
-            result = execute_fix_task(task_id, payload)
-        elif "PROTO" in task_id:
-            # Prototype implementation task - call CrewAI to implement
-            result = execute_proto_task(task_id, payload)
-        else:
-            result = {"status": "completed", "note": "task handled"}
+        try:
+            if "TODO" in task_id:
+                result = execute_todo_task(task_id, payload)
+            elif "DEPLOY" in task_id:
+                result = execute_deploy_task(task_id, payload)
+            elif "FIX" in task_id:
+                result = execute_fix_task(task_id, payload)
+            elif "PROTO" in task_id:
+                result = execute_proto_task(task_id, payload)
+            else:
+                result = {"status": "completed", "note": "unknown task type"}
+            task_success = True
+        except Exception as e:
+            result = {"status": "error", "error": str(e)}
+            task_success = False
+            print(f"[{BOT_TYPE}] 任务执行异常: {task_id} -> {e}")
 
         with state_lock:
+            STATE["status"] = "idle"
+            STATE["progress"] = 100 if task_success else 0
+            STATE["completed"] += 1 if task_success else 0
+            STATE["last_update"] = time.time()
             STATE["status"] = "idle"
             STATE["progress"] = 100
             STATE["completed"] += 1
