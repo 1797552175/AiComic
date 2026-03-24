@@ -13,6 +13,7 @@ import subprocess
 import uuid
 import re
 from http.server import HTTPServer, BaseHTTPRequestHandler
+from socketserver import ThreadingMixIn
 
 PORT = int(sys.argv[2]) if len(sys.argv) > 2 else 8001
 BOT_TYPE = sys.argv[1] if len(sys.argv) > 1 else "unknown"
@@ -26,6 +27,8 @@ STATE = {
     "errors": 0,
     "completed": 0,
     "pending_tasks": 0,
+    "dispatcher_running": False,
+    "last_dispatch": None,
 }
 
 TASK_QUEUE = {"pending": [], "running": [], "completed": []}
@@ -63,12 +66,12 @@ def fetch_bitable_tasks():
     """从飞书任务板读取待分配任务"""
     try:
         result = subprocess.run(
-            ["python3", "/tmp/fetch_bitable_tasks.py"],
+            ["python3", "/opt/AiComic/tmp/fetch_bitable_tasks.py"],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             timeout=15
         )
-        output_file = "/tmp/bitable_pending_tasks.json"
+        output_file = "/opt/AiComic/tmp/bitable_pending_tasks.json"
         if os.path.exists(output_file):
             with open(output_file) as f:
                 data = json.load(f)
@@ -102,13 +105,116 @@ def dispatch_task_to_dev(task):
         return False
 
 
+# === 原型扫描与任务创建 ===
+PROTOTYPE_DIR = "/opt/AiComic/原型/"
+PROCESSED_PROTOTYPES_FILE = "/opt/AiComic/tmp/processed_prototypes.txt"
+os.makedirs("/opt/AiComic/tmp", exist_ok=True)
+
+def get_processed_prototypes():
+    """获取已处理的原型文件列表"""
+    if os.path.exists(PROCESSED_PROTOTYPES_FILE):
+        try:
+            with open(PROCESSED_PROTOTYPES_FILE, encoding="utf-8", errors="ignore") as f:
+                content = f.read().strip()
+                if content:
+                    return set(content.split("\n"))
+                return set()
+        except:
+            return set()
+    return set()
+
+def mark_prototype_processed(filename):
+    """标记原型已处理"""
+    processed = get_processed_prototypes()
+    processed.add(filename)
+    with open(PROCESSED_PROTOTYPES_FILE, "w") as f:
+        f.write("\n".join(processed))
+
+def extract_feature_name(proto_file):
+    """从原型文件名提取功能名称"""
+    import re
+    # 去除日期后缀和.md
+    name = re.sub(r'_\d+\.md$', '', proto_file)
+    name = re.sub(r'\.md$', '', name)
+    name = name.replace('_', ' ')
+    return name
+
+def on_new_prototype(proto_file, proto_path):
+    """发现新原型时：创建研发任务"""
+    global STATE
+    print(f"[{BOT_TYPE}] 发现新原型: {proto_file}")
+
+    # 读取原型内容，获取功能描述
+    try:
+        with open(proto_path, 'r', encoding='utf-8', errors='ignore') as f:
+            content = f.read(500)  # 只读前500字符
+    except Exception as e:
+        print(f"[{BOT_TYPE}] 读取原型失败: {e}")
+        content = ""
+
+    # 生成任务ID
+    import hashlib
+    task_hash = hashlib.md5(proto_file.encode()).hexdigest()[:6]
+    task_id = f"PROTO-{task_hash.upper()}"
+
+    # 直接调用 create_bitable_task.py 创建任务
+    try:
+        import subprocess
+        result = subprocess.run(
+            ["python3", "/opt/AiComic/scripts/create_bitable_task.py",
+             "--task-id", task_id,
+             "--description", f"【原型研发】{extract_feature_name(proto_file)}\n参考：{proto_path}\n\n{content[:200]}",
+             "--source", "prototype",
+             "--assignee", "研发机器人"],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=30
+        )
+        if result.returncode == 0:
+            print(f"[{BOT_TYPE}] 已创建研发任务: {task_id}")
+        else:
+            print(f"[{BOT_TYPE}] 创建任务失败: {result.stderr.decode()}")
+    except Exception as e:
+        print(f"[{BOT_TYPE}] 创建任务异常: {e}")
+
+    mark_prototype_processed(proto_file)
+    STATE["last_update"] = time.time()
+
+def scan_prototypes():
+    """扫描原型目录，发现新文件"""
+    if not os.path.exists(PROTOTYPE_DIR):
+        return
+    processed = get_processed_prototypes()
+    for fname in os.listdir(PROTOTYPE_DIR):
+        if not fname.endswith(".md"):
+            continue
+        if fname not in processed:
+            proto_path = os.path.join(PROTOTYPE_DIR, fname)
+            on_new_prototype(fname, proto_path)
+
+def process_existing_prototypes():
+    """处理所有现有原型（启动时调用一次）"""
+    print(f"[{BOT_TYPE}] 扫描现有原型...")
+    scan_prototypes()
+    # 统计
+    if os.path.exists(PROTOTYPE_DIR):
+        total = len([f for f in os.listdir(PROTOTYPE_DIR) if f.endswith(".md")])
+        processed = len(get_processed_prototypes())
+        print(f"[{BOT_TYPE}] 原型统计：共{total}个，已处理{processed}个")
+        return total, processed
+    return 0, 0
+
+
 # === 调度循环 ===
 def dispatcher_loop():
     """调度循环 - 轮询任务板并分发"""
+    global STATE
     print(f"[{BOT_TYPE}] Dispatcher 启动")
+    STATE["dispatcher_running"] = True
     while True:
         try:
             if BOT_TYPE == "monitor":
+                # 扫描原型目录发现新原型
+                scan_prototypes()
+                # 读取任务板待分配任务
                 tasks = fetch_bitable_tasks()
                 STATE["pending_tasks"] = len(tasks)
                 for task in tasks:
@@ -119,6 +225,7 @@ def dispatcher_loop():
                 if TASK_QUEUE["pending"]:
                     task = TASK_QUEUE["pending"].pop(0)
                     TASK_QUEUE["running"].append(task)
+                    STATE["last_dispatch"] = time.time()
                     dispatch_task_to_dev(task)
             time.sleep(10)
         except Exception as e:
@@ -149,6 +256,11 @@ def generate_crewai_script(task_id, task_desc, output_file):
         '    description: str = "执行 shell 命令并返回输出结果"\n'
         "\n"
         "    def _run(self, cmd: str):\n"
+        "        # Fix fullwidth punctuation in generated Python code\n"
+        "        import re\n"
+        "        fullwidth_map = {'\\uff1a': ':', '\\uff08': '(', '\\uff09': ')', '\\uff0c': ',', '\\uff0e': '.', '\\uff01': '!', '\\uff1f': '?', '\\uff1b': ';', '\\uff0d': '-', '\\uff1d': '=', '\\uff0b': '+', '\\uff02': '\"', '\\uff07': \"'\"}\n"
+        "        for fw, asc in fullwidth_map.items():\n"
+        "            cmd = cmd.replace(fw, asc)\n"
         "        result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=30, cwd='/opt/AiComic')\n"
         "        output = result.stdout + result.stderr\n"
         "        print('[shell] $ ' + cmd + ' -> ' + str(result.returncode))\n"
@@ -192,7 +304,7 @@ def execute_todo_task(task_id, payload):
     script = generate_crewai_script(task_id, desc, output_file)
 
     # 写入脚本到本地
-    local_script = f"/tmp/crewai_{task_id}_{script_id}.py"
+    local_script = f"/opt/AiComic/tmp/crewai_{task_id}_{script_id}.py"
     with open(local_script, "w") as f:
         f.write(script)
 
@@ -229,6 +341,224 @@ def execute_todo_task(task_id, payload):
     }
 
 
+def execute_deploy_task(task_id, payload):
+    """Execute deployment task - sync code to Server B and run docker-compose"""
+    print(f"[{BOT_TYPE}] 执行部署任务: {task_id}")
+
+    # Step 1: Create tarball locally
+    local_tar = "/opt/AiComic/tmp/aicomic_deploy.tar.gz"
+    print(f"[{BOT_TYPE}] 创建代码包...")
+    tar_result = subprocess.run(
+        ["tar", "czf", local_tar, "--exclude=.git", "--exclude=__pycache__", "--exclude=*.pyc", "-C", "/opt/AiComic", "."],
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=60
+    )
+    if tar_result.returncode != 0:
+        return {"status": "failed", "error": "tar failed: %s" % tar_result.stderr.decode()}
+
+    # Step 2: Upload using SCP
+    print(f"[{BOT_TYPE}] 上传代码包到 Server B...")
+    scp_result = subprocess.run(
+        ["scp", "-o", "StrictHostKeyChecking=no", "-i", "/root/.ssh/id_ed25519", local_tar, "root@%s:/tmp/aicomic_deploy.tar.gz" % SERVER_B_HOST],
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=120
+    )
+    if scp_result.returncode != 0:
+        err_msg = scp_result.stderr.decode()
+        print(f"[{BOT_TYPE}] SCP failed: {err_msg}")
+        return {"status": "failed", "error": "scp failed: %s" % err_msg}
+    print(f"[{BOT_TYPE}] 上传完成")
+
+    # Step 3: Extract on Server B
+    print(f"[{BOT_TYPE}] 解压代码...")
+    out, err, code = ssh_exec("mkdir -p /opt/AiComic && tar xzf /tmp/aicomic_deploy.tar.gz -C /opt/AiComic && rm /tmp/aicomic_deploy.tar.gz", timeout=60)
+    if code != 0:
+        return {"status": "failed", "error": "extract failed: %s" % err}
+    print(f"[{BOT_TYPE}] 代码同步完成")
+
+    # Step 4: Check docker-compose file exists
+    exists, _, _ = ssh_exec("test -f /opt/AiComic/apps/backend/docker-compose.yml && echo exists || echo missing", timeout=10)
+    if "missing" in exists:
+        return {"status": "failed", "error": "docker-compose.yml not found on Server B"}
+
+    # Step 5: Stop existing containers
+    print(f"[{BOT_TYPE}] 停止旧容器...")
+    ssh_exec("cd /opt/AiComic/apps/backend && docker-compose down 2>/dev/null || true", timeout=60)
+
+    # Step 6: Build and start containers
+    print(f"[{BOT_TYPE}] 构建并启动 Docker 容器...")
+    out, err, code = ssh_exec("cd /opt/AiComic/apps/backend && docker-compose up -d --build", timeout=600)
+    if code != 0:
+        print(f"[{BOT_TYPE}] Docker 构建失败: {err}")
+        return {"status": "failed", "error": err}
+    print(f"[{BOT_TYPE}] Docker 容器启动完成")
+
+    # Step 7: Verify service is running
+    print(f"[{BOT_TYPE}] 验证服务状态...")
+    out, _, _ = ssh_exec("docker ps --filter name=aicomic --format '{{.Names}}: {{.Status}}'", timeout=10)
+    print(f"[{BOT_TYPE}] 运行中的容器: {out}")
+
+    return {
+        "status": "completed",
+        "containers": out.strip(),
+        "message": "Deployment completed successfully"
+    }
+
+
+def execute_fix_task(task_id, payload):
+    """Execute fix task - sync latest code and rebuild containers"""
+    print(f"[{BOT_TYPE}] 执行修复任务: {task_id}")
+
+    # Sync latest code
+    print(f"[{BOT_TYPE}] 同步最新代码到 Server B...")
+    local_tar = "/opt/AiComic/tmp/aicomic_fix.tar.gz"
+    tar_result = subprocess.run(
+        ["tar", "czf", local_tar, "--exclude=.git", "--exclude=__pycache__", "--exclude=*.pyc", "-C", "/opt/AiComic", "."],
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=60
+    )
+    if tar_result.returncode != 0:
+        return {"status": "failed", "error": "tar failed"}
+
+    # Upload
+    scp_result = subprocess.run(
+        ["scp", "-o", "StrictHostKeyChecking=no", "-i", "/root/.ssh/id_ed25519", local_tar, "root@%s:/tmp/aicomic_fix.tar.gz" % SERVER_B_HOST],
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=120
+    )
+    if scp_result.returncode != 0:
+        return {"status": "failed", "error": "scp failed"}
+
+    # Extract
+    out, err, code = ssh_exec("tar xzf /tmp/aicomic_fix.tar.gz -C /opt/AiComic && rm /tmp/aicomic_fix.tar.gz", timeout=60)
+    if code != 0:
+        return {"status": "failed", "error": "extract failed"}
+
+    # Rebuild and restart
+    print(f"[{BOT_TYPE}] 重建容器...")
+    out, err, code = ssh_exec("cd /opt/AiComic/apps/backend && docker-compose down 2>/dev/null; docker-compose build && docker-compose up -d", timeout=600)
+    if code != 0:
+        return {"status": "failed", "error": err}
+
+    return {"status": "completed", "message": "Fix deployed successfully"}
+
+
+def execute_proto_task(task_id, payload):
+    """Execute prototype implementation task - use CrewAI to implement the prototype"""
+    print(f"[{BOT_TYPE}] 执行原型研发任务: {task_id}")
+
+    # Get description from payload
+    description = payload.get("description", "实现原型功能")
+    proto_file = payload.get("proto_file", "")
+    proto_path = None
+
+    # Read prototype file if referenced
+    if proto_file:
+        proto_path = os.path.join(PROTOTYPE_DIR, proto_file)
+        if os.path.exists(proto_path):
+            try:
+                with open(proto_path, 'r', encoding='utf-8', errors='ignore') as f:
+                    proto_content = f.read()
+                print(f"[{BOT_TYPE}] 原型内容已读取: {len(proto_content)} 字符")
+                # Prepend to description
+                description = f"参考原型: {proto_file}\n\n{proto_content[:2000]}\n\n实现要求:\n{description}"
+            except Exception as e:
+                print(f"[{BOT_TYPE}] 读取原型失败: {e}")
+
+    # Generate CrewAI script for this prototype
+    script_id = str(uuid.uuid4())[:8]
+    script_file = f"/opt/AiComic/scripts/generated/crewai_proto_{task_id}_{script_id}.py"
+    output_file = f"/opt/AiComic/scripts/generated/proto_result_{script_id}"
+
+    script = generate_proto_script(task_id, description, output_file)
+
+    # Write script locally
+    local_script = f"/opt/AiComic/opt/AiComic/tmp/crewai_proto_{task_id}_{script_id}.py"
+    with open(local_script, "w") as f:
+        f.write(script)
+
+    # Upload to Server B
+    scp_cmd = [
+        "scp", "-o", "StrictHostKeyChecking=no",
+        "-i", "/root/.ssh/id_ed25519",
+        local_script,
+        f"root@{SERVER_B_HOST}:{script_file}"
+    ]
+    r = subprocess.run(scp_cmd, timeout=30, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if r.returncode != 0:
+        err = r.stderr.decode()
+        print(f"[{BOT_TYPE}] 上传脚本失败: {err}")
+        return {"status": "failed", "error": err}
+    print(f"[{BOT_TYPE}] 脚本已上传: {script_file}")
+
+    # Execute on Server B via docker
+    container = "crewai-runtime"
+    run_cmd = (
+        f"docker exec -e MINIMAX_API_KEY=\"$MINIMAX_API_KEY\" "
+        f"{container} python {script_file} > {output_file}.log 2>&1"
+    )
+    stdout, stderr, code = ssh_exec(run_cmd, timeout=600)
+    print(f"[{BOT_TYPE}] CrewAI 执行完成，退出码: {code}")
+
+    # Check result
+    result_file = f"{output_file}.result"
+    check_cmd = f"test -f {result_file} && cat {result_file} || echo 'NO_RESULT'"
+    result_content, _, _ = ssh_exec(check_cmd, timeout=10)
+    print(f"[{BOT_TYPE}] 执行结果: {result_content[:500]}")
+
+    return {
+        "status": "completed",
+        "message": "Prototype task executed via CrewAI",
+        "script": script_file,
+        "result": result_content[:500]
+    }
+
+
+def generate_proto_script(task_id, task_desc, output_file):
+    """Generate CrewAI script for prototype implementation"""
+    td = task_desc.replace('"', '\\"').replace("'", "\\'")
+    output_result = output_file.replace("/", "_")
+    script = (
+        "#!/usr/bin/env python3\n"
+        '"""CrewAI Prototype Task - %s"""\n' % task_id +
+        "import os\n"
+        "import sys\n"
+        "os.environ['OPENAI_API_KEY'] = os.environ.get('MINIMAX_API_KEY', '')\n"
+        "\n"
+        "from crewai import Agent, Task, Crew, Process\n"
+        "from crewai.llm import LLM\n"
+        "from crewai.tools import BaseTool\n"
+        "\n"
+        'llm = LLM(model="openai/MiniMax-M2.7-highspeed", is_litellm=True, api_key=os.environ.get("MINIMAX_API_KEY", ""))\n'
+        "\n"
+        "# Shell command tool\n"
+        "class ShellTool(BaseTool):\n"
+        '    name: str = "shell"\n'
+        '    description: str = "Execute shell command"\n'
+        "\n"
+        "    def _run(self, cmd: str):\n"
+        "        import subprocess\n"
+        "        result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=60, cwd='/opt/AiComic')\n"
+        "        return result.stdout + result.stderr\n"
+        "\n"
+        "shell = ShellTool()\n"
+        "\n"
+        "# Agent\n"
+        'coder = Agent(role="Python Engineer", goal="Implement code based on prototype description", backstory="10 years Python experience, expert in FastAPI", verbose=True, llm=llm, tools=[shell])\n'
+        "\n"
+        "task_description = 'Implement prototype:\\n%s\\n\\nRequirements:\\n1. Write code to /opt/AiComic/apps/\\n2. Make sure code runs\\n3. Git add/commit/push when done' % td\n"
+        'task = Task(description=task_description, agent=coder, expected_output="Code and git commit")\n'
+        "\n"
+        "crew = Crew(agents=[coder], tasks=[task], process=Process.sequential, verbose=True)\n"
+        "result = crew.kickoff()\n"
+        'with open("%s.result", "w") as f:\n' % output_result +
+        "    f.write(str(result))\n"
+    )
+    return script
+
+
+class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
+    """支持并发的 HTTP 服务器，避免长任务阻塞 /health 检查"""
+    daemon_threads = True
+    # 解决 Address already in use 问题
+    allow_reuse_address = True
+
 class Handler(BaseHTTPRequestHandler):
     def log_message(self, format, *args):
         print(f"[{BOT_TYPE}] {args[0]}")
@@ -263,6 +593,20 @@ class Handler(BaseHTTPRequestHandler):
             except:
                 data = {}
             self._handle_ask_for_task(data)
+        elif self.path == "/prototype_task":
+            # 创建原型研发任务
+            content_length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(content_length)
+            try:
+                data = json.loads(body)
+            except:
+                data = {}
+            self._handle_prototype_task(data)
+        elif self.path == "/scan_prototypes":
+            # 手动触发原型扫描
+            content_length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(content_length)
+            self._handle_scan_prototypes()
         else:
             self.send_response(404)
             self.end_headers()
@@ -280,8 +624,17 @@ class Handler(BaseHTTPRequestHandler):
 
         if "TODO" in task_id:
             result = execute_todo_task(task_id, payload)
+        elif "DEPLOY" in task_id:
+            # Deployment task - sync code and run docker-compose
+            result = execute_deploy_task(task_id, payload)
+        elif "FIX" in task_id:
+            # Fix task - run docker-compose build/pull on Server B
+            result = execute_fix_task(task_id, payload)
+        elif "PROTO" in task_id:
+            # Prototype implementation task - call CrewAI to implement
+            result = execute_proto_task(task_id, payload)
         else:
-            result = {"status": "completed"}
+            result = {"status": "completed", "note": "task handled"}
 
         STATE["status"] = "idle"
         STATE["progress"] = 100
@@ -302,6 +655,43 @@ class Handler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.end_headers()
         self.wfile.write(json.dumps({"has_task": has_task, "task": task}).encode())
+
+    def _handle_prototype_task(self, data):
+        """创建原型研发任务到飞书任务板"""
+        global STATE
+        task_id = data.get("task_id", "unknown")
+        description = data.get("description", "")
+        proto_file = data.get("proto_file", "")
+
+        try:
+            # 直接导入 feishu 工具创建任务
+            # 这里用 subprocess 调用 create_bitable_record.py
+            import subprocess
+            result = subprocess.run(
+                ["python3", "/opt/AiComic/scripts/create_bitable_task.py",
+                 "--task-id", task_id,
+                 "--description", description,
+                 "--source", "prototype",
+                 "--assignee", "研发机器人"],
+                capture_output=True, text=True, timeout=30
+            )
+            if result.returncode == 0:
+                print(f"[{BOT_TYPE}] 原型任务创建成功: {task_id}")
+            else:
+                print(f"[{BOT_TYPE}] 原型任务创建失败: {result.stderr}")
+        except Exception as e:
+            print(f"[{BOT_TYPE}] 创建原型任务异常: {e}")
+
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(json.dumps({"status": "ok", "task_id": task_id}).encode())
+
+    def _handle_scan_prototypes(self):
+        """触发原型扫描"""
+        total, processed = process_existing_prototypes()
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(json.dumps({"status": "ok", "total": total, "processed": processed}).encode())
 
     def do_PATCH(self):
         # 接收 CrewAI 结果回调
@@ -327,7 +717,15 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def run():
-    server = HTTPServer(("0.0.0.0", PORT), Handler)
+    # 启动调度线程（仅 monitor 类型）
+    if BOT_TYPE == "monitor":
+        dispatcher_thread = threading.Thread(target=dispatcher_loop, daemon=True)
+        dispatcher_thread.start()
+        print(f"[{BOT_TYPE}] Dispatcher 线程已启动")
+        # 启动时扫描一次现有原型
+        scan_prototypes()
+    # 启动 HTTP 服务器
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
     print(f"[{BOT_TYPE}] Bot started on port {PORT}")
     server.serve_forever()
 
