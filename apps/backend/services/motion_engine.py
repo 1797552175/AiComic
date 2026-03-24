@@ -36,6 +36,7 @@ class MicroEffectType(str, Enum):
     BACKGROUND_MICRO = "background_micro"  # 背景微动
     LIGHT_SHADOW = "light_shadow"       # 光影流动
     EFFECTS_OVERLAY = "effects_overlay"  # 特效叠加
+    SHAKE = "shake"                     # 震动效果
 
 
 class TransitionType(str, Enum):
@@ -134,7 +135,7 @@ class MicroEffectPackage(BaseModel):
             effects=[
                 MicroEffectPreset(effect_type=MicroEffectType.HAIR_FLOAT, enabled=True, intensity=0.8),
                 MicroEffectPreset(effect_type=MicroEffectType.CLOTHES_SWING, enabled=True, intensity=0.7),
-                MicroEffectPreset(effect_type=MicroEffectType.SHAKE_TRANSITION, enabled=True, intensity=0.3),
+                MicroEffectPreset(effect_type=MicroEffectType.SHAKE, enabled=True, intensity=0.3),
             ]
         )
 
@@ -336,7 +337,18 @@ class MotionEngine:
                 "shadow_offset": shadow_offset,
                 "timestamp": timestamp
             }
-        
+
+        elif effect_type == MicroEffectType.SHAKE:
+            # 震动效果
+            import random
+            shake_x = random.uniform(-3, 3) * intensity
+            shake_y = random.uniform(-3, 3) * intensity
+            return {
+                "type": "shake",
+                "offset": (shake_x, shake_y),
+                "timestamp": timestamp
+            }
+
         return {"type": effect_type, "timestamp": timestamp}
     
     def apply_transition(
