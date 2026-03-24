@@ -642,7 +642,7 @@ def execute_todo_task(task_id, payload):
         local_script,
         f"root@{SERVER_B_HOST}:{script_file}"
     ]
-    r = subprocess.run(scp_cmd, timeout=30, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    r = subprocess.run(scp_cmd, timeout=120, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if r.returncode != 0:
         err = r.stderr.decode()
         print(f"[{BOT_TYPE}] 上传脚本失败: {err}")
@@ -867,56 +867,66 @@ def execute_proto_task(task_id, payload):
         local_script,
         f"root@{SERVER_B_HOST}:{script_file}"
     ]
-    r = subprocess.run(scp_cmd, timeout=30, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    r = subprocess.run(scp_cmd, timeout=120, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if r.returncode != 0:
         err = r.stderr.decode()
         print(f"[{BOT_TYPE}] 上传脚本失败: {err}")
         return {"status": "failed", "error": err}
     print(f"[{BOT_TYPE}] 脚本已上传: {script_file}")
 
-    # Execute on Server B via docker
+    # Execute on Server B via docker (background mode - don't wait)
     container = "crewai-runtime"
     run_cmd = (
         f"docker exec -e MINIMAX_API_KEY=\"$MINIMAX_API_KEY\" "
-        f"{container} python {script_file} > {output_file}.log 2>&1"
+        f"{container} python {script_file} > {output_file}.log 2>&1 &"
     )
-    stdout, stderr, code = ssh_exec(run_cmd, timeout=600)
-    print(f"[{BOT_TYPE}] CrewAI 执行完成，退出码: {code}")
+    stdout, stderr, code = ssh_exec(run_cmd, timeout=10)
+    print(f"[{BOT_TYPE}] CrewAI 任务已在后台启动，PID: {stdout.strip()}")
+
+    # Wait for result file (up to 15 minutes)
+    import time
+    max_wait = 900  # 15 minutes
+    check_interval = 30  # 30 seconds
+    waited = 0
+    result_content = ""
+    while waited < max_wait:
+        time.sleep(check_interval)
+        waited += check_interval
+
+        # Check if result file exists
+        check_cmd = f"test -f {result_file} && cat {result_file} || echo 'NOT_READY'"
+        result_content, _, _ = ssh_exec(check_cmd, timeout=10)
+
+        if 'NOT_READY' not in result_content:
+            print(f"[{BOT_TYPE}] CrewAI 执行完成，用时 {waited} 秒")
+            break
+        print(f"[{BOT_TYPE}] 等待 CrewAI 完成... ({waited}s)")
+
+    if waited >= max_wait:
+        print(f"[{BOT_TYPE}] CrewAI 执行超时 ({max_wait}s)")
+        return {
+            "status": "timeout",
+            "message": "CrewAI 执行超时",
+            "log": f"{output_file}.log"
+        }
 
     # Check result
     result_file = f"{output_file}.result"
     log_file = f"{output_file}.log"
-    
-    # First check if result file exists
-    check_result_exists = f"test -f {result_file} && echo 'EXISTS' || echo 'NOT_EXISTS'"
-    exists_result, _, _ = ssh_exec(check_result_exists, timeout=10)
-    
-    if 'NOT_EXISTS' in exists_result:
-        # No result file - check log for errors
-        check_log = f"cat {log_file}"
-        log_content, _, _ = ssh_exec(check_log, timeout=10)
-        print(f"[{BOT_TYPE}] 无 result 文件，日志内容: {log_content[:1000]}")
-        
-        # Check for syntax errors
-        if 'SyntaxError' in log_content:
-            return {
-                "status": "failed",
-                "error": "脚本语法错误",
-                "log": log_content[:2000]
-            }
-        # Check for other errors
-        if code != 0 or 'Error' in log_content or 'Exception' in log_content:
-            return {
-                "status": "failed",
-                "error": f"CrewAI 执行失败 (退出码: {code})",
-                "log": log_content[:2000]
-            }
+
+    # Check for syntax errors in log
+    check_log = f"cat {log_file}"
+    log_content, _, _ = ssh_exec(check_log, timeout=10)
+    print(f"[{BOT_TYPE}] 日志内容: {log_content[:500]}")
+
+    # Check for syntax errors
+    if 'SyntaxError' in log_content:
         return {
             "status": "failed",
-            "error": "未生成 result 文件",
+            "error": "脚本语法错误",
             "log": log_content[:2000]
         }
-    
+
     # Result file exists - read it
     check_cmd = f"cat {result_file}"
     result_content, _, _ = ssh_exec(check_cmd, timeout=10)
@@ -936,7 +946,7 @@ def execute_proto_task(task_id, payload):
 
 
 def generate_proto_script(task_id, task_desc, output_file):
-    """Generate CrewAI script for prototype implementation."""
+    """Generate CrewAI script for prototype implementation - 5 agents parallel execution."""
     import json
     
     # Escape single quotes in output_file path for Python string
@@ -948,7 +958,7 @@ def generate_proto_script(task_id, task_desc, output_file):
     # Build script using string concatenation
     script_lines = [
         "#!/usr/bin/env python3",
-        "\"\"\"CrewAI Prototype Task - " + str(task_id) + "\"\"\"",
+        "\"\"\"CrewAI Prototype Task - " + str(task_id) + " (5 Agents Parallel)\"\"\"",
         "import os",
         "import sys",
         "os.environ['OPENAI_API_KEY'] = os.environ.get('MINIMAX_API_KEY', '')",
@@ -961,20 +971,58 @@ def generate_proto_script(task_id, task_desc, output_file):
         "",
         "class ShellTool(BaseTool):",
         "    name: str = 'shell'",
-        "    description: str = 'Execute shell command'",
+        "    description: str = 'Execute shell command in /opt/AiComic'",
         "",
         "    def _run(self, cmd: str):",
         "        import subprocess",
-        "        result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=120, cwd='/opt/AiComic')",
-        "        return result.stdout + result.stderr",
+        "        result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=180, cwd='/opt/AiComic')",
+        "        output = result.stdout + result.stderr",
+        "        print('[shell] $ ' + cmd[:100] + ' -> ' + str(result.returncode))",
+        "        return output",
         "",
         "shell = ShellTool()",
         "",
-        "# Main Engineer Agent",
-        "engineer = Agent(",
-        "    role='Senior Full-Stack Engineer',",
-        "    goal='Implement the prototype according to the specification',",
-        "    backstory='Expert Python/React developer with 10 years experience',",
+        "# 5 Agents - All with shell tool access",
+        "frontend1 = Agent(",
+        "    role='Frontend Engineer 1',",
+        "    goal='Implement React/UI components based on prototype',",
+        "    backstory='5 years React/Next.js experience, expert in TypeScript',",
+        "    verbose=True,",
+        "    llm=llm,",
+        "    tools=[shell]",
+        ")",
+        "",
+        "frontend2 = Agent(",
+        "    role='Frontend Engineer 2',",
+        "    goal='Implement UI components and integrate with backend APIs',",
+        "    backstory='5 years React/Vue experience, expert in responsive design',",
+        "    verbose=True,",
+        "    llm=llm,",
+        "    tools=[shell]",
+        ")",
+        "",
+        "backend = Agent(",
+        "    role='Backend Engineer',",
+        "    goal='Implement FastAPI backend and database models',",
+        "    backstory='8 years Python/FastAPI experience, expert in PostgreSQL',",
+        "    verbose=True,",
+        "    llm=llm,",
+        "    tools=[shell]",
+        ")",
+        "",
+        "tester = Agent(",
+        "    role='Test Engineer',",
+        "    goal='Write unit tests and integration tests',",
+        "    backstory='4 years QA experience, expert in pytest',",
+        "    verbose=True,",
+        "    llm=llm,",
+        "    tools=[shell]",
+        ")",
+        "",
+        "devops = Agent(",
+        "    role='DevOps Engineer',",
+        "    goal='Ensure code is production-ready, git add/commit/push',",
+        "    backstory='5 years CI/CD experience, expert in Docker',",
         "    verbose=True,",
         "    llm=llm,",
         "    tools=[shell]",
@@ -982,13 +1030,44 @@ def generate_proto_script(task_id, task_desc, output_file):
         "",
         "task_description = " + task_desc_json,
         "",
-        "task = Task(",
-        "    description=task_description,",
-        "    agent=engineer,",
-        "    expected_output='Complete code implementation with git commit'",
+        "# Tasks - Frontend1 and Frontend2 work in parallel, then Backend, then Tester, then DevOps",
+        "task_fe1 = Task(",
+        "    description=task_description + '\\n\\n[Frontend1] Implement UI components in /opt/AiComic/apps/frontend/',",
+        "    agent=frontend1,",
+        "    expected_output='React components with clean code'",
         ")",
         "",
-        "crew = Crew(agents=[engineer], tasks=[task], process=Process.sequential, verbose=True)",
+        "task_fe2 = Task(",
+        "    description=task_description + '\\n\\n[Frontend2] Implement UI components and API integration in /opt/AiComic/apps/frontend/',",
+        "    agent=frontend2,",
+        "    expected_output='React components with API integration'",
+        ")",
+        "",
+        "task_be = Task(",
+        "    description=task_description + '\\n\\n[Backend] Implement API endpoints in /opt/AiComic/apps/backend/',",
+        "    agent=backend,",
+        "    expected_output='FastAPI endpoints with proper models'",
+        ")",
+        "",
+        "task_test = Task(",
+        "    description=task_description + '\\n\\n[Test] Write tests in /opt/AiComic/tests/',",
+        "    agent=tester,",
+        "    expected_output='pytest test files'",
+        ")",
+        "",
+        "task_devops = Task(",
+        "    description='Git add, commit and push all changes. Run: cd /opt/AiComic && git add . && git commit -m \"feat: ' + str(task_id) + ' - prototype implementation\" && git push',",
+        "    agent=devops,",
+        "    expected_output='Git push successful'",
+        ")",
+        "",
+        "# Parallel execution - FE1 and FE2 together, then sequential BE->Test->DevOps",
+        "crew = Crew(",
+        "    agents=[frontend1, frontend2, backend, tester, devops],",
+        "    tasks=[task_fe1, task_fe2, task_be, task_test, task_devops],",
+        "    process=Process.parallel,",
+        "    verbose=True",
+        ")",
         "result = crew.kickoff()",
         "with open('" + safe_out + ".result', 'w') as f:",
         "    f.write(str(result))",
