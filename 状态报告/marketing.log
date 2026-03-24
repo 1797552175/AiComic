@@ -34109,3 +34109,3780 @@ OSError: [Errno 98] Address already in use
 [Marketing] 营销方案补全完成
 [marketing] GET /status HTTP/1.1
 [marketing] GET /health HTTP/1.1
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+[Marketing] 无待处理任务，执行营销方案补全
+[Marketing] 开始营销方案补全扫描...
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[Marketing] 无待处理任务，执行营销方案补全
+[Marketing] 开始营销方案补全扫描...
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_暗黑模式原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_AI创作动态漫设计_20260322_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_个人中心原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_快捷键与操作辅助原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_多语言国际化原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_故事编辑器原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_搜索与筛选原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_分镜时间线原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_版本历史原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_API开放平台原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_用户引导原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_AI创作动态漫原型v2.1_20260322_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_性能优化原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_批量生成原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_音效配乐原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_分镜控制功能原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_客服与反馈原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_社区功能原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_中文TTS功能原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_通知与消息原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_数据备份原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_作品管理原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_AI创作动态漫功能原型_20260322_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_新手任务体系原型_20260324_20260324.md
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_角色一致性功能原型_20260324_20260324.md
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_数据统计原型_20260324_20260324.md
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2819, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2344, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2819, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2344, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2819, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2344, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2819, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2344, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2834, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2359, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2834, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2359, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2834, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2359, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2834, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2359, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+  File "bot_http_server_v2.py", line 1472
+    finally:
+          ^
+SyntaxError: invalid syntax
+  File "bot_http_server_v2.py", line 1472
+    finally:
+          ^
+SyntaxError: invalid syntax
+  File "bot_http_server_v2.py", line 1472
+    finally:
+          ^
+SyntaxError: invalid syntax
+  File "bot_http_server_v2.py", line 1472
+    finally:
+          ^
+SyntaxError: invalid syntax
+  File "bot_http_server_v2.py", line 1161
+    _send_feishu_message(f"🚀 [{BOT_TYPE}] 任务 {task_id} 开始执行，准备脚本...")
+                       ^
+SyntaxError: invalid syntax
+  File "bot_http_server_v2.py", line 1164
+    task_interval_file = "/tmp/last_proto_task_time"
+                     ^
+SyntaxError: invalid syntax
+  File "bot_http_server_v2.py", line 1164
+    task_interval_file = "/tmp/last_proto_task_time"
+                     ^
+SyntaxError: invalid syntax
+  File "bot_http_server_v2.py", line 1179
+    update_progress("running", 10, "正在读取原型文件...")
+                  ^
+SyntaxError: invalid syntax
+  File "bot_http_server_v2.py", line 1182
+    description = payload.get("description", "实现原型功能")
+              ^
+SyntaxError: invalid syntax
+  File "bot_http_server_v2.py", line 1182
+    description = payload.get("description", "实现原型功能")
+              ^
+SyntaxError: invalid syntax
+  File "bot_http_server_v2.py", line 1201
+    with open(proto_path, 'r', encoding='utf-8', errors='ignore') as f:
+       ^
+IndentationError: expected an indented block
+  File "bot_http_server_v2.py", line 1202
+    proto_content = f.read()
+                ^
+IndentationError: expected an indented block
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[Marketing] 无待处理任务，执行营销方案补全
+[Marketing] 开始营销方案补全扫描...
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_暗黑模式原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_AI创作动态漫设计_20260322_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_个人中心原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_快捷键与操作辅助原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_多语言国际化原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_故事编辑器原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_搜索与筛选原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_分镜时间线原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_版本历史原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_API开放平台原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_用户引导原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_AI创作动态漫原型v2.1_20260322_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_性能优化原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_批量生成原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_音效配乐原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_分镜控制功能原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_客服与反馈原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_社区功能原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_中文TTS功能原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_通知与消息原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_数据备份原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_作品管理原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_AI创作动态漫功能原型_20260322_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_新手任务体系原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_角色一致性功能原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_数据统计原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_前端页面原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_权限与安全原型_20260324_20260324.md
+[Marketing] 营销方案补全完成
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+[Marketing] 无待处理任务，执行营销方案补全
+[Marketing] 开始营销方案补全扫描...
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_暗黑模式原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_AI创作动态漫设计_20260322_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_个人中心原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_快捷键与操作辅助原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_多语言国际化原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_故事编辑器原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_搜索与筛选原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_分镜时间线原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_版本历史原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_API开放平台原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_用户引导原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_AI创作动态漫原型v2.1_20260322_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_性能优化原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_批量生成原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_音效配乐原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_分镜控制功能原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_客服与反馈原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_社区功能原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_中文TTS功能原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_通知与消息原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_数据备份原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_作品管理原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_AI创作动态漫功能原型_20260322_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_新手任务体系原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_角色一致性功能原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_数据统计原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_前端页面原型_20260324_20260324.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_权限与安全原型_20260324_20260324.md
+[Marketing] 营销方案补全完成
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+[Marketing] 无待处理任务，执行营销方案补全
+[Marketing] 开始营销方案补全扫描...
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_暗黑模式原型_20260324_20260324.md
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_AI创作动态漫设计_20260322_20260324.md
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_个人中心原型_20260324_20260324.md
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+[Marketing] 无待处理任务，执行营销方案补全
+    self.socket.bind(self.server_address)
+[Marketing] 开始营销方案补全扫描...
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 无待处理任务，执行营销方案补全
+[Marketing] 开始营销方案补全扫描...
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+[Marketing] 无待处理任务，执行营销方案补全
+[Marketing] 开始营销方案补全扫描...
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+[Marketing] 无待处理任务，执行营销方案补全
+[Marketing] 开始营销方案补全扫描...
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[Marketing] 无待处理任务，执行营销方案补全
+[Marketing] 开始营销方案补全扫描...
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_暗黑模式原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_AI创作动态漫设计_20260322_20260325.md
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_个人中心原型_20260324_20260325.md
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_快捷键与操作辅助原型_20260324_20260325.md
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[Marketing] 无待处理任务，执行营销方案补全
+[Marketing] 开始营销方案补全扫描...
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_暗黑模式原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_AI创作动态漫设计_20260322_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_个人中心原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_快捷键与操作辅助原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_多语言国际化原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_故事编辑器原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_搜索与筛选原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_分镜时间线原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_版本历史原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_API开放平台原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_用户引导原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_AI创作动态漫原型v2.1_20260322_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_性能优化原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_批量生成原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_音效配乐原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_分镜控制功能原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_客服与反馈原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_社区功能原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_中文TTS功能原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_通知与消息原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_数据备份原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_作品管理原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_AI创作动态漫功能原型_20260322_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_新手任务体系原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_角色一致性功能原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_数据统计原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_前端页面原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_权限与安全原型_20260324_20260325.md
+[Marketing] 营销方案补全完成
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[Marketing] 无待处理任务，执行营销方案补全
+[Marketing] 开始营销方案补全扫描...
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_暗黑模式原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_AI创作动态漫设计_20260322_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_个人中心原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_快捷键与操作辅助原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_多语言国际化原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_故事编辑器原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_搜索与筛选原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_分镜时间线原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_版本历史原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_API开放平台原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_用户引导原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_AI创作动态漫原型v2.1_20260322_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_性能优化原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_批量生成原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_音效配乐原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_分镜控制功能原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_客服与反馈原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_社区功能原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_中文TTS功能原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_通知与消息原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_数据备份原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_作品管理原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_AI创作动态漫功能原型_20260322_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_新手任务体系原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_角色一致性功能原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_数据统计原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_前端页面原型_20260324_20260325.md
+[Marketing] 补全营销方案: /opt/AiComic/营销方案/自动补全_权限与安全原型_20260324_20260325.md
+[Marketing] 营销方案补全完成
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+[Marketing] 自维护线程启动
+[marketing] Marketing 自维护线程已启动
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use

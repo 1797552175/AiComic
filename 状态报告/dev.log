@@ -17080,3 +17080,3099 @@ OSError: [Errno 98] Address already in use
 [dev] GET /status HTTP/1.1
 [dev] GET /status HTTP/1.1
 [dev] GET /health HTTP/1.1
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2819, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2344, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2819, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2344, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2819, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2344, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2819, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2344, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2834, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2359, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2834, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2359, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2834, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2359, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2834, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2359, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+  File "bot_http_server_v2.py", line 1472
+    finally:
+          ^
+SyntaxError: invalid syntax
+  File "bot_http_server_v2.py", line 1472
+    finally:
+          ^
+SyntaxError: invalid syntax
+  File "bot_http_server_v2.py", line 1472
+    finally:
+          ^
+SyntaxError: invalid syntax
+  File "bot_http_server_v2.py", line 1472
+    finally:
+          ^
+SyntaxError: invalid syntax
+  File "bot_http_server_v2.py", line 1161
+    _send_feishu_message(f"🚀 [{BOT_TYPE}] 任务 {task_id} 开始执行，准备脚本...")
+                       ^
+SyntaxError: invalid syntax
+  File "bot_http_server_v2.py", line 1164
+    task_interval_file = "/tmp/last_proto_task_time"
+                     ^
+SyntaxError: invalid syntax
+  File "bot_http_server_v2.py", line 1164
+    task_interval_file = "/tmp/last_proto_task_time"
+                     ^
+SyntaxError: invalid syntax
+  File "bot_http_server_v2.py", line 1179
+    update_progress("running", 10, "正在读取原型文件...")
+                  ^
+SyntaxError: invalid syntax
+  File "bot_http_server_v2.py", line 1182
+    description = payload.get("description", "实现原型功能")
+              ^
+SyntaxError: invalid syntax
+  File "bot_http_server_v2.py", line 1182
+    description = payload.get("description", "实现原型功能")
+              ^
+SyntaxError: invalid syntax
+  File "bot_http_server_v2.py", line 1201
+    with open(proto_path, 'r', encoding='utf-8', errors='ignore') as f:
+       ^
+IndentationError: expected an indented block
+  File "bot_http_server_v2.py", line 1202
+    proto_content = f.read()
+                ^
+IndentationError: expected an indented block
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2779, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2304, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2804, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Traceback (most recent call last):
+  File "bot_http_server_v2.py", line 2839, in <module>
+    run()
+  File "bot_http_server_v2.py", line 2329, in run
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+  File "/usr/lib64/python3.6/socketserver.py", line 456, in __init__
+    self.server_bind()
+  File "/usr/lib64/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib64/python3.6/socketserver.py", line 470, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
