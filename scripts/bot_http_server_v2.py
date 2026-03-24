@@ -609,7 +609,7 @@ def generate_crewai_script(task_id, task_desc, output_file):
         "from crewai.llm import LLM\n"
         "from crewai.tools import BaseTool\n"
         "\n"
-        'llm = LLM(model="openai/MiniMax-M2.7-highspeed", is_litellm=True, api_key=os.environ.get("MINIMAX_API_KEY", ""))\n' +
+        'llm = LLM(model="openai/MiniMax-M2.7-highspeed", is_litellm=True, api_key=os.environ.get("MINIMAX_API_KEY", ""), max_retries_on_rate_limit_error=5)\n' +
         "\n"
         "# Shell 命令执行工具\n"
         "class ShellCommandTool(BaseTool):\n"
@@ -872,7 +872,19 @@ def execute_proto_task(task_id, payload):
                 print(f"[{BOT_TYPE}] 原型内容已读取: {len(proto_content)} 字符")
 
                 # 提取章节结构化信息
-                sections = extract_proto_sections(proto_content)
+                sections = {}
+                for section_name in ['背景与目标', '一、背景与目标', '产品定位与目标', '功能清单', '二、功能清单', '功能需求', '界面描述', '三、界面设计', '验收标准', '四、验收标准']:
+                    if section_name in proto_content:
+                        # 简单提取：找到章节名后的内容
+                        idx = proto_content.find(section_name)
+                        if idx >= 0:
+                            next_idx = idx + len(section_name)
+                            # 找下一个 ## 标题位置
+                            next_heading = proto_content.find('\n## ', next_idx)
+                            if next_heading > 0:
+                                sections[section_name] = proto_content[next_idx:next_heading].strip()
+                            else:
+                                sections[section_name] = proto_content[next_idx:].strip()[:3000]
 
                 # 构建结构化的任务描述
                 task_parts = [
@@ -940,12 +952,40 @@ def execute_proto_task(task_id, payload):
     stdout, stderr, code = ssh_exec(run_cmd, timeout=10)
     print(f"[{BOT_TYPE}] CrewAI 任务已在后台启动，PID: {stdout.strip()}")
 
-    # Wait for result file (up to 15 minutes)
+    # Wait for result file (up to 30 minutes), with rate-limit retry
     import time
-    max_wait = 900  # 15 minutes
-    check_interval = 30  # 30 seconds
+    max_wait = 1800  # 30 minutes total
+    check_interval = 20  # 20 seconds
     waited = 0
     result_content = ""
+    result_file = f"{output_file}.result"  # Define BEFORE the loop
+    max_retries = 3
+    retry_count = 0
+
+    def _is_rate_limit_error(log_text):
+        """检查日志是否包含 API 速率限制错误"""
+        if not log_text:
+            return False
+        rl_markers = ['rate limit', '429', 'too many requests', 'rate_limit',
+                       'rpm limit', 'tpm limit', '请稍后重试', 'over quota', 'quota exceeded']
+        text_lower = log_text.lower()
+        return any(marker in text_lower for marker in rl_markers)
+
+    def _restart_crewai():
+        """重新启动 CrewAI 容器（先停后启）"""
+        stop_cmd = "docker ps -q --filter 'ancestor=crewai-runtime' | xargs -r docker stop -t 2"
+        ssh_exec(stop_cmd, timeout=15)
+        time.sleep(3)
+        start_cmd = (
+            f'docker run -d --name crewai-runtime '
+            f'-e MINIMAX_API_KEY="$MINIMAX_API_KEY" '
+            f'-e OPENAI_API_KEY="$MINIMAX_API_KEY" '
+            f'-v /opt/AiComic:/opt/AiComic '
+            f'-w /opt/AiComic crewai-runtime '
+            f'python {script_file} > {output_file}.log 2>&1 &'
+        )
+        ssh_exec(start_cmd, timeout=10)
+
     while waited < max_wait:
         time.sleep(check_interval)
         waited += check_interval
@@ -957,14 +997,32 @@ def execute_proto_task(task_id, payload):
         if 'NOT_READY' not in result_content:
             print(f"[{BOT_TYPE}] CrewAI 执行完成，用时 {waited} 秒")
             break
-        print(f"[{BOT_TYPE}] 等待 CrewAI 完成... ({waited}s)")
+
+        # 检查日志里是否有 rate limit 错误
+        log_cmd = f"tail -30 {output_file}.log 2>/dev/null || echo ''"
+        log_content, _, _ = ssh_exec(log_cmd, timeout=10)
+
+        if _is_rate_limit_error(log_content) and retry_count < max_retries:
+            retry_count += 1
+            backoff = 5 * (2 ** retry_count)  # 10s, 20s, 40s
+            print(f"[{BOT_TYPE}] 检测到 API 速率限制 (429)，{backoff}秒后第{retry_count}次重试...")
+            time.sleep(backoff)
+            _restart_crewai()
+            waited += backoff
+            continue
+
+        if retry_count > 0:
+            print(f"[{BOT_TYPE}] CrewAI 重试中，已等待 {waited}s（第{retry_count}次）")
+        else:
+            print(f"[{BOT_TYPE}] 等待 CrewAI 完成... ({waited}s)")
 
     if waited >= max_wait:
-        print(f"[{BOT_TYPE}] CrewAI 执行超时 ({max_wait}s)")
+        print(f"[{BOT_TYPE}] CrewAI 执行超时 ({max_wait}s, 重试{retry_count}次)")
         return {
             "status": "timeout",
             "message": "CrewAI 执行超时",
-            "log": f"{output_file}.log"
+            "log": f"{output_file}.log",
+            "retries": retry_count
         }
 
     # Check result
@@ -1003,28 +1061,89 @@ def execute_proto_task(task_id, payload):
 
 
 def generate_proto_script(task_id, task_desc, output_file):
-    """Generate CrewAI script for prototype implementation with 6 concurrent agents."""
+    """Generate CrewAI script for prototype implementation with hierarchical execution.
+
+    执行流程：
+    1. Phase 1 (并行): 4个开发 Agent 并行实现功能
+    2. Phase 2 (串行): Test Engineer 编写测试
+    3. Phase 3 (串行): DevOps 验证并 git push
+
+    每个 Agent 收到定制化的任务描述，明确自己的职责范围。
+    """
     import json
 
     safe_out = output_file.replace("'", "\\'")
     task_desc_json = json.dumps(task_desc, ensure_ascii=False)
 
+    # 按角色定制的任务描述
+    role_tasks = {
+        "frontend1": """【Frontend1 职责】实现 UI 组件
+参考原型文档完成任务开发：
+{task_desc}
+具体要求：
+- 使用 React 实现 UI 组件
+- 组件需要包含完整的样式和交互
+- 代码放在 /opt/AiComic/apps/frontend/src/ 目录""",
+
+        "frontend2": """【Frontend2 职责】实现状态管理和 API 集成
+参考原型文档完成任务开发：
+{task_desc}
+具体要求：
+- 使用 React Hooks 实现状态管理
+- 调用后端 API 实现数据交互
+- 与 Frontend1 协作确保组件集成正常""",
+
+        "backend1": """【Backend1 职责】实现 FastAPI 后端接口
+参考原型文档完成任务开发：
+{task_desc}
+具体要求：
+- 使用 FastAPI 实现 RESTful API
+- 实现业务逻辑层
+- 代码放在 /opt/AiComic/apps/backend/ 目录""",
+
+        "backend2": """【Backend2 职责】实现数据库模型
+参考原型文档完成任务开发：
+{task_desc}
+具体要求：
+- 使用 SQLAlchemy 定义数据模型
+- 编写必要的数据库迁移脚本
+- 与 Backend1 协作确保 API 能正常访问数据""",
+
+        "tester": """【Test Engineer 职责】编写单元测试
+注意：此任务在开发 Agent 完成后执行
+具体要求：
+- 为已完成的代码编写单元测试
+- 测试覆盖率目标 > 70%
+- 测试文件放在 /opt/AiComic/tests/ 目录
+- 使用 pytest 框架""",
+
+        "devops": """【DevOps Engineer 职责】验证代码并部署
+注意：此任务在 Test Engineer 完成后执行
+具体要求：
+- 运行测试确保所有用例通过
+- 检查代码质量和规范
+- git commit 并 push 到仓库
+- 更新相关文档""",
+    }
+
     script_lines = [
         "#!/usr/bin/env python3",
         "\"\"\"CrewAI Prototype Task - " + str(task_id) + "\"\"\"",
+        "\"\"\"执行流程：Phase1(4个开发并行) -> Phase2(测试) -> Phase3(部署)\"\"\"",
         "import os",
         "import sys",
         "os.environ['OPENAI_API_KEY'] = os.environ.get('MINIMAX_API_KEY', '')",
+        "os.environ['LANG'] = 'en_US.UTF-8'",
         "",
-        "from crewai import Agent, Task, Crew",
+        "from crewai import Agent, Task, Crew, Process",
         "from crewai.llm import LLM",
         "from crewai.tools import BaseTool",
         "",
-        "llm = LLM(model='openai/MiniMax-M2.7-highspeed', is_litellm=True, api_key=os.environ.get('MINIMAX_API_KEY', ''))",
+        "llm = LLM(model='openai/MiniMax-M2.7-highspeed', is_litellm=True, api_key=os.environ.get('MINIMAX_API_KEY', ''), max_retries_on_rate_limit_error=5)",
         "",
         "class ShellTool(BaseTool):",
         "    name: str = 'shell'",
-        "    description: str = 'Execute shell command'",
+        "    description: str = 'Execute shell command in /opt/AiComic',",
         "",
         "    def _run(self, cmd: str):",
         "        import subprocess",
@@ -1033,34 +1152,85 @@ def generate_proto_script(task_id, task_desc, output_file):
         "",
         "shell = ShellTool()",
         "",
-        "# 2 Frontend Engineers",
+        "# === Phase 1: Manager Agent (协调者，不带工具) ===",
+        "manager = Agent(role='Project Manager', goal='Coordinate 4 developers to complete prototype implementation', backstory='Senior tech lead with 10 years experience coordinating teams', verbose=True, llm=llm)",
+        "",
+        "# === Phase 1: 开发 Agent (由 Manager 协调) ===",
         "frontend1 = Agent(role='Frontend Engineer 1', goal='Implement UI components in React', backstory='5 years React experience', verbose=True, llm=llm, tools=[shell])",
         "frontend2 = Agent(role='Frontend Engineer 2', goal='Implement UI state management and API integration', backstory='5 years React experience', verbose=True, llm=llm, tools=[shell])",
-        "",
-        "# 2 Backend Engineers",
         "backend1 = Agent(role='Backend Engineer 1', goal='Implement FastAPI endpoints', backstory='5 years Python/FastAPI experience', verbose=True, llm=llm, tools=[shell])",
         "backend2 = Agent(role='Backend Engineer 2', goal='Implement database models and SQL', backstory='5 years SQLAlchemy experience', verbose=True, llm=llm, tools=[shell])",
         "",
-        "# 1 Test Engineer",
-        "tester = Agent(role='Test Engineer', goal='Write unit tests', backstory='3 years testing experience', verbose=True, llm=llm, tools=[shell])",
+        "# === Phase 2: 测试 Agent (串行执行) ===",
+        "tester = Agent(role='Test Engineer', goal='Write unit tests for completed code', backstory='3 years testing experience', verbose=True, llm=llm, tools=[shell])",
         "",
-        "# 1 DevOps Engineer",
-        "devops = Agent(role='DevOps Engineer', goal='Verify code works, git commit/push', backstory='3 years CI/CD experience', verbose=True, llm=llm, tools=[shell])",
+        "# === Phase 3: DevOps Agent (串行执行) ===",
+        "devops = Agent(role='DevOps Engineer', goal='Verify code and git push', backstory='3 years CI/CD experience', verbose=True, llm=llm, tools=[shell])",
         "",
+        "# 原始任务描述",
         "task_description = " + task_desc_json,
         "",
-        "# 6 concurrent tasks",
-        "task1 = Task(description='[Frontend1] ' + task_description, agent=frontend1, expected_output='React components created')",
-        "task2 = Task(description='[Frontend2] ' + task_description, agent=frontend2, expected_output='State management done')",
-        "task3 = Task(description='[Backend1] ' + task_description, agent=backend1, expected_output='API endpoints created')",
-        "task4 = Task(description='[Backend2] ' + task_description, agent=backend2, expected_output='Database models created')",
-        "task5 = Task(description='[Test] ' + task_description, agent=tester, expected_output='Tests written')",
-        "task6 = Task(description='[DevOps] ' + task_description, agent=devops, expected_output='Code git pushed')",
+        "# === Phase 1: 4个开发任务并行 ===",
+        "# Frontend1 任务",
+        "task_fe1 = Task(description= '''" + role_tasks["frontend1"].replace("{task_desc}", "{task_description}") + "'''.format(task_description=task_description), agent=frontend1, expected_output='React components created in /opt/AiComic/apps/frontend/src/')",
         "",
-        "crew = Crew(agents=[frontend1, frontend2, backend1, backend2, tester, devops], tasks=[task1, task2, task3, task4, task5, task6], verbose=True)",
-        "result = crew.kickoff()",
+        "# Frontend2 任务",
+        "task_fe2 = Task(description= '''" + role_tasks["frontend2"].replace("{task_desc}", "{task_description}") + "'''.format(task_description=task_description), agent=frontend2, expected_output='State management and API integration completed')",
+        "",
+        "# Backend1 任务",
+        "task_be1 = Task(description= '''" + role_tasks["backend1"].replace("{task_desc}", "{task_description}") + "'''.format(task_description=task_description), agent=backend1, expected_output='FastAPI endpoints created in /opt/AiComic/apps/backend/')",
+        "",
+        "# Backend2 任务",
+        "task_be2 = Task(description= '''" + role_tasks["backend2"].replace("{task_desc}", "{task_description}") + "'''.format(task_description=task_description), agent=backend2, expected_output='Database models created with SQLAlchemy')",
+        "",
+        "# Phase 1 Crew: 开发阶段 (层级式，由 manager 协调)",
+        "dev_crew = Crew(",
+        "    agents=[frontend1, frontend2, backend1, backend2],",
+        "    tasks=[task_fe1, task_fe2, task_be1, task_be2],",
+        "    process=Process.hierarchical,",
+        "    manager_agent=manager,",
+        "    verbose=True",
+        ")",
+        "",
+        'print("[Phase 1] 开始并行开发...")',
+        "dev_result = dev_crew.kickoff()",
+        'print("[Phase 1] 开发完成:", dev_result)',
+        "",
+        "# === Phase 2: 测试任务 (串行) ===",
+        "# 依赖 Phase 1 完成",
+        "task_test = Task(",
+        "    description= '''" + role_tasks["tester"] + "'''.format(task_description=task_description),",
+        "    agent=tester,",
+        "    expected_output='Unit tests written in /opt/AiComic/tests/',",
+        ")",
+        "",
+        'print("[Phase 2] 开始测试...")',
+        "test_crew = Crew(agents=[tester], tasks=[task_test], process=Process.sequential, verbose=True)",
+        "test_result = test_crew.kickoff()",
+        'print("[Phase 2] 测试完成:", test_result)',
+        "",
+        "# === Phase 3: DevOps 任务 (串行) ===",
+        "# 依赖 Phase 2 完成",
+        "task_ops = Task(",
+        "    description= '''" + role_tasks["devops"] + "'''.format(task_description=task_description),",
+        "    agent=devops,",
+        "    expected_output='Code verified and git pushed',",
+        ")",
+        "",
+        'print("[Phase 3] 开始部署...")',
+        "ops_crew = Crew(agents=[devops], tasks=[task_ops], process=Process.sequential, verbose=True)",
+        "ops_result = ops_crew.kickoff()",
+        'print("[Phase 3] 部署完成:", ops_result)',
+        "",
+        "# === 汇总结果 ===",
+        "final_result = {",
+        "    'dev_phase': str(dev_result),",
+        "    'test_phase': str(test_result),",
+        "    'ops_phase': str(ops_result),",
+        "}",
         "with open('" + safe_out + ".result', 'w') as f:",
-        "    f.write(str(result))",
+        "    import json",
+        "    f.write(json.dumps(final_result, ensure_ascii=False, indent=2))",
     ]
     return '\n'.join(script_lines)
 class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
