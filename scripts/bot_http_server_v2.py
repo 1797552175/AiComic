@@ -64,8 +64,8 @@ TASK_QUEUE = BOT_QUEUES["dev"]  # 默认队列
 # SSH 连接池控制
 SSH_CONTROL_PATH = "/tmp/ssh_mux_%h_%p_%r"
 _ssh_connection_lock = False
-MAX_LOAD_AVG = 10.0  # 最大允许负载
-MAX_CONCURRENT_TASKS = 3  # 最大并发任务数
+MAX_LOAD_AVG = 2.0  # 最大允许负载（2核4G服务器，负载>2就开始卡）
+MAX_CONCURRENT_TASKS = 2  # 最大并发任务数（2核4G服务器）
 
 
 # === 检查 Server B 负载 ===
@@ -100,7 +100,7 @@ def ssh_exec(cmd, timeout=30):
         load = check_server_load()
         if load > MAX_LOAD_AVG:
             import time
-            print(f"[SSH] Server B 负载 {load} > {MAX_LOAD_AVG}，等待 15 秒...")
+            print(f"[SSH] Server B 负载 {load} > {MAX_LOAD_AVG}，等待 30 秒...")
             time.sleep(15)
         
         ssh_cmd = [
@@ -1512,7 +1512,7 @@ def generate_proto_script(task_id, task_desc, output_file):
         "\"\"\"CrewAI Prototype Task - " + str(task_id) + "\"\"\"",
         "\"\"\"",
         "自适应并发执行系统：",
-        "1. 使用 ThreadPoolExecutor 启动 6 个独立 Agent",
+        "1. 使用 ThreadPoolExecutor 启动 2 个独立 Agent（资源限制）",
         "2. 每个 Agent 自带限流重试（指数退避）",
         "3. 运行时动态监控 API 错误率",
         "4. 连续触发限流时自动降低并发数至安全阈值（3个）",
@@ -1856,7 +1856,7 @@ def generate_proto_script(task_id, task_desc, output_file):
         "    ]",
         "    ",
         "    # 初始化控制器",
-        "    controller = ConcurrencyController(max_workers=6, safe_threshold=3)",
+        "    controller = ConcurrencyController(max_workers=2, safe_threshold=1)",
         "    ",
         "    # Phase 1: 并发执行 6 个 Agent",
         "    print('[Phase 1] 开始并发执行 6 个 Agent...')",
