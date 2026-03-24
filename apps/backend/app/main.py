@@ -6,7 +6,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
 from api.routes import router
-from api import __version__
+
+__version__ = "1.0.0"
 
 
 @asynccontextmanager
