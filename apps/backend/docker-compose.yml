@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   api:
     build: .
@@ -20,7 +18,7 @@ services:
 
   celery_worker:
     build: .
-    command: celery -A app.celery worker --loglevel=info
+    command: celery -A celery_app worker --loglevel=info
     environment:
       - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/aicomic
       - REDIS_URL=redis://redis:6379/0
