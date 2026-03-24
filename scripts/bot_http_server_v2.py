@@ -9,6 +9,10 @@ import sys
 import json
 import time
 import threading
+
+# 保护 STATE 字典的线程安全访问
+state_lock = threading.Lock()
+
 import subprocess
 import uuid
 import re
@@ -203,15 +207,120 @@ def process_existing_prototypes():
     return 0, 0
 
 
+# === 飞书群状态广播 ===
+import urllib.request
+import urllib.error
+
+FEISHU_BOT_APP_ID = "cli_a935c8fb40b8dccc"
+FEISHU_BOT_APP_SECRET = "LvyAzv4oVxqapgnFn75p4bT0z0LWxKfT"
+FEISHU_GROUP_CHAT_ID = "oc_389a77ed12ae0189d670c719f97e409c"  # AI工作室
+
+_feishu_cached_token = None
+_feishu_token_expires_at = 0
+
+def _get_feishu_token():
+    """获取飞书 tenant_access_token，带缓存"""
+    global _feishu_cached_token, _feishu_token_expires_at
+    import time
+    if _feishu_cached_token and time.time() < _feishu_token_expires_at - 60:
+        return _feishu_cached_token
+    try:
+        req = urllib.request.Request(
+            "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal",
+            data=json.dumps({"app_id": FEISHU_BOT_APP_ID, "app_secret": FEISHU_BOT_APP_SECRET}).encode(),
+            headers={"Content-Type": "application/json"}
+        )
+        with urllib.request.urlopen(req, timeout=5) as r:
+            d = json.loads(r.read())
+            if d.get("code") == 0:
+                _feishu_cached_token = d["tenant_access_token"]
+                _feishu_token_expires_at = time.time() + d.get("expire", 7200)
+                return _feishu_cached_token
+    except Exception as e:
+        print(f"[Monitor] 获取飞书Token失败: {e}")
+    return None
+
+def _send_feishu_message(text):
+    """发送文本消息到飞书群"""
+    token = _get_feishu_token()
+    if not token:
+        return False
+    try:
+        payload = json.dumps({
+            "receive_id": FEISHU_GROUP_CHAT_ID,
+            "msg_type": "text",
+            "content": json.dumps({"text": text})  # content is a JSON-encoded STRING
+        }).encode()
+        req = urllib.request.Request(
+            f"https://open.feishu.cn/open-apis/im/v1/messages?receive_id_type=chat_id",
+            data=payload,
+            headers={"Content-Type": "application/json", "Authorization": f"Bearer {token}"}
+        )
+        with urllib.request.urlopen(req, timeout=5) as r:
+            d = json.loads(r.read())
+            return d.get("code") == 0
+    except Exception as e:
+        print(f"[Monitor] 发送飞书消息失败: {e}")
+        return False
+
+def _query_bot_status(port):
+    """查询单个 Bot 的状态"""
+    try:
+        with urllib.request.urlopen(f"http://localhost:{port}/status", timeout=3) as r:
+            return json.loads(r.read())
+    except:
+        return None
+
+def broadcast_status_to_feishu():
+    """查询所有 Bot 状态并广播到飞书群"""
+    bots = [
+        (8001, "🤖 Monitor"),
+        (8002, "📋 PM"),
+        (8003, "🛠️ Dev"),
+        (8004, "📢 Marketing"),
+    ]
+    lines = ["📊 **AiComic Bot 状态**", ""]
+    all_ok = True
+    for port, name in bots:
+        s = _query_bot_status(port)
+        if s is None:
+            lines.append(f"{name}: 🔴 无响应")
+            all_ok = False
+        elif s.get("status") == "busy":
+            task = s.get("task_id") or "?"
+            prog = s.get("progress", 0)
+            done = s.get("completed", 0)
+            lines.append(f"{name}: 🔄 进行中 `{task}` {prog}% | 已完成 {done} 个任务")
+        elif s.get("status") == "idle":
+            pending = s.get("pending_tasks", 0)
+            done = s.get("completed", 0)
+            lines.append(f"{name}: ✅ 空闲 | 待处理 {pending} | 已完成 {done}")
+        else:
+            lines.append(f"{name}: 🟡 {s.get('status', '?')}")
+
+    if all_ok:
+        lines.append("")
+        lines.append("所有 Bot 运行正常 ✅")
+    else:
+        lines.append("")
+        lines.append("⚠️ 有 Bot 无响应，请检查")
+
+    _send_feishu_message("\n".join(lines))
+
 # === 调度循环 ===
 def dispatcher_loop():
     """调度循环 - 轮询任务板并分发"""
     global STATE
     print(f"[{BOT_TYPE}] Dispatcher 启动")
     STATE["dispatcher_running"] = True
+    tick = 0
     while True:
         try:
             if BOT_TYPE == "monitor":
+                tick += 1
+                # 每3分钟（18个tick × 10秒）广播一次状态到飞书群
+                if tick % 18 == 0:
+                    broadcast_status_to_feishu()
                 # 扫描原型目录发现新原型
                 scan_prototypes()
                 # 读取任务板待分配任务
@@ -236,7 +345,10 @@ def dispatcher_loop():
 # === 生成 CrewAI 脚本 ===
 def generate_crewai_script(task_id, task_desc, output_file):
     """生成 3 Agent 顺序执行的 CrewAI 脚本（带 ShellExecutor）"""
-    t = (task_id, task_desc, task_desc, task_desc, output_file)
+    # Escape % to %% to prevent "not enough arguments for format string"
+    # when task_desc contains percent signs (e.g. "50% 完成度")
+    safe = lambda s: str(s).replace('%', '%%')
+    t = (task_id, safe(task_desc), safe(task_desc), safe(task_desc), output_file.replace('%', '%%'))
     script = (
         "#!/usr/bin/env python3\n"
         '''"""CrewAI 多 Agent 任务脚本 - %s"""\n''' % t[0] +
@@ -469,7 +581,7 @@ def execute_proto_task(task_id, payload):
     script = generate_proto_script(task_id, description, output_file)
 
     # Write script locally
-    local_script = f"/opt/AiComic/opt/AiComic/tmp/crewai_proto_{task_id}_{script_id}.py"
+    local_script = f"/opt/AiComic/tmp/crewai_proto_{task_id}_{script_id}.py"
     with open(local_script, "w") as f:
         f.write(script)
 
@@ -511,47 +623,46 @@ def execute_proto_task(task_id, payload):
 
 
 def generate_proto_script(task_id, task_desc, output_file):
-    """Generate CrewAI script for prototype implementation"""
-    td = task_desc.replace('"', '\\"').replace("'", "\\'")
-    output_result = output_file.replace("/", "_")
-    script = (
-        "#!/usr/bin/env python3\n"
-        '"""CrewAI Prototype Task - %s"""\n' % task_id +
-        "import os\n"
-        "import sys\n"
-        "os.environ['OPENAI_API_KEY'] = os.environ.get('MINIMAX_API_KEY', '')\n"
-        "\n"
-        "from crewai import Agent, Task, Crew, Process\n"
-        "from crewai.llm import LLM\n"
-        "from crewai.tools import BaseTool\n"
-        "\n"
-        'llm = LLM(model="openai/MiniMax-M2.7-highspeed", is_litellm=True, api_key=os.environ.get("MINIMAX_API_KEY", ""))\n'
-        "\n"
-        "# Shell command tool\n"
-        "class ShellTool(BaseTool):\n"
-        '    name: str = "shell"\n'
-        '    description: str = "Execute shell command"\n'
-        "\n"
-        "    def _run(self, cmd: str):\n"
-        "        import subprocess\n"
-        "        result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=60, cwd='/opt/AiComic')\n"
-        "        return result.stdout + result.stderr\n"
-        "\n"
-        "shell = ShellTool()\n"
-        "\n"
-        "# Agent\n"
-        'coder = Agent(role="Python Engineer", goal="Implement code based on prototype description", backstory="10 years Python experience, expert in FastAPI", verbose=True, llm=llm, tools=[shell])\n'
-        "\n"
-        "task_description = 'Implement prototype:\\n%s\\n\\nRequirements:\\n1. Write code to /opt/AiComic/apps/\\n2. Make sure code runs\\n3. Git add/commit/push when done' % td\n"
-        'task = Task(description=task_description, agent=coder, expected_output="Code and git commit")\n'
-        "\n"
-        "crew = Crew(agents=[coder], tasks=[task], process=Process.sequential, verbose=True)\n"
-        "result = crew.kickoff()\n"
-        'with open("%s.result", "w") as f:\n' % output_result +
-        "    f.write(str(result))\n"
-    )
-    return script
-
+    """Generate CrewAI script for prototype implementation."""
+    safe_out = output_file.replace("/", "_")
+    # Use triple-quoted string with embedded double-quotes to avoid confusion
+    script_lines = [
+        "#!/usr/bin/env python3",
+        "\"\"\"CrewAI Prototype Task - " + str(task_id) + "\"\"\"",
+        "import os",
+        "import sys",
+        "os.environ['OPENAI_API_KEY'] = os.environ.get('MINIMAX_API_KEY', '')",
+        "",
+        "from crewai import Agent, Task, Crew, Process",
+        "from crewai.llm import LLM",
+        "from crewai.tools import BaseTool",
+        "",
+        "llm = LLM(model='openai/MiniMax-M2.7-highspeed', is_litellm=True, api_key=os.environ.get('MINIMAX_API_KEY', ''))",
+        "",
+        "# Shell command tool",
+        "class ShellTool(BaseTool):",
+        "    name: str = 'shell'",
+        "    description: str = 'Execute shell command'",
+        "",
+        "    def _run(self, cmd: str):",
+        "        import subprocess",
+        "        result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=60, cwd='/opt/AiComic')",
+        "        return result.stdout + result.stderr",
+        "",
+        "shell = ShellTool()",
+        "",
+        "# Agent",
+        "coder = Agent(role='Python Engineer', goal='Implement code based on prototype description', backstory='10 years Python experience, expert in FastAPI', verbose=True, llm=llm, tools=[shell])",
+        "",
+        "task_description = 'Implement prototype: " + task_desc.replace("'", "\\'") + "'",
+        "task = Task(description=task_description, agent=coder, expected_output='Code and git commit')",
+        "",
+        "crew = Crew(agents=[coder], tasks=[task], process=Process.sequential, verbose=True)",
+        "result = crew.kickoff()",
+        "with open('" + safe_out + ".result', 'w') as f:",
+        "    f.write(str(result))",
+    ]
+    return '\n'.join(script_lines)
 
 class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
     """支持并发的 HTTP 服务器，避免长任务阻塞 /health 检查"""
@@ -569,9 +680,11 @@ class Handler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(json.dumps({"status": "ok", "bot": BOT_TYPE}).encode())
         elif self.path == "/status":
+            with state_lock:
+                status_copy = dict(STATE)
             self.send_response(200)
             self.end_headers()
-            self.wfile.write(json.dumps(STATE).encode())
+            self.wfile.write(json.dumps(status_copy).encode())
         else:
             self.send_response(404)
             self.end_headers()
@@ -614,10 +727,11 @@ class Handler(BaseHTTPRequestHandler):
     def _handle_execute(self, data):
         global STATE
         task_id = data.get("task_id", "unknown")
-        STATE["status"] = "busy"
-        STATE["task_id"] = task_id
-        STATE["progress"] = 0
-        STATE["last_update"] = time.time()
+        with state_lock:
+            STATE["status"] = "busy"
+            STATE["task_id"] = task_id
+            STATE["progress"] = 0
+            STATE["last_update"] = time.time()
 
         payload = data.get("payload", {})
         task_type = data.get("task_type", "unknown")
@@ -636,10 +750,11 @@ class Handler(BaseHTTPRequestHandler):
         else:
             result = {"status": "completed", "note": "task handled"}
 
-        STATE["status"] = "idle"
-        STATE["progress"] = 100
-        STATE["completed"] += 1
-        STATE["last_update"] = time.time()
+        with state_lock:
+            STATE["status"] = "idle"
+            STATE["progress"] = 100
+            STATE["completed"] += 1
+            STATE["last_update"] = time.time()
 
         self.send_response(200)
         self.end_headers()
