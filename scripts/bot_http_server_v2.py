@@ -130,11 +130,13 @@ def dispatch_task_to_dev(task):
             # 2. 更新任务状态为"进行中"
             update_task_status(task["record_id"], "进行中")
 
-            # 2. 发送任务到 Dev Bot
+            # 2. 发送任务到 Dev Bot（含 record_id 和 callback_url）
             import urllib.request
             data = json.dumps({
                 "task_id": task["task_id"],
                 "task_type": "dev",
+                "record_id": task.get("record_id", ""),
+                "callback_url": "http://localhost:8001/callback",
                 "payload": {"任务描述": task["desc"], "proto_file": task.get("proto_file", "")}
             }).encode("utf-8")
             req = urllib.request.Request(
@@ -564,9 +566,25 @@ def dispatcher_loop():
                 if has_pending:
                     with task_queue_lock:
                         task = TASK_QUEUE["pending"].pop(0)
+                        task["dispatched_at"] = time.time()
                         TASK_QUEUE["running"].append(task)
                     STATE["last_dispatch"] = time.time()
                     dispatch_task_to_dev(task)
+
+                # 兜底：检查 running 队列里的任务是否超时（Dev Bot 崩溃时）
+                stale_threshold = 45 * 60  # 45分钟
+                now = time.time()
+                with task_queue_lock:
+                    stale_tasks = [
+                        t for t in TASK_QUEUE["running"]
+                        if t.get("dispatched_at", 0) > 0 and now - t["dispatched_at"] > stale_threshold
+                    ]
+                for stale in stale_tasks:
+                    print(f"[{BOT_TYPE}] 任务超时（45分钟无响应）: {stale['task_id']}，标记为失败")
+                    with task_queue_lock:
+                        TASK_QUEUE["running"] = [t for t in TASK_QUEUE["running"] if t["task_id"] != stale["task_id"]]
+                    if stale.get("record_id"):
+                        update_task_status(stale["record_id"], "失败")
             time.sleep(10)
         except Exception as e:
             print(f"[{BOT_TYPE}] Dispatcher 错误: {e}")
@@ -674,16 +692,37 @@ def execute_todo_task(task_id, payload):
         f'crewai-runtime python {script_file} > {output_file}.log 2>&1 &'
     )
     ssh_exec(exec_cmd, timeout=10)
+    print(f"[{BOT_TYPE}] CrewAI 已启动: {script_file}")
 
-    print(f"[{BOT_TYPE}] CrewAI 已启动，脚本: {script_file}")
-    print(f"[{BOT_TYPE}] 3个Agent顺序执行: PM -> Backend -> Reviewer")
+    # Polling 等待结果（最多 30 分钟，每次 30 秒）
+    result_file = f"{output_file}.result"
+    print(f"[{BOT_TYPE}] 等待 CrewAI 执行完成（最多30分钟）...")
+    for i in range(60):  # 60 * 30s = 30min
+        time.sleep(30)
+        result_content, _, _ = ssh_exec(f"test -f {result_file} && cat {result_file} || echo 'NOT_READY'", timeout=10)
+        if 'NOT_READY' not in result_content:
+            print(f"[{BOT_TYPE}] CrewAI 执行完成，耗时 {(i+1)*30} 秒")
+            # 回传结果文件到本地
+            local_result = f"/opt/AiComic/scripts/generated/crewai_result_{script_id}.txt"
+            subprocess.run([
+                "scp", "-o", "StrictHostKeyChecking=no",
+                "-i", "/root/.ssh/id_ed25519",
+                f"root@{SERVER_B_HOST}:{result_file}",
+                local_result
+            ], timeout=30, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            return {
+                "status": "completed",
+                "result": result_content[:1000],
+                "log": f"{output_file}.log"
+            }
+        if i % 5 == 0:
+            print(f"[{BOT_TYPE}] 等待中... {(i+1)*30}秒")
 
+    # 30分钟超时
     return {
-        "status": "started",
-        "script": script_file,
+        "status": "timeout",
         "log": f"{output_file}.log",
-        "agents": ["pm", "backend", "reviewer"],
-        "process": "sequential"
+        "error": "CrewAI 执行超时（30分钟）"
     }
 
 
@@ -1087,15 +1126,18 @@ class Handler(BaseHTTPRequestHandler):
     def _handle_execute(self, data):
         global STATE
         task_id = data.get("task_id", "unknown")
+        record_id = data.get("record_id", "")
+        callback_url = data.get("callback_url", "")
+        payload = data.get("payload", {})
+        task_type = data.get("task_type", "unknown")
+
         with state_lock:
             STATE["status"] = "busy"
             STATE["task_id"] = task_id
             STATE["progress"] = 0
             STATE["last_update"] = time.time()
 
-        payload = data.get("payload", {})
-        task_type = data.get("task_type", "unknown")
-
+        task_success = False
         try:
             if "TODO" in task_id:
                 result = execute_todo_task(task_id, payload)
@@ -1113,14 +1155,30 @@ class Handler(BaseHTTPRequestHandler):
             task_success = False
             print(f"[{BOT_TYPE}] 任务执行异常: {task_id} -> {e}")
 
+        # 任务完成/失败后：通知 Monitor（callback）
+        if callback_url:
+            try:
+                import urllib.request
+                callback_data = json.dumps({
+                    "task_id": task_id,
+                    "record_id": record_id,
+                    "status": "completed" if task_success else "failed",
+                    "result": result
+                }).encode("utf-8")
+                req = urllib.request.Request(
+                    callback_url,
+                    data=callback_data,
+                    headers={"Content-Type": "application/json", "X-API-Key": "aicomic-shared-secret-key-2026"}
+                )
+                urllib.request.urlopen(req, timeout=10)
+                print(f"[{BOT_TYPE}] 已通知 Monitor 任务完成: {task_id}")
+            except Exception as e:
+                print(f"[{BOT_TYPE}] 通知 Monitor 失败: {e}")
+
         with state_lock:
             STATE["status"] = "idle"
             STATE["progress"] = 100 if task_success else 0
             STATE["completed"] += 1 if task_success else 0
-            STATE["last_update"] = time.time()
-            STATE["status"] = "idle"
-            STATE["progress"] = 100
-            STATE["completed"] += 1
             STATE["last_update"] = time.time()
 
         # 任务完成后，补处理遗漏的 @mention（方案B）
@@ -1189,19 +1247,40 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(json.dumps({"status": "ok", "total": total, "processed": processed}).encode())
 
     def do_PATCH(self):
-        # 接收 CrewAI 结果回调
+        # 接收 Dev Bot 任务完成回调
         if self.path == "/callback":
             content_length = int(self.headers.get("Content-Length", 0))
             body = self.rfile.read(content_length)
             try:
                 data = json.loads(body)
                 task_id = data.get("task_id", "unknown")
-                result = data.get("result", "")
-                print(f"[{BOT_TYPE}] CrewAI 任务完成: {task_id}")
-                print(f"[{BOT_TYPE}] 结果: {str(result)[:200]}")
-                # 写入结果文件
+                record_id = data.get("record_id", "")
+                task_status = data.get("status", "completed")
+                result = data.get("result", {})
+                print(f"[{BOT_TYPE}] 收到任务完成回调: {task_id} status={task_status}")
+
+                # 1. 从 running 队列移除
+                with task_queue_lock:
+                    TASK_QUEUE["running"] = [
+                        t for t in TASK_QUEUE["running"]
+                        if t.get("task_id") != task_id
+                    ]
+
+                # 2. 更新 Bitable 状态
+                if record_id:
+                    if task_status == "completed":
+                        update_task_status(record_id, "已完成")
+                        print(f"[{BOT_TYPE}] Bitable 状态已更新为'已完成': {task_id}")
+                    else:
+                        update_task_status(record_id, "失败")
+                        print(f"[{BOT_TYPE}] Bitable 状态已更新为'失败': {task_id}")
+
+                # 3. 写入结果文件
+                result_str = json.dumps(result, ensure_ascii=False, indent=2)
                 with open(f"/opt/AiComic/scripts/generated/result_{task_id}.txt", "w") as f:
-                    f.write(str(result))
+                    f.write(result_str)
+                print(f"[{BOT_TYPE}] 结果已写入: result_{task_id}.txt")
+
             except Exception as e:
                 print(f"[{BOT_TYPE}] Callback error: {e}")
             self.send_response(200)
