@@ -2152,31 +2152,17 @@ class Handler(BaseHTTPRequestHandler):
                 result = data.get("result", {})
                 print(f"[{BOT_TYPE}] 收到任务完成回调: {task_id} status={task_status}")
 
-                # 1. 从 running 队列移除
-                with task_queue_lock:
-                    TASK_QUEUE["running"] = [
-                        t for t in TASK_QUEUE["running"]
-                        if t.get("task_id") != task_id
-                    ]
-
-                # 2. 更新 Bitable 状态
+                # 【最高优先级】先更新 Bitable 状态，再做其他任何操作
                 if record_id:
+                    print(f"[{BOT_TYPE}] ⚠️ 立即更新任务板: record_id={record_id}")
                     if task_status == "completed":
                         update_task_status(record_id, "已完成")
-                        print(f"[{BOT_TYPE}] Bitable 状态已更新为'已完成': {task_id}")
-                        # 3. 通知 Marketing 开始验证
-                        task_info = {
-                            "task_id": task_id,
-                            "proto_file": result.get("proto_file", ""),
-                            "description": result.get("description", "")
-                        }
-                        notify_marketing(task_info)
+                        print(f"[{BOT_TYPE}] ✅ Bitable 状态已更新为'已完成': {task_id}")
                     elif task_status == "rejected":
-                        # 研发驳回：状态 = 已驳回
                         reject_reason = result.get("reject_reason", "技术不可行")
                         update_task_status(record_id, "已驳回")
-                        print(f"[{BOT_TYPE}] Bitable 状态已更新为'已驳回': {task_id}")
-                        # 3. 通知 PM 重新设计
+                        print(f"[{BOT_TYPE}] ✅ Bitable 状态已更新为'已驳回': {task_id}")
+                        # 通知 PM 重新设计
                         task_info = {
                             "task_id": task_id,
                             "proto_file": result.get("proto_file", "")
@@ -2184,7 +2170,23 @@ class Handler(BaseHTTPRequestHandler):
                         notify_pm_rejected(task_info, reject_reason)
                     else:
                         update_task_status(record_id, "失败")
-                        print(f"[{BOT_TYPE}] Bitable 状态已更新为'失败': {task_id}")
+                        print(f"[{BOT_TYPE}] ✅ Bitable 状态已更新为'失败': {task_id}")
+
+                # 1. 从 running 队列移除
+                with task_queue_lock:
+                    TASK_QUEUE["running"] = [
+                        t for t in TASK_QUEUE["running"]
+                        if t.get("task_id") != task_id
+                    ]
+
+                # 2. 通知 Marketing 开始验证（如果是已完成）
+                if task_status == "completed" and record_id:
+                    task_info = {
+                        "task_id": task_id,
+                        "proto_file": result.get("proto_file", ""),
+                        "description": result.get("description", "")
+                    }
+                    notify_marketing(task_info)
 
                 # 3. 写入结果文件
                 result_str = json.dumps(result, ensure_ascii=False, indent=2)
