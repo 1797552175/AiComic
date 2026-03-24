@@ -2331,6 +2331,41 @@ def run():
     server.serve_forever()
 
 
+
+def should_run_self_maintenance():
+    """检查是否应该运行自维护任务（资源感知）"""
+    try:
+        # 检查负载
+        try:
+            result = subprocess.run(
+                ['cat', '/proc/loadavg'],
+                capture_output=True, text=True, timeout=5
+            )
+            load = float(result.stdout.split()[0])
+            if load > 1.5:
+                print(f"[{BOT_TYPE}] 负载{load}>1.5，暂停自维护")
+                return False
+        except:
+            pass
+        
+        # 检查是否有CrewAI任务在运行
+        try:
+            result = subprocess.run(
+                ['pgrep', '-c', '-f', 'crewai|python.*proto'],
+                capture_output=True, text=True, timeout=5
+            )
+            crewai_count = int(result.stdout.strip() or 0)
+            if crewai_count >= 2:
+                print(f"[{BOT_TYPE}] 有{crewai_count}个CrewAI任务，暂停自维护")
+                return False
+        except:
+            pass
+        
+        return True
+    except Exception as e:
+        print(f"[{BOT_TYPE}] 资源检查失败: {e}")
+        return True
+
 # === PM Bot 自维护线程 ===
 def pm_self_maintenance_loop():
     """PM Bot 空闲时自维护：向 Monitor 拉任务，无任务时检查驳回任务，然后执行竞品扫描"""
@@ -2382,7 +2417,7 @@ def pm_self_maintenance_loop():
         except Exception as e:
             print(f"[PM] 自维护异常: {e}")
 
-        time.sleep(5)  # 每5秒检查一次（更快的响应）
+        time.sleep(30)  # 空闲时30秒检查一次，节省资源
 
 
 def pm_check_and_handle_rejected_tasks():
@@ -2600,7 +2635,7 @@ def marketing_self_maintenance_loop():
         except Exception as e:
             print(f"[Marketing] 自维护异常: {e}")
 
-        time.sleep(5)  # 每5秒检查一次（更快的响应）
+        time.sleep(30)  # 空闲时30秒检查一次，节省资源
 
 
 def execute_marketing_task(task):
