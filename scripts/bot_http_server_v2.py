@@ -313,6 +313,156 @@ def broadcast_status_to_feishu():
 
     _send_feishu_message("\n".join(lines))
 
+
+# === 补处理遗漏的 @mention（方案B）===
+import os as _os
+import time as _time
+
+FEISHU_BOT_OPEN_ID = "ou_c7ec681c4b6134e7ef7d1da9ea59f1ab"  # 状态监控机器人
+FEISHU_BOT_APP_ID_MISSED = "cli_a935c8fb40b8dccc"
+FEISHU_BOT_APP_SECRET_MISSED = "LvyAzv4oVxqapgnFn75p4bT0z0LWxKfT"
+FEISHU_GROUP_CHAT_ID_MISSED = "oc_389a77ed12ae0189d670c719f97e409c"
+PROCESSED_MSG_IDS_FILE = "/opt/AiComic/状态报告/processed_msg_ids.json"
+
+_missed_token = None
+_missed_token_expires = 0
+
+def _get_missed_token():
+    global _missed_token, _missed_token_expires
+    import time as _t
+    if _missed_token and _t.time() < _missed_token_expires - 60:
+        return _missed_token
+    try:
+        req = urllib.request.Request(
+            "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal",
+            data=json.dumps({"app_id": FEISHU_BOT_APP_ID_MISSED, "app_secret": FEISHU_BOT_APP_SECRET_MISSED}).encode(),
+            headers={"Content-Type": "application/json"}
+        )
+        with urllib.request.urlopen(req, timeout=5) as r:
+            d = json.loads(r.read())
+            if d.get("code") == 0:
+                _missed_token = d["tenant_access_token"]
+                _missed_token_expires = _t.time() + d.get("expire", 7200)
+                return _missed_token
+    except Exception as e:
+        print(f"[Monitor] 获取Token失败: {e}")
+    return None
+
+def _load_processed_ids():
+    try:
+        if _os.path.exists(PROCESSED_MSG_IDS_FILE):
+            with open(PROCESSED_MSG_IDS_FILE, 'r') as f:
+                return set(json.load(f))
+    except:
+        pass
+    return set()
+
+def _save_processed_ids(ids):
+    try:
+        with open(PROCESSED_MSG_IDS_FILE, 'w') as f:
+            json.dump(list(ids), f)
+    except:
+        pass
+
+def _contains_bot_mention(content_str):
+    """检查消息内容是否 @ 了机器人（通过 open_id 或 at details）"""
+    if not content_str:
+        return False
+    # 飞书 at 机器人会在 content 里包含 bot 的 open_id
+    if FEISHU_BOT_OPEN_ID in content_str:
+        return True
+    # 也检查 "at details" 格式
+    try:
+        d = json.loads(content_str) if isinstance(content_str, str) else content_str
+        if isinstance(d, dict) and "at_items" in d:
+            for item in d.get("at_items", []):
+                if item.get("open_id") == FEISHU_BOT_OPEN_ID:
+                    return True
+    except:
+        pass
+    return False
+
+def fetch_and_process_missed_mentions():
+    """查询飞书群最近消息，找出被遗漏的 @mention 并触发处理"""
+    token = _get_missed_token()
+    if not token:
+        return
+
+    try:
+        url = (f"https://open.feishu.cn/open-apis/im/v1/messages"
+               f"?container_id_type=chat"
+               f"&container_id={FEISHU_GROUP_CHAT_ID_MISSED}"
+               f"&page_size=20"
+               f"&sort_type=ByCreateTimeDesc")
+        req = urllib.request.Request(url, headers={"Authorization": f"Bearer {token}"})
+        with urllib.request.urlopen(req, timeout=8) as r:
+            d = json.loads(r.read())
+
+        if d.get("code") != 0:
+            return
+
+        processed_ids = _load_processed_ids()
+        new_processed = set()
+
+        items = d.get("data", {}).get("items", [])
+        for m in items:
+            msg_id = m.get("message_id", "")
+            if not msg_id or msg_id in processed_ids:
+                continue
+
+            sender = m.get("sender", {})
+            sender_id = sender.get("id", "")
+            # 跳过机器人自己发的消息
+            if sender_id == FEISHU_BOT_OPEN_ID:
+                new_processed.add(msg_id)
+                continue
+
+            msg_type = m.get("msg_type", "")
+            body_raw = m.get("body", {})
+
+            # 解析消息内容
+            content_str = ""
+            if isinstance(body_raw, dict):
+                content_str = body_raw.get("content", "")
+            elif isinstance(body_raw, str):
+                content_str = body_raw
+
+            if not _contains_bot_mention(content_str):
+                new_processed.add(msg_id)
+                continue
+
+            # 找到了一个新的 @mention
+            try:
+                content_dict = json.loads(content_str) if isinstance(content_str, str) else content_str
+                text = content_dict.get("text", "") if isinstance(content_dict, dict) else str(content_dict)
+            except:
+                text = content_str
+
+            print(f"[Monitor] 发现遗漏 @mention: msg_id={msg_id} text={text[:80]}")
+            new_processed.add(msg_id)
+
+            # 构造任务并分发
+            task = {
+                "task_id": f"TODO-{msg_id[:12]}",
+                "desc": text,
+                "source": "missed_mention",
+                "msg_id": msg_id
+            }
+            TASK_QUEUE["pending"].insert(0, task)
+            print(f"[Monitor] 已将遗漏任务加入队列: {task['task_id']}")
+
+        # 保存已处理的 message_id
+        if new_processed:
+            all_processed = processed_ids | new_processed
+            # 最多保留1000条
+            if len(all_processed) > 1000:
+                all_processed = set(list(all_processed)[-1000:])
+            _save_processed_ids(all_processed)
+
+    except Exception as e:
+        print(f"[Monitor] 查询遗漏消息失败: {e}")
+
+
 # === 调度循环 ===
 def dispatcher_loop():
     """调度循环 - 轮询任务板并分发"""
@@ -690,8 +840,12 @@ def execute_proto_task(task_id, payload):
 
 def generate_proto_script(task_id, task_desc, output_file):
     """Generate CrewAI script for prototype implementation."""
-    safe_out = output_file.replace("/", "_")
-    # Use triple-quoted string with embedded double-quotes to avoid confusion
+    # Escape single quotes in output_file path for Python string
+    safe_out = output_file.replace("'", "\\'")
+    # Escape single quotes in task_desc for Python string
+    safe_desc = task_desc.replace("'", "\\'")
+
+    # Build script using string concatenation
     script_lines = [
         "#!/usr/bin/env python3",
         "\"\"\"CrewAI Prototype Task - " + str(task_id) + "\"\"\"",
@@ -705,7 +859,6 @@ def generate_proto_script(task_id, task_desc, output_file):
         "",
         "llm = LLM(model='openai/MiniMax-M2.7-highspeed', is_litellm=True, api_key=os.environ.get('MINIMAX_API_KEY', ''))",
         "",
-        "# Shell command tool",
         "class ShellTool(BaseTool):",
         "    name: str = 'shell'",
         "    description: str = 'Execute shell command'",
@@ -717,15 +870,22 @@ def generate_proto_script(task_id, task_desc, output_file):
         "",
         "shell = ShellTool()",
         "",
-        "# Agent",
-        "coder = Agent(role='Python Engineer', goal='Implement code based on prototype description', backstory='10 years Python experience, expert in FastAPI', verbose=True, llm=llm, tools=[shell])",
+        "# Backend Engineer Agent",
+        "backend = Agent(role='Backend Engineer', goal='Implement API endpoints and database models', backstory='5 years FastAPI experience', verbose=True, llm=llm, tools=[shell])",
         "",
-        "# Use json.dumps to properly escape the multi-line task description",
-        "import json",
-        "task_description = json.dumps(" + json.dumps(task_desc, ensure_ascii=False) + ", ensure_ascii=False)",
-        "task = Task(description=json.loads(task_description), agent=coder, expected_output='Code and git commit')",
+        "# Frontend Engineer Agent",
+        "frontend = Agent(role='Frontend Engineer', goal='Implement UI components', backstory='5 years React experience', verbose=True, llm=llm, tools=[shell])",
         "",
-        "crew = Crew(agents=[coder], tasks=[task], process=Process.sequential, verbose=True)",
+        "# DevOps Agent",
+        "devops = Agent(role='DevOps Engineer', goal='Write tests and ensure deployable', backstory='3 years CI/CD experience', verbose=True, llm=llm, tools=[shell])",
+        "",
+        "task_description = '" + safe_desc + "'",
+        "",
+        "task1 = Task(description=task_description + '\\n\\n[Backend] Write code in /opt/AiComic/apps/backend/', agent=backend, expected_output='Backend code created')",
+        "task2 = Task(description=task_description + '\\n\\n[Frontend] Write code in /opt/AiComic/apps/frontend/', agent=frontend, expected_output='Frontend code created')",
+        "task3 = Task(description='Write tests. Run tests. Git add/commit/push.', agent=devops, expected_output='Tests pass and code pushed')",
+        "",
+        "crew = Crew(agents=[backend, frontend, devops], tasks=[task1, task2, task3], process=Process.parallel, verbose=True)",
         "result = crew.kickoff()",
         "with open('" + safe_out + ".result', 'w') as f:",
         "    f.write(str(result))",
@@ -823,6 +983,13 @@ class Handler(BaseHTTPRequestHandler):
             STATE["progress"] = 100
             STATE["completed"] += 1
             STATE["last_update"] = time.time()
+
+        # 任务完成后，补处理遗漏的 @mention（方案B）
+        if BOT_TYPE == "monitor":
+            try:
+                fetch_and_process_missed_mentions()
+            except Exception as e:
+                print(f"[Monitor] 补处理遗漏消息失败: {e}")
 
         try:
             self.send_response(200)
