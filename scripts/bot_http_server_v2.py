@@ -1102,6 +1102,7 @@ def _do_proto_execute(task_id, payload, progress_file):
             }, f)
 
     update_progress("running", 5, "正在准备脚本...")
+    _send_feishu_message(f"🚀 [{BOT_TYPE}] 任务 {task_id} 开始执行，准备脚本...")
 
     # 任务间隔保护
     task_interval_file = "/tmp/last_proto_task_time"
@@ -1228,6 +1229,7 @@ def _do_proto_execute(task_id, payload, progress_file):
     stdout, stderr, code = ssh_exec(run_cmd, timeout=10)
     print(f"[{BOT_TYPE}] CrewAI 任务已在后台启动，PID: {stdout.strip()}")
     update_progress("running", 50, f"CrewAI 任务已启动，PID: {stdout.strip()[:20]}...，等待执行结果...")
+    _send_feishu_message(f"🤖 [{BOT_TYPE}] 任务 {task_id} 已启动 CrewAI（6 Agent并行），正在开发中...")
 
     # Wait for result file (up to 30 minutes), with rate-limit retry
     import time
@@ -1301,6 +1303,7 @@ def _do_proto_execute(task_id, payload, progress_file):
     if waited >= max_wait:
         print(f"[{BOT_TYPE}] CrewAI 执行超时 ({max_wait}s, 重试{retry_count}次)")
         update_progress("timeout", 100, f"CrewAI 执行超时 ({max_wait}s)")
+        _send_feishu_message(f"⏰ [{BOT_TYPE}] 任务 {task_id} 执行超时！请检查 Server B 日志")
 
         # 回调 Monitor 通知任务失败
         record_id = payload.get("record_id", "")
@@ -1341,6 +1344,7 @@ def _do_proto_execute(task_id, payload, progress_file):
     # Check for syntax errors
     if 'SyntaxError' in log_content:
         update_progress("failed", 100, "脚本语法错误")
+        _send_feishu_message(f"❌ [{BOT_TYPE}] 任务 {task_id} 脚本语法错误！请检查生成的脚本")
 
         # 回调 Monitor 通知任务失败
         record_id = payload.get("record_id", "")
@@ -1378,6 +1382,7 @@ def _do_proto_execute(task_id, payload, progress_file):
     log_content, _, _ = ssh_exec(check_log, timeout=10)
 
     update_progress("completed", 100, "任务执行完成")
+    _send_feishu_message(f"✅ [{BOT_TYPE}] 任务 {task_id} 执行完成！正在更新任务板...")
 
     # ========== 回调 Monitor 通知任务完成 ==========
     record_id = payload.get("record_id", "")
