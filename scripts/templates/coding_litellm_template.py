@@ -38,6 +38,17 @@ def call_llm(prompt, max_tokens=4096):
     )
     return response["choices"][0]["message"]["content"]
 
+# 全角→半角映射表（常见中文标点）
+# 覆盖：冒号、逗号、句号、分号、问号、感叹号、双引号、单引号、括号、方括号
+_FULLWIDTH_MAP = str.maketrans(
+    '\uff1a\uff0c\u3002\uff1b\uff1f\uff01\uff02\uff07\uff08\uff09\uff3b\uff3d',
+    ':,.;?!"\'()[]'
+)
+
+def normalize_punctuation(text):
+    """将全角标点转为半角，避免 Python 语法错误"""
+    return text.translate(_FULLWIDTH_MAP)
+
 def extract_code(response_text):
     """从LLM输出中提取代码"""
     code_match = re.search(r'```python\s*(.*?)\s*```', response_text, re.DOTALL)
@@ -190,8 +201,8 @@ def run_task(task_desc, target_file):
     if not code or len(code) < 50:
         return False, "LLM输出为空或过短"
     
-    # 写入文件
-    write_file(target_file, code)
+    # 写入文件（先 normalize 全角标点）
+    write_file(target_file, normalize_punctuation(code))
     
     # 语法检查
     ok, msg = syntax_check(target_file)
