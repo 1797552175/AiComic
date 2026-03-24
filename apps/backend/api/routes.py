@@ -456,5 +456,5 @@ async def get_shot_types():
     return storyboard_generator.get_shot_type_options()
 
 
-# 注册认证路由
-app.include_router(auth_router)
+# 注册认证路由 - 暂时注释，等 auth 模块完成后再启用
+# app.include_router(auth_router)
