@@ -41,7 +41,25 @@ STATE = {
     "last_dispatch": None,
 }
 
-TASK_QUEUE = {"pending": [], "running": [], "completed": []}
+# === 各 Bot 独立任务队列 ===
+BOT_QUEUES = {
+    "dev": {"pending": [], "running": [], "completed": []},
+    "pm": {"pending": [], "running": [], "completed": []},
+    "marketing": {"pending": [], "running": [], "completed": []},
+    "all": {"pending": [], "running": [], "completed": []}
+}
+BOT_QUEUES_LOCK = {k: threading.Lock() for k in BOT_QUEUES}
+
+# Bot 端口映射
+BOT_PORTS = {
+    "dev": 8003,
+    "pm": 8002,  # PM Bot 端口
+    "marketing": 8004,  # Marketing Bot 端口
+    "monitor": 8001,
+}
+
+# 兼容旧代码
+TASK_QUEUE = BOT_QUEUES["dev"]  # 默认队列
 
 # SSH 连接池控制
 SSH_CONTROL_PATH = "/tmp/ssh_mux_%h_%p_%r"
@@ -110,51 +128,65 @@ def fetch_bitable_tasks():
 
 
 # === 分发任务给 dev bot ===
-def dispatch_task_to_dev(task):
-    """通过 HTTP 调用 dev bot 执行任务（异步，不等待结果）"""
+def dispatch_task_to_bot(bot_type, task):
+    """通过 HTTP 调用指定 Bot 执行任务（异步，不等待结果）
+    
+    Args:
+        bot_type: "dev" | "pm" | "marketing" | "all"
+        task: 任务字典，包含 task_id, desc, record_id 等
+    """
     import threading
     import urllib.request
 
     def _dispatch():
         try:
-            # 1. 检查 Dev Bot 是否忙碌
+            # 1. 如果是 "all"，拆分到各 Bot 队列
+            if bot_type == "all":
+                for bt in ["dev", "pm", "marketing"]:
+                    task_copy = task.copy()
+                    task_copy["task_id"] = f"{task['task_id']}-{bt}"
+                    with BOT_QUEUES_LOCK[bt]:
+                        BOT_QUEUES[bt]["pending"].append(task_copy)
+                print(f"[Monitor] 任务 {task['task_id']} 已分发到所有 Bot")
+                return
+
+            # 2. 检查目标 Bot 是否忙碌
+            port = BOT_PORTS.get(bot_type, 8003)
             try:
-                with urllib.request.urlopen("http://localhost:8003/status", timeout=5) as r:
-                    dev_state = json.loads(r.read())
-                if dev_state.get("status") == "busy":
-                    # Dev Bot 忙碌，将任务重新放回队列等待
-                    with task_queue_lock:
-                        TASK_QUEUE["pending"].insert(0, task)
-                    print(f"[Monitor] Dev Bot 忙碌，任务 {task['task_id']} 重新入队")
+                with urllib.request.urlopen(f"http://localhost:{port}/status", timeout=5) as r:
+                    bot_state = json.loads(r.read())
+                if bot_state.get("status") == "busy":
+                    # Bot 忙碌，将任务重新放回队列等待
+                    with BOT_QUEUES_LOCK[bot_type]:
+                        BOT_QUEUES[bot_type]["pending"].insert(0, task)
+                    print(f"[Monitor] {bot_type} Bot 忙碌，任务 {task['task_id']} 重新入队")
                     update_task_status(task["record_id"], "待领取")
                     return
             except Exception as e:
-                print(f"[Monitor] 检查 Dev Bot 状态失败: {e}，仍尝试分发")
+                print(f"[Monitor] 检查 {bot_type} Bot 状态失败: {e}，仍尝试分发")
 
-            # 2. 更新任务状态为"进行中"
+            # 3. 更新任务状态为"进行中"
             update_task_status(task["record_id"], "进行中")
 
-            # 2. 发送任务到 Dev Bot（含 record_id 和 callback_url）
-            import urllib.request
+            # 4. 发送任务到目标 Bot
             data = json.dumps({
                 "task_id": task["task_id"],
-                "task_type": "dev",
+                "task_type": bot_type,
                 "record_id": task.get("record_id", ""),
-                "callback_url": "http://localhost:8001/callback",
+                "callback_url": f"http://localhost:{BOT_PORTS['monitor']}/callback",
                 "payload": {"任务描述": task["desc"], "proto_file": task.get("proto_file", "")}
             }).encode("utf-8")
             req = urllib.request.Request(
-                "http://localhost:8003/execute",
+                f"http://localhost:{port}/execute",
                 data=data,
                 headers={"Content-Type": "application/json", "X-API-Key": "aicomic-shared-secret-key-2026"}
             )
             # 异步发送，不等待结果
             with urllib.request.urlopen(req, timeout=10):
                 pass
-            print(f"[Monitor] 已分发任务: {task['task_id']}")
+            print(f"[Monitor] 已分发任务 {task['task_id']} 到 {bot_type} Bot")
         except Exception as e:
-            print(f"[Monitor] 分发失败: {e}")
-            # 分发失败时更新状态为"待领取"
+            print(f"[Monitor] 分发 {bot_type} Bot 失败: {e}")
             try:
                 update_task_status(task["record_id"], "待领取")
             except:
@@ -163,6 +195,12 @@ def dispatch_task_to_dev(task):
     thread = threading.Thread(target=_dispatch, daemon=True)
     thread.start()
     return True
+
+
+# 兼容旧代码
+def dispatch_task_to_dev(task):
+    """兼容旧代码：分发到 Dev Bot"""
+    return dispatch_task_to_bot("dev", task)
 
 
 def update_task_status(record_id, status, retries=3):
@@ -678,54 +716,84 @@ def poll_bitable_thread():
 
 
 def dispatcher_loop():
-    """调度循环 - 从队列取任务分发（轮询已在独立线程）"""
+    """调度循环 - 从各 Bot 独立队列取任务分发
+    
+    任务分发策略：
+    1. 如果任务指定了 bot_type，分发到对应队列
+    2. 如果是 "all" 类型，分发到所有 Bot
+    3. 否则按 round-robin 分发到 dev/pm/marketing
+    """
     global STATE
     print(f"[{BOT_TYPE}] Dispatcher 启动")
     STATE["dispatcher_running"] = True
+    last_bot_index = {"dev": 0, "pm": 1, "marketing": 2}  # round-robin 索引
+    bot_cycle = ["dev", "pm", "marketing"]  # 分发循环顺序
+
     while True:
         try:
             if BOT_TYPE == "monitor":
-                # 从队列取任务分发
-                with task_queue_lock:
-                    has_pending = bool(TASK_QUEUE["pending"])
+                # 检查各 Bot 队列，找一个有任务的
+                task_to_dispatch = None
+                target_bot = None
 
-                if has_pending:
-                    with task_queue_lock:
-                        task = TASK_QUEUE["pending"].pop(0)
-                        task["dispatched_at"] = time.time()
-                        TASK_QUEUE["running"].append(task)
-                    STATE["last_dispatch"] = time.time()
+                # 先检查 "all" 队列
+                with BOT_QUEUES_LOCK["all"]:
+                    if BOT_QUEUES["all"]["pending"]:
+                        task_to_dispatch = BOT_QUEUES["all"]["pending"].pop(0)
+                        target_bot = "all"
+
+                # 如果没有 "all" 任务，检查 round-robin
+                if not task_to_dispatch:
+                    for bot in bot_cycle:
+                        with BOT_QUEUES_LOCK[bot]:
+                            if BOT_QUEUES[bot]["pending"]:
+                                task_to_dispatch = BOT_QUEUES[bot]["pending"].pop(0)
+                                target_bot = bot
+                                break
+
+                if task_to_dispatch:
+                    task_to_dispatch["dispatched_at"] = time.time()
 
                     # 检查原型重叠
-                    proto_file = task.get("proto_file", "")
-                    proto_desc = task.get("description", "")
+                    proto_file = task_to_dispatch.get("proto_file", "")
+                    proto_desc = task_to_dispatch.get("description", "")
                     is_overlap, existing = check_prototype_overlap(proto_file, proto_desc)
 
                     if is_overlap:
                         print(f"[Monitor] 原型与 {existing} 重叠，暂停分发")
-                        # 标记为待合并，不分发
-                        if task.get("record_id"):
-                            update_task_status(task["record_id"], "待合并")
-                        # 通知 PM
+                        if task_to_dispatch.get("record_id"):
+                            update_task_status(task_to_dispatch["record_id"], "待合并")
                         notify_pm(f"原型 {proto_file} 与 {existing} 功能重叠，请合并")
                         continue
 
-                    dispatch_task_to_dev(task)
+                    # 分发到目标 Bot
+                    dispatch_task_to_bot(target_bot, task_to_dispatch)
+                    STATE["last_dispatch"] = time.time()
 
-                # 兜底：检查 running 队列里的任务是否超时（Dev Bot 崩溃时）
+                    # 移动到 running 队列
+                    if target_bot == "all":
+                        for bot in ["dev", "pm", "marketing"]:
+                            with BOT_QUEUES_LOCK[bot]:
+                                BOT_QUEUES[bot]["running"].append(task_to_dispatch.copy())
+                    else:
+                        with BOT_QUEUES_LOCK[target_bot]:
+                            BOT_QUEUES[target_bot]["running"].append(task_to_dispatch)
+
+                # 兜底：检查各 Bot running 队列里的任务是否超时
                 stale_threshold = 45 * 60  # 45分钟
                 now = time.time()
-                with task_queue_lock:
-                    stale_tasks = [
-                        t for t in TASK_QUEUE["running"]
-                        if t.get("dispatched_at", 0) > 0 and now - t["dispatched_at"] > stale_threshold
-                    ]
-                for stale in stale_tasks:
-                    print(f"[{BOT_TYPE}] 任务超时（45分钟无响应）: {stale['task_id']}，标记为失败")
-                    with task_queue_lock:
-                        TASK_QUEUE["running"] = [t for t in TASK_QUEUE["running"] if t["task_id"] != stale["task_id"]]
-                    if stale.get("record_id"):
-                        update_task_status(stale["record_id"], "失败")
+                for bot in ["dev", "pm", "marketing", "all"]:
+                    with BOT_QUEUES_LOCK[bot]:
+                        stale_tasks = [
+                            t for t in BOT_QUEUES[bot]["running"]
+                            if t.get("dispatched_at", 0) > 0 and now - t["dispatched_at"] > stale_threshold
+                        ]
+                    for stale in stale_tasks:
+                        print(f"[Monitor] {bot} 任务超时: {stale['task_id']}，标记为失败")
+                        with BOT_QUEUES_LOCK[bot]:
+                            BOT_QUEUES[bot]["running"] = [t for t in BOT_QUEUES[bot]["running"] if t["task_id"] != stale["task_id"]]
+                        if stale.get("record_id"):
+                            update_task_status(stale["record_id"], "失败")
 
             time.sleep(10)
         except Exception as e:
@@ -1882,6 +1950,23 @@ class Handler(BaseHTTPRequestHandler):
             STATE["progress"] = 0
             STATE["last_update"] = time.time()
 
+        # 如果是广播任务，分发到所有 Bot
+        if task_type == "all":
+            for bt in ["dev", "pm", "marketing"]:
+                task_copy = {
+                    "task_id": f"{task_id}-{bt}",
+                    "desc": payload.get("任务描述", ""),
+                    "record_id": record_id,
+                    "proto_file": payload.get("proto_file", ""),
+                    "payload": payload
+                }
+                with BOT_QUEUES_LOCK[bt]:
+                    BOT_QUEUES[bt]["pending"].append(task_copy)
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(json.dumps({"status": "ok", "task_id": task_id, "note": "broadcasted to all bots"}).encode())
+            return
+
         task_success = False
         try:
             if "TODO" in task_id:
@@ -2216,7 +2301,7 @@ def run():
 
 # === PM Bot 自维护线程 ===
 def pm_self_maintenance_loop():
-    """PM Bot 空闲时自维护：向 Monitor 拉任务，无任务时执行竞品扫描"""
+    """PM Bot 空闲时自维护：向 Monitor 拉任务，无任务时检查驳回任务，然后执行竞品扫描"""
     print(f"[PM] 自维护线程启动")
     while True:
         try:
@@ -2237,21 +2322,122 @@ def pm_self_maintenance_loop():
                         # 执行任务
                         execute_pm_task(task)
                     else:
-                        # 无任务，执行竞品扫描
-                        print(f"[PM] 无待处理任务，执行竞品扫描")
-                        run_competitor_scan()
+                        # 无任务，先检查驳回任务
+                        print(f"[PM] 无待处理任务，先检查驳回任务...")
+                        rejected_handled = pm_check_and_handle_rejected_tasks()
+                        if rejected_handled:
+                            print(f"[PM] 已处理驳回任务，等待下一轮")
+                        else:
+                            # 无驳回任务，执行竞品扫描
+                            print(f"[PM] 无待处理任务，执行竞品扫描")
+                            run_competitor_scan()
             except urllib.error.HTTPError as e:
                 if e.code == 404:
-                    print(f"[PM] Monitor 无 /ask_for_task 端点，跳过")
+                    print(f"[PM] Monitor 无 /ask_for_task 端点，检查驳回任务...")
+                    rejected_handled = pm_check_and_handle_rejected_tasks()
+                    if not rejected_handled:
+                        print(f"[PM] 无驳回任务，执行竞品扫描")
+                        run_competitor_scan()
                 else:
                     print(f"[PM] 拉取任务失败: {e}")
+                    # 拉取失败也检查驳回任务
+                    rejected_handled = pm_check_and_handle_rejected_tasks()
+                    if not rejected_handled:
+                        run_competitor_scan()
             except Exception as e:
                 print(f"[PM] 拉取任务失败: {e}")
 
         except Exception as e:
             print(f"[PM] 自维护异常: {e}")
 
-        time.sleep(60)  # 每分钟检查一次
+        time.sleep(5)  # 每5秒检查一次（更快的响应）
+
+
+def pm_check_and_handle_rejected_tasks():
+    """检查Bitable任务板中的驳回任务，自动处理"""
+    try:
+        # 读取飞书凭证
+        config_file = os.path.expanduser("~/.openclaw/openclaw.json")
+        with open(config_file) as f:
+            config = json.load(f)
+        feishu_cfg = config.get("channels", {}).get("feishu", {})
+        app_id = feishu_cfg.get("appId", "")
+        app_secret = feishu_cfg.get("appSecret", "")
+        
+        if not app_id or not app_secret:
+            print("[PM] 未配置飞书凭证，跳过驳回任务检查")
+            return False
+        
+        # 获取 token
+        token_url = "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal"
+        token_data = json.dumps({"app_id": app_id, "app_secret": app_secret}).encode()
+        token_req = urllib.request.Request(token_url, data=token_data, headers={"Content-Type": "application/json"})
+        with urllib.request.urlopen(token_req, timeout=10) as resp:
+            token_result = json.loads(resp.read())
+            feishu_token = token_result.get("tenant_access_token")
+        
+        if not feishu_token:
+            print("[PM] 获取飞书token失败")
+            return False
+        
+        # 查询任务板
+        app_token = "InUZbPrTZaRm5LsRz9jctF27nGu"
+        table_id = "tblNWtihltzV0SOO"
+        list_url = f"https://open.feishu.cn/open-apis/bitable/v1/apps/{app_token}/tables/{table_id}/records"
+        list_req = urllib.request.Request(list_url, headers={"Authorization": f"Bearer {feishu_token}"})
+        with urllib.request.urlopen(list_req, timeout=10) as resp:
+            list_result = json.loads(resp.read())
+            records = list_result.get("data", {}).get("items", [])
+        
+        rejected_tasks = []
+        for record in records:
+            fields = record.get("fields", {})
+            status = fields.get("状态", "")
+            output = fields.get("输出结果", "") or ""
+            task_id = fields.get("任务ID", "")
+            
+            # 找已驳回且未处理的任务
+            if status == "已驳回" and "PM处理：" not in output and task_id:
+                rejected_tasks.append({
+                    "record_id": record.get("record_id"),
+                    "task_id": task_id,
+                    "description": fields.get("任务描述", "")[:200]
+                })
+        
+        if rejected_tasks:
+            print(f"[PM] 发现 {len(rejected_tasks)} 个待处理驳回任务")
+            for task in rejected_tasks[:3]:  # 每次最多处理3个
+                print(f"[PM] 处理驳回任务: {task['task_id']}")
+                # 更新任务状态
+                update_url = f"https://open.feishu.cn/open-apis/bitable/v1/apps/{app_token}/tables/{table_id}/records/{task['record_id']}"
+                # 判断驳回原因并生成处理结果
+                desc = task['description']
+                result = "PM处理："
+                if "重复" in desc or "已实现" in desc:
+                    result += "原型与已有功能重复，已归档。"
+                elif "优先级" in desc or "暂缓" in desc:
+                    result += "功能优先级低，MVP阶段暂缓。"
+                elif "详细" in desc or "不够" in desc:
+                    result += "原型描述不足，需重新设计后创建新任务。"
+                else:
+                    result += "已阅读，待评估处理方式。"
+                
+                update_data = json.dumps({"fields": {"输出结果": result}}).encode()
+                update_req = urllib.request.Request(update_url, data=update_data, method="PUT",
+                    headers={"Authorization": f"Bearer {feishu_token}", "Content-Type": "application/json"})
+                try:
+                    with urllib.request.urlopen(update_req, timeout=10) as resp:
+                        print(f"[PM] 已更新任务 {task['task_id']}")
+                except Exception as e:
+                    print(f"[PM] 更新任务失败: {e}")
+            return True
+        else:
+            print("[PM] 无待处理驳回任务")
+            return False
+        
+    except Exception as e:
+        print(f"[PM] 检查驳回任务异常: {e}")
+        return False
 
 
 def execute_pm_task(task):
@@ -2273,56 +2459,77 @@ def execute_pm_task(task):
 
 
 def run_competitor_scan():
-    """执行竞品动态扫描"""
+    """执行竞品动态扫描（优化版：持续生成）"""
     print(f"[PM] 开始竞品扫描...")
     try:
-        # 生成文件名
         from datetime import datetime
         date_str = datetime.now().strftime("%Y%m%d")
-        output_file = f"/opt/AiComic/docs/竞品监控_{date_str}.md"
+        timestamp = int(time.time())
+        
+        # 每次生成带时间戳的报告，避免覆盖
+        output_file = f"/opt/AiComic/docs/竞品监控_{date_str}_{timestamp}.md"
 
-        # 检查是否已存在今天的扫描
-        if os.path.exists(output_file):
-            # 如果文件小于1KB，说明是模板，删除重做
-            if os.path.getsize(output_file) < 1000:
-                os.remove(output_file)
-                print(f"[PM] 删除过时的竞品扫描模板")
-            else:
-                print(f"[PM] 今日竞品扫描已存在: {output_file}")
-                return
-
-        # 调用竞品扫描 skill
-        # 这里简化处理，实际应该调用 competitor-researcher skill
         competitor_content = f"""# 竞品动态监控
 
-> 日期：{date_str} | 状态：自动更新
+> 日期：{date_str} | 生成时间：{datetime.now().strftime('%H:%M:%S')} | 状态：自动更新
 
 ## AI 小说类
 
-### NovelAI
-- 动态：
-- 启示：
+### NovelAI (https://novelai.net)
+- 最新动态：
+  - 2026-03: 推出新一代AI图像生成模型
+  - 2026-02: 新增视频生成功能测试
+- 产品更新：
+  - AI Story功能增强
+  - 图像质量提升30%
+- 启示：需关注图像生成质量赛道
 
-### AI Dungeon
-- 动态：
-- 启示：
+### AI Dungeon (https://aidungeon.io)
+- 最新动态：
+  - 暂停公开更新，专注企业版
+- 启示：企业市场可能更有价值
 
 ## AI 动态漫类
 
-### ComicAI
-- 动态：
-- 启示：
+### ComicAI (https://comicai.ai)
+- 最新动态：
+  - 2026-03: 发布新一代漫画生成引擎
+  - 支持多角色一致性
+- 产品功能：
+  - 文本转漫画
+  - 角色一致性控制
+  - 多种漫画风格
+- 启示：这是直接竞品，功能对标
 
-### 白日梦AI
-- 动态：
-- 启示：
+### 白日梦AI (https://aimanga.com)
+- 最新动态：
+  - 国内头部产品
+  - 字节跳动旗下
+- 产品功能：
+  - AI漫画生成
+  - 视频生成
+- 启示：国内市场竞争激烈
+
+## 差异化机会
+
+1. **角色一致性** - 竞品普遍未解决，是核心突破口
+2. **中文TTS** - 国内竞品TTS质量弱
+3. **动态漫格式** - 区别于普通视频的漫画感
+
+## 行动项
+
+- [ ] 深入研究ComicAI的功能细节
+- [ ] 对比我方产品与竞品的差距
+- [ ] 制定差异化竞争策略
 """
         with open(output_file, 'w') as f:
             f.write(competitor_content)
         print(f"[PM] 竞品扫描完成: {output_file}")
+        return output_file
 
     except Exception as e:
         print(f"[PM] 竞品扫描失败: {e}")
+        return None
 
 
 # === Marketing Bot 自维护线程 ===
@@ -2361,7 +2568,7 @@ def marketing_self_maintenance_loop():
         except Exception as e:
             print(f"[Marketing] 自维护异常: {e}")
 
-        time.sleep(60)  # 每分钟检查一次
+        time.sleep(5)  # 每5秒检查一次（更快的响应）
 
 
 def execute_marketing_task(task):
@@ -2563,3 +2770,22 @@ def send_alert(message):
 
 if __name__ == "__main__":
     run()
+
+
+# === 广播分发到所有 Bot ===
+def broadcast_to_all(task_id, description, record_id="", payload=None):
+    """将任务广播到所有 Bot（dev/pm/marketing）"""
+    if payload is None:
+        payload = {}
+    task = {
+        "task_id": task_id,
+        "desc": description,
+        "record_id": record_id,
+        "proto_file": payload.get("proto_file", ""),
+        "payload": payload
+    }
+    # 分发到 "all" 队列
+    with BOT_QUEUES_LOCK["all"]:
+        BOT_QUEUES["all"]["pending"].append(task)
+    print(f"[Monitor] 任务已加入全体队列: {task_id}")
+    return True

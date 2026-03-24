@@ -1,0 +1,15 @@
+  File "bot_http_server_v2.py", line 395
+    STATE["last_update"] = time.time()
+
+
+def run():
+    server = HTTPServer(("0.0.0.0", PORT), Handler)
+    print("[%s] Bot started on port %s" % (BOT_TYPE, PORT))
+    server.serve_forever()
+
+
+if __name__ == "__main__":
+    run()
+
+                                    ^
+SyntaxError: EOF while scanning triple-quoted string literal

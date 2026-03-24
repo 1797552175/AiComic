@@ -1,0 +1,19 @@
+{
+  "task_id": "NEW-PROTOS-MKT-20260324",
+  "bot_type": "marketing",
+  "status": "completed",
+  "completed_at": "2026-03-24T02:40:00+08:00",
+  "result": "为9个新原型生成营销方案",
+  "outputs": [
+    "/opt/AiComic/营销方案/增强_通知与消息_20260324.md",
+    "/opt/AiComic/营销方案/增强_客服与反馈_20260324.md",
+    "/opt/AiComic/营销方案/增强_数据统计_20260324.md",
+    "/opt/AiComic/营销方案/增强_API开放平台_20260324.md",
+    "/opt/AiComic/营销方案/增强_音效配乐_20260324.md",
+    "/opt/AiComic/营销方案/增强_分镜时间线_20260324.md",
+    "/opt/AiComic/营销方案/增强_个人中心_20260324.md",
+    "/opt/AiComic/营销方案/增强_社区功能_20260324.md",
+    "/opt/AiComic/营销方案/增强_作品管理_20260324.md"
+  ],
+  "summary": "9个新原型全部生成营销方案"
+}
