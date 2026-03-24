@@ -64,11 +64,29 @@ TASK_QUEUE = BOT_QUEUES["dev"]  # 默认队列
 # SSH 连接池控制
 SSH_CONTROL_PATH = "/tmp/ssh_mux_%h_%p_%r"
 _ssh_connection_lock = False
+MAX_LOAD_AVG = 10.0  # 最大允许负载
+MAX_CONCURRENT_TASKS = 3  # 最大并发任务数
 
 
-# === SSH 到 Server B（带连接池和并发控制）===
+# === 检查 Server B 负载 ===
+def check_server_load():
+    """检查 Server B 负载，返回当前负载值"""
+    try:
+        # 使用单次SSH执行，避免多进程
+        ssh_cmd = ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=5",
+                   "-i", "/root/.ssh/id_ed25519", f"root@{SERVER_B_HOST}",
+                   "cat /proc/loadavg | awk '{print $1}'"]
+        result = subprocess.run(ssh_cmd, capture_output=True, timeout=10)
+        if result.returncode == 0:
+            return float(result.stdout.decode().strip())
+    except:
+        pass
+    return 0.0
+
+
+# === SSH 到 Server B（带负载监控）===
 def ssh_exec(cmd, timeout=30):
-    """SSH 到 Server B 执行命令（带并发控制）"""
+    """SSH 到 Server B 执行命令（带负载监控）"""
     global _ssh_connection_lock
     
     # 等待锁（避免并发 SSH）
@@ -78,6 +96,13 @@ def ssh_exec(cmd, timeout=30):
     
     _ssh_connection_lock = True
     try:
+        # 检查负载，如果过高则等待
+        load = check_server_load()
+        if load > MAX_LOAD_AVG:
+            import time
+            print(f"[SSH] Server B 负载 {load} > {MAX_LOAD_AVG}，等待 15 秒...")
+            time.sleep(15)
+        
         ssh_cmd = [
             "ssh", "-o", "StrictHostKeyChecking=no",
             "-i", "/root/.ssh/id_ed25519",
