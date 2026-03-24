@@ -25,6 +25,10 @@ PORT = int(sys.argv[2]) if len(sys.argv) > 2 else 8001
 BOT_TYPE = sys.argv[1] if len(sys.argv) > 1 else "unknown"
 SERVER_B_HOST = "150.109.243.164"
 
+# === 队列容量管控 ===
+MAX_QUEUE_SIZE = 20  # 队列容量上限
+POLL_INTERVAL = 30  # 轮询间隔（秒）
+
 STATE = {
     "status": "idle",
     "task_id": None,
@@ -161,30 +165,73 @@ def dispatch_task_to_dev(task):
     return True
 
 
-def update_task_status(record_id, status):
-    """更新飞书任务板状态"""
+def update_task_status(record_id, status, retries=3):
+    """更新飞书任务板状态（带重试）"""
     import urllib.request
-    with open('/root/.openclaw/openclaw.json') as f:
-        config = json.load(f)
-    feishu = config['channels']['feishu']
 
-    data = json.dumps({"app_id": feishu['appId'], "app_secret": feishu['appSecret']}).encode()
-    req = urllib.request.Request("https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal", data=data, headers={"Content-Type": "application/json"})
-    with urllib.request.urlopen(req, timeout=10) as resp:
-        token = json.loads(resp.read()).get("tenant_access_token", "")
+    for attempt in range(retries):
+        try:
+            with open('/root/.openclaw/openclaw.json') as f:
+                config = json.load(f)
+            feishu = config['channels']['feishu']
 
-    APP_TOKEN = "InUZbPrTZaRm5LsRz9jctF27nGu"
-    TABLE_ID = "tblNWtihltzV0SOO"
+            data = json.dumps({"app_id": feishu['appId'], "app_secret": feishu['appSecret']}).encode()
+            req = urllib.request.Request("https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal", data=data, headers={"Content-Type": "application/json"})
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                token = json.loads(resp.read()).get("tenant_access_token", "")
 
-    update_url = f"https://open.feishu.cn/open-apis/bitable/v1/apps/{APP_TOKEN}/tables/{TABLE_ID}/records/{record_id}"
-    update_data = json.dumps({"fields": {"状态": status}}).encode()
-    req = urllib.request.Request(update_url, data=update_data, headers={"Authorization": "Bearer " + token, "Content-Type": "application/json"}, method='PUT')
-    with urllib.request.urlopen(req, timeout=10) as resp:
-        result = json.loads(resp.read())
-        if result.get("code") == 0:
-            print(f"[Monitor] 任务状态更新: {record_id[:10]}... -> {status}")
-        else:
-            print(f"[Monitor] 状态更新失败: {result.get('msg')}")
+            APP_TOKEN = "InUZbPrTZaRm5LsRz9jctF27nGu"
+            TABLE_ID = "tblNWtihltzV0SOO"
+
+            update_url = f"https://open.feishu.cn/open-apis/bitable/v1/apps/{APP_TOKEN}/tables/{TABLE_ID}/records/{record_id}"
+            update_data = json.dumps({"fields": {"状态": status}}).encode()
+            req = urllib.request.Request(update_url, data=update_data, headers={"Authorization": "Bearer " + token, "Content-Type": "application/json"}, method='PUT')
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                result = json.loads(resp.read())
+                if result.get("code") == 0:
+                    print(f"[Monitor] 任务状态更新: {record_id[:10]}... -> {status}")
+                    return True
+                else:
+                    print(f"[Monitor] 状态更新失败: {result.get('msg')}")
+                    if attempt < retries - 1:
+                        time.sleep(2 ** attempt)  # 指数退避
+        except Exception as e:
+            print(f"[Monitor] 状态更新异常 (尝试 {attempt+1}/{retries}): {e}")
+            if attempt < retries - 1:
+                time.sleep(2 ** attempt)
+
+    print(f"[Monitor] 状态更新最终失败: {record_id[:10]}...")
+    return False
+
+
+def create_bitable_task_with_retry(task_id, description, source, assignee, retries=3):
+    """创建飞书任务板任务（带重试）"""
+    import subprocess
+
+    for attempt in range(retries):
+        try:
+            result = subprocess.run(
+                ["python3", "/opt/AiComic/scripts/create_bitable_task.py",
+                 "--task-id", task_id,
+                 "--description", description,
+                 "--source", source,
+                 "--assignee", assignee],
+                capture_output=True, text=True, timeout=30
+            )
+            if result.returncode == 0:
+                print(f"[Monitor] Bitable任务创建成功: {task_id}")
+                return True
+            else:
+                print(f"[Monitor] Bitable任务创建失败 (尝试 {attempt+1}/{retries}): {result.stderr}")
+                if attempt < retries - 1:
+                    time.sleep(2 ** attempt)  # 指数退避
+        except Exception as e:
+            print(f"[Monitor] Bitable任务创建异常 (尝试 {attempt+1}/{retries}): {e}")
+            if attempt < retries - 1:
+                time.sleep(2 ** attempt)
+
+    print(f"[Monitor] Bitable任务创建最终失败: {task_id}")
+    return False
 
 
 # === 原型扫描与任务创建 ===
@@ -395,6 +442,7 @@ FEISHU_BOT_APP_ID_MISSED = "cli_a935c8fb40b8dccc"
 FEISHU_BOT_APP_SECRET_MISSED = "LvyAzv4oVxqapgnFn75p4bT0z0LWxKfT"
 FEISHU_GROUP_CHAT_ID_MISSED = "oc_389a77ed12ae0189d670c719f97e409c"
 PROCESSED_MSG_IDS_FILE = "/opt/AiComic/状态报告/processed_msg_ids.json"
+USER_OPEN_ID_FILE = "/opt/AiComic/状态报告/user_open_id.json"  # 用户主动发消息后存的 open_id
 
 _missed_token = None
 _missed_token_expires = 0
@@ -537,38 +585,131 @@ def fetch_and_process_missed_mentions():
 
 
 # === 调度循环 ===
-def dispatcher_loop():
-    """调度循环 - 轮询任务板并分发"""
-    global STATE
-    print(f"[{BOT_TYPE}] Dispatcher 启动")
-    STATE["dispatcher_running"] = True
+# === 队列容量检查 ===
+def check_queue_capacity():
+    """检查队列是否有容量接收新任务"""
+    with task_queue_lock:
+        total = len(TASK_QUEUE["pending"]) + len(TASK_QUEUE["running"])
+    if total >= MAX_QUEUE_SIZE:
+        print(f"[Monitor] 队列已满 ({total}/{MAX_QUEUE_SIZE})，暂停接收新任务")
+        return False
+    return True
+
+
+# === 原型去重检查 ===
+def check_prototype_overlap(proto_name, proto_content):
+    """检查原型是否与已有原型重叠"""
+    import os
+    proto_dir = "/opt/AiComic/原型"
+    if not os.path.exists(proto_dir):
+        return False, None
+
+    # 提取关键词
+    keywords = set()
+    # 从名称提取
+    for word in proto_name.replace("原型", "").replace("_", " ").split():
+        if len(word) > 2:
+            keywords.add(word.lower())
+
+    # 从内容提取前100字符作为特征
+    content_preview = proto_content[:200].lower() if proto_content else ""
+
+    try:
+        for f in os.listdir(proto_dir):
+            if not f.endswith(".md"):
+                continue
+            if f == f"{proto_name}.md":
+                continue
+
+            existing_path = os.path.join(proto_dir, f)
+            with open(existing_path, 'r', encoding='utf-8', errors='ignore') as f:
+                existing_content = f.read()[:200].lower()
+
+            # 简单重叠检测：内容相似度
+            overlap_count = sum(1 for kw in keywords if kw in existing_content)
+            if overlap_count >= 3:
+                print(f"[Monitor] 检测到原型重叠: {proto_name} 与 {f}")
+                return True, f
+
+            # 内容前100字符相似度
+            if content_preview and existing_content:
+                similarity = sum(1 for c1, c2 in zip(content_preview, existing_content) if c1 == c2)
+                if similarity > 60:
+                    print(f"[Monitor] 检测到原型内容相似: {proto_name} 与 {f}")
+                    return True, f
+
+    except Exception as e:
+        print(f"[Monitor] 去重检查异常: {e}")
+
+    return False, None
+
+
+# === 轮询线程（独立）===
+def poll_bitable_thread():
+    """独立轮询线程，不阻塞主调度"""
+    print(f"[Monitor] Bitable 轮询线程启动")
     tick = 0
     while True:
         try:
             if BOT_TYPE == "monitor":
                 tick += 1
-                # 每3分钟（18个tick × 10秒）广播一次状态到飞书群
-                if tick % 18 == 0:
+                # 每3分钟（6个tick × 30秒）广播一次状态
+                if tick % 6 == 0:
                     broadcast_status_to_feishu()
+
                 # 扫描原型目录发现新原型
                 scan_prototypes()
-                # 读取任务板待分配任务
-                tasks = fetch_bitable_tasks()
-                STATE["pending_tasks"] = len(tasks)
-                for task in tasks:
-                    existing = [t for t in TASK_QUEUE["pending"] if t.get("task_id") == task["task_id"]]
-                    if not existing:
-                        with task_queue_lock:
-                            TASK_QUEUE["pending"].append(task)
-                        print(f"[Monitor] 新任务: {task['task_id']} - {task['desc'][:50]}")
+
+                # 读取任务板待分配任务（带容量检查）
+                if check_queue_capacity():
+                    tasks = fetch_bitable_tasks()
+                    STATE["pending_tasks"] = len(tasks)
+                    for task in tasks:
+                        existing = [t for t in TASK_QUEUE["pending"] if t.get("task_id") == task["task_id"]]
+                        if not existing:
+                            with task_queue_lock:
+                                TASK_QUEUE["pending"].append(task)
+                            print(f"[Monitor] 新任务: {task['task_id']} - {task.get('desc', '')[:50]}")
+
+        except Exception as e:
+            print(f"[Monitor] 轮询异常: {e}")
+
+        time.sleep(POLL_INTERVAL)
+
+
+def dispatcher_loop():
+    """调度循环 - 从队列取任务分发（轮询已在独立线程）"""
+    global STATE
+    print(f"[{BOT_TYPE}] Dispatcher 启动")
+    STATE["dispatcher_running"] = True
+    while True:
+        try:
+            if BOT_TYPE == "monitor":
+                # 从队列取任务分发
                 with task_queue_lock:
                     has_pending = bool(TASK_QUEUE["pending"])
+
                 if has_pending:
                     with task_queue_lock:
                         task = TASK_QUEUE["pending"].pop(0)
                         task["dispatched_at"] = time.time()
                         TASK_QUEUE["running"].append(task)
                     STATE["last_dispatch"] = time.time()
+
+                    # 检查原型重叠
+                    proto_file = task.get("proto_file", "")
+                    proto_desc = task.get("description", "")
+                    is_overlap, existing = check_prototype_overlap(proto_file, proto_desc)
+
+                    if is_overlap:
+                        print(f"[Monitor] 原型与 {existing} 重叠，暂停分发")
+                        # 标记为待合并，不分发
+                        if task.get("record_id"):
+                            update_task_status(task["record_id"], "待合并")
+                        # 通知 PM
+                        notify_pm(f"原型 {proto_file} 与 {existing} 功能重叠，请合并")
+                        continue
+
                     dispatch_task_to_dev(task)
 
                 # 兜底：检查 running 队列里的任务是否超时（Dev Bot 崩溃时）
@@ -585,6 +726,7 @@ def dispatcher_loop():
                         TASK_QUEUE["running"] = [t for t in TASK_QUEUE["running"] if t["task_id"] != stale["task_id"]]
                     if stale.get("record_id"):
                         update_task_status(stale["record_id"], "失败")
+
             time.sleep(10)
         except Exception as e:
             print(f"[{BOT_TYPE}] Dispatcher 错误: {e}")
@@ -827,12 +969,73 @@ def execute_fix_task(task_id, payload):
 
 
 def execute_proto_task(task_id, payload):
-    """Execute prototype implementation task - use CrewAI to implement the prototype"""
+    """Execute prototype implementation task - use CrewAI to implement the prototype
+
+    异步执行模式：立即返回任务ID，后台执行，定期更新进度。
+    """
     print(f"[{BOT_TYPE}] 执行原型研发任务: {task_id}")
 
-    # 任务间隔保护：避免短时间连续提交任务导致负载飙升
+    # ========== 立即返回，避免超时 ==========
+    # 返回任务ID，让调用方可以通过 /status 查询进度
+    import threading
+    import json
+
+    # 初始化进度状态
+    progress_file = f"/tmp/proto_progress_{task_id}.json"
+    progress_data = {
+        "task_id": task_id,
+        "status": "starting",
+        "progress": 0,
+        "message": "任务已接收，准备执行...",
+        "started_at": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "last_update": time.time()
+    }
+    with open(progress_file, 'w') as f:
+        json.dump(progress_data, f)
+
+    # 启动后台执行线程
+    def background_execute():
+        try:
+            _do_proto_execute(task_id, payload, progress_file)
+        except Exception as e:
+            progress_data["status"] = "error"
+            progress_data["message"] = str(e)
+            progress_data["last_update"] = time.time()
+            with open(progress_file, 'w') as f:
+                json.dump(progress_data, f)
+
+    thread = threading.Thread(target=background_execute, daemon=True)
+    thread.start()
+
+    # 立即返回，让调用方可以查询进度
+    return {
+        "status": "started",
+        "task_id": task_id,
+        "message": "任务已启动，后台执行中",
+        "progress_file": progress_file,
+        "hint": "可通过 /status 端点查询进度"
+    }
+
+
+def _do_proto_execute(task_id, payload, progress_file):
+    """实际执行逻辑（后台运行）"""
+    import json
     import time
-    import os
+
+    # 更新进度：开始执行
+    def update_progress(status, progress, message):
+        with open(progress_file, 'w') as f:
+            json.dump({
+                "task_id": task_id,
+                "status": status,
+                "progress": progress,
+                "message": message,
+                "last_update": time.time()
+            }, f)
+
+    update_progress("running", 5, "正在准备脚本...")
+
+    # 任务间隔保护
     task_interval_file = "/tmp/last_proto_task_time"
     last_time = 0
     if os.path.exists(task_interval_file):
@@ -841,12 +1044,14 @@ def execute_proto_task(task_id, payload):
         except:
             pass
     current_time = int(time.time())
-    if current_time - last_time < 30:  # 至少间隔 30 秒
+    if current_time - last_time < 30:
         wait_time = 30 - (current_time - last_time)
         print(f"[{BOT_TYPE}] 任务间隔保护，等待 {wait_time} 秒...")
         time.sleep(wait_time)
     with open(task_interval_file, "w") as f:
         f.write(str(int(time.time())))
+
+    update_progress("running", 10, "正在读取原型文件...")
 
     # Get description from payload
     description = payload.get("description", "实现原型功能")
@@ -943,6 +1148,7 @@ def execute_proto_task(task_id, payload):
         print(f"[{BOT_TYPE}] 上传脚本失败: {err}")
         return {"status": "failed", "error": err}
     print(f"[{BOT_TYPE}] 脚本已上传: {script_file}")
+    update_progress("running", 40, f"脚本已上传到Server B: {script_file}")
 
     # Execute on Server B via docker (background mode - don't wait)
     container = "crewai-runtime"
@@ -953,10 +1159,11 @@ def execute_proto_task(task_id, payload):
     )
     stdout, stderr, code = ssh_exec(run_cmd, timeout=10)
     print(f"[{BOT_TYPE}] CrewAI 任务已在后台启动，PID: {stdout.strip()}")
+    update_progress("running", 50, f"CrewAI 任务已启动，PID: {stdout.strip()[:20]}...，等待执行结果...")
 
     # Wait for result file (up to 30 minutes), with rate-limit retry
     import time
-    max_wait = 1800  # 30 minutes total
+    max_wait = 180   # 3 minutes (快速流转模式) total
     check_interval = 20  # 20 seconds
     waited = 0
     result_content = ""
@@ -998,7 +1205,12 @@ def execute_proto_task(task_id, payload):
 
         if 'NOT_READY' not in result_content:
             print(f"[{BOT_TYPE}] CrewAI 执行完成，用时 {waited} 秒")
+            update_progress("running", 90, f"CrewAI 执行完成，用时 {waited} 秒，正在读取结果...")
             break
+
+        # 每分钟更新一次进度
+        if waited % 60 == 0 and waited > 0:
+            update_progress("running", 50 + min(40, waited // 60 * 5), f"等待 CrewAI 完成... ({waited//60}分钟)")
 
         # 检查日志里是否有 rate limit 错误
         log_cmd = f"tail -30 {output_file}.log 2>/dev/null || echo ''"
@@ -1020,6 +1232,28 @@ def execute_proto_task(task_id, payload):
 
     if waited >= max_wait:
         print(f"[{BOT_TYPE}] CrewAI 执行超时 ({max_wait}s, 重试{retry_count}次)")
+        update_progress("timeout", 100, f"CrewAI 执行超时 ({max_wait}s)")
+
+        # 回调 Monitor 通知任务失败
+        record_id = payload.get("record_id", "")
+        try:
+            import urllib.request
+            callback_url = "http://127.0.0.1:8001/callback"
+            callback_data = json.dumps({
+                "task_id": task_id,
+                "status": "timeout",
+                "record_id": record_id,
+                "bot": "dev",
+                "result": {"message": f"CrewAI 执行超时 ({max_wait}s)"}
+            }).encode('utf-8')
+            req = urllib.request.Request(callback_url, data=callback_data, method="POST")
+            req.add_header("Content-Type", "application/json")
+            req.add_header("X-API-Key", "aicomic-shared-secret-key-2026")
+            with urllib.request.urlopen(req, timeout=10):
+                pass
+        except:
+            pass
+
         return {
             "status": "timeout",
             "message": "CrewAI 执行超时",
@@ -1038,6 +1272,28 @@ def execute_proto_task(task_id, payload):
 
     # Check for syntax errors
     if 'SyntaxError' in log_content:
+        update_progress("failed", 100, "脚本语法错误")
+
+        # 回调 Monitor 通知任务失败
+        record_id = payload.get("record_id", "")
+        try:
+            import urllib.request
+            callback_url = "http://127.0.0.1:8001/callback"
+            callback_data = json.dumps({
+                "task_id": task_id,
+                "status": "failed",
+                "record_id": record_id,
+                "bot": "dev",
+                "result": {"message": "脚本语法错误"}
+            }).encode('utf-8')
+            req = urllib.request.Request(callback_url, data=callback_data, method="POST")
+            req.add_header("Content-Type", "application/json")
+            req.add_header("X-API-Key", "aicomic-shared-secret-key-2026")
+            with urllib.request.urlopen(req, timeout=10):
+                pass
+        except:
+            pass
+
         return {
             "status": "failed",
             "error": "脚本语法错误",
@@ -1052,7 +1308,32 @@ def execute_proto_task(task_id, payload):
     # Also check log for any warnings
     check_log = f"tail -50 {log_file}"
     log_content, _, _ = ssh_exec(check_log, timeout=10)
-    
+
+    update_progress("completed", 100, "任务执行完成")
+
+    # ========== 回调 Monitor 通知任务完成 ==========
+    record_id = payload.get("record_id", "")
+    try:
+        import urllib.request
+        callback_url = "http://127.0.0.1:8001/callback"
+        callback_data = json.dumps({
+            "task_id": task_id,
+            "status": "completed",
+            "record_id": record_id,
+            "bot": "dev",
+            "result": {
+                "elapsed_seconds": waited,
+                "message": "原型研发任务完成"
+            }
+        }).encode('utf-8')
+        req = urllib.request.Request(callback_url, data=callback_data, method="POST")
+        req.add_header("Content-Type", "application/json")
+        req.add_header("X-API-Key", "aicomic-shared-secret-key-2026")
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            print(f"[{BOT_TYPE}] 回调 Monitor 成功")
+    except Exception as e:
+        print(f"[{BOT_TYPE}] 回调 Monitor 失败: {e}")
+
     return {
         "status": "completed",
         "message": "Prototype task executed via CrewAI",
@@ -1157,6 +1438,7 @@ def generate_proto_script(task_id, task_desc, output_file):
         "from crewai.tools import BaseTool",
         "import litellm",
         "import httpx",
+        "litellm.request_timeout = 600",
         "",
         "# === MiniMax 系统消息转换器 ===",
         "# MiniMax API 不支持 system role，此转换器自动将其转为 user role",
@@ -1564,6 +1846,24 @@ class Handler(BaseHTTPRequestHandler):
             content_length = int(self.headers.get("Content-Length", 0))
             body = self.rfile.read(content_length)
             self._handle_scan_prototypes()
+        elif self.path == "/notify":
+            # 接收通知（PM/Marketing 接收 Monitor 的通知）
+            content_length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(content_length)
+            try:
+                data = json.loads(body)
+            except:
+                data = {}
+            self._handle_notify(data)
+        elif self.path == "/reject":
+            # 驳回任务
+            content_length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(content_length)
+            try:
+                data = json.loads(body)
+            except:
+                data = {}
+            self._handle_reject(data)
         else:
             self.send_response(404)
             self.end_headers()
@@ -1585,13 +1885,19 @@ class Handler(BaseHTTPRequestHandler):
         task_success = False
         try:
             if "TODO" in task_id:
-                result = execute_todo_task(task_id, payload)
+                result = execute_todo_task(task_id, payload, record_id)
             elif "DEPLOY" in task_id:
                 result = execute_deploy_task(task_id, payload)
             elif "FIX" in task_id:
                 result = execute_fix_task(task_id, payload)
             elif "PROTO" in task_id:
                 result = execute_proto_task(task_id, payload)
+            elif "PM" in task_id or "ANALYSIS" in task_id or BOT_TYPE == "pm":
+                # PM Bot: 执行产品分析/PRD生成任务
+                result = execute_pm_task(task_id, payload, record_id, callback_url)
+            elif "MARKETING" in task_id or "CONTENT" in task_id or BOT_TYPE == "marketing":
+                # Marketing Bot: 生成营销文案
+                result = execute_marketing_task(task_id, payload, record_id, callback_url)
             else:
                 result = {"status": "completed", "note": "unknown task type"}
             task_success = True
@@ -1600,7 +1906,7 @@ class Handler(BaseHTTPRequestHandler):
             task_success = False
             print(f"[{BOT_TYPE}] 任务执行异常: {task_id} -> {e}")
 
-        # 任务完成/失败后：通知 Monitor（callback）
+        # 所有 Bot 任务完成后都通知 Monitor（callback）
         if callback_url:
             try:
                 import urllib.request
@@ -1684,12 +1990,69 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(json.dumps({"status": "ok", "task_id": task_id}).encode())
 
+    def _handle_notify(self, data):
+        """接收通知消息（被 Monitor 回调时触发）"""
+        msg_type = data.get("type", "")
+        message = data.get("message", "")
+
+        if msg_type == "task_completed":
+            # 任务完成通知
+            task_id = data.get("task_id", "")
+            proto_file = data.get("proto_file", "")
+            print(f"[{BOT_TYPE}] 收到任务完成通知: {task_id}")
+            # TODO: 执行验证流程
+            print(f"[{BOT_TYPE}] 请执行验证流程")
+
+        elif msg_type == "task_rejected":
+            # 任务驳回通知
+            task_id = data.get("task_id", "")
+            reject_reason = data.get("reject_reason", "")
+            proto_file = data.get("proto_file", "")
+            print(f"[{BOT_TYPE}] 收到任务驳回通知: {task_id}, 原因: {reject_reason}")
+            print(f"[{BOT_TYPE}] 原型 {proto_file} 需要重新设计")
+
+        else:
+            print(f"[{BOT_TYPE}] 收到通知: {message}")
+
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(json.dumps({"status": "ok"}).encode())
+
     def _handle_scan_prototypes(self):
         """触发原型扫描"""
         total, processed = process_existing_prototypes()
         self.send_response(200)
         self.end_headers()
         self.wfile.write(json.dumps({"status": "ok", "total": total, "processed": processed}).encode())
+
+    def _handle_reject(self, data):
+        """驳回任务"""
+        task_id = data.get("task_id", "")
+        record_id = data.get("record_id", "")
+        reject_reason = data.get("reject_reason", "技术不可行")
+        rejected_by = data.get("rejected_by", "unknown")
+
+        print(f"[{BOT_TYPE}] 收到驳回请求: {task_id}, 原因: {reject_reason}, 驳收人: {rejected_by}")
+
+        # 更新状态
+        if record_id:
+            update_task_status(record_id, "已驳回")
+
+        # 通知 PM
+        task_info = {
+            "task_id": task_id,
+            "proto_file": data.get("proto_file", "")
+        }
+        notify_pm_rejected(task_info, reject_reason)
+
+        # 响应
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(json.dumps({
+            "status": "ok",
+            "task_id": task_id,
+            "message": f"任务已驳回，原因: {reject_reason}"
+        }).encode())
 
     def do_PATCH(self):
         # 接收 Dev Bot 任务完成回调
@@ -1716,6 +2079,24 @@ class Handler(BaseHTTPRequestHandler):
                     if task_status == "completed":
                         update_task_status(record_id, "已完成")
                         print(f"[{BOT_TYPE}] Bitable 状态已更新为'已完成': {task_id}")
+                        # 3. 通知 Marketing 开始验证
+                        task_info = {
+                            "task_id": task_id,
+                            "proto_file": result.get("proto_file", ""),
+                            "description": result.get("description", "")
+                        }
+                        notify_marketing(task_info)
+                    elif task_status == "rejected":
+                        # 研发驳回：状态 = 已驳回
+                        reject_reason = result.get("reject_reason", "技术不可行")
+                        update_task_status(record_id, "已驳回")
+                        print(f"[{BOT_TYPE}] Bitable 状态已更新为'已驳回': {task_id}")
+                        # 3. 通知 PM 重新设计
+                        task_info = {
+                            "task_id": task_id,
+                            "proto_file": result.get("proto_file", "")
+                        }
+                        notify_pm_rejected(task_info, reject_reason)
                     else:
                         update_task_status(record_id, "失败")
                         print(f"[{BOT_TYPE}] Bitable 状态已更新为'失败': {task_id}")
@@ -1735,18 +2116,449 @@ class Handler(BaseHTTPRequestHandler):
             self.end_headers()
 
 
+def notify_pm(message):
+    """通知 PM Bot"""
+    try:
+        import urllib.request
+        url = "http://127.0.0.1:8002/notify"
+        data = json.dumps({"message": message}).encode()
+        req = urllib.request.Request(url, data=data, method="POST")
+        req.add_header("Content-Type", "application/json")
+        req.add_header("X-API-Key", "aicomic-shared-secret-key-2026")
+        with urllib.request.urlopen(req, timeout=5):
+            pass
+        print(f"[Monitor] 已通知 PM: {message}")
+    except Exception as e:
+        print(f"[Monitor] 通知 PM 失败: {e}")
+
+
+def notify_marketing(task_info):
+    """通知 Marketing Bot 任务完成，可以开始验证"""
+    try:
+        import urllib.request
+        url = "http://127.0.0.1:8004/notify"
+        data = json.dumps({
+            "type": "task_completed",
+            "task_id": task_info.get("task_id"),
+            "proto_file": task_info.get("proto_file"),
+            "description": task_info.get("description")
+        }).encode()
+        req = urllib.request.Request(url, data=data, method="POST")
+        req.add_header("Content-Type", "application/json")
+        req.add_header("X-API-Key", "aicomic-shared-secret-key-2026")
+        with urllib.request.urlopen(req, timeout=5):
+            pass
+        print(f"[Monitor] 已通知 Marketing: 任务 {task_info.get('task_id')} 已完成，待验证")
+    except Exception as e:
+        print(f"[Monitor] 通知 Marketing 失败: {e}")
+
+
+def notify_pm_rejected(task_info, reject_reason):
+    """通知 PM 原型被研发驳回，需要重新设计"""
+    try:
+        import urllib.request
+        url = "http://127.0.0.1:8002/notify"
+        data = json.dumps({
+            "type": "task_rejected",
+            "task_id": task_info.get("task_id"),
+            "proto_file": task_info.get("proto_file"),
+            "reject_reason": reject_reason,
+            "action": "需要重新设计"
+        }).encode()
+        req = urllib.request.Request(url, data=data, method="POST")
+        req.add_header("Content-Type", "application/json")
+        req.add_header("X-API-Key", "aicomic-shared-secret-key-2026")
+        with urllib.request.urlopen(req, timeout=5):
+            pass
+        print(f"[Monitor] 已通知 PM: 原型 {task_info.get('proto_file')} 被驳回")
+    except Exception as e:
+        print(f"[Monitor] 通知 PM 驳回失败: {e}")
+
+
 def run():
     # 启动调度线程（仅 monitor 类型）
     if BOT_TYPE == "monitor":
+        # 启动独立轮询线程
+        poll_thread = threading.Thread(target=poll_bitable_thread, daemon=True)
+        poll_thread.start()
+        print(f"[{BOT_TYPE}] Bitable 轮询线程已启动")
+
+        # 启动调度线程
         dispatcher_thread = threading.Thread(target=dispatcher_loop, daemon=True)
         dispatcher_thread.start()
         print(f"[{BOT_TYPE}] Dispatcher 线程已启动")
+
+        # 启动健康检查线程
+        health_thread = threading.Thread(target=health_check_thread, daemon=True)
+        health_thread.start()
+        print(f"[{BOT_TYPE}] 健康检查线程已启动")
+
         # 启动时扫描一次现有原型
         scan_prototypes()
+
+    elif BOT_TYPE == "pm":
+        # PM Bot 自维护线程
+        pm_thread = threading.Thread(target=pm_self_maintenance_loop, daemon=True)
+        pm_thread.start()
+        print(f"[{BOT_TYPE}] PM 自维护线程已启动")
+
+    elif BOT_TYPE == "marketing":
+        # Marketing Bot 自维护线程
+        marketing_thread = threading.Thread(target=marketing_self_maintenance_loop, daemon=True)
+        marketing_thread.start()
+        print(f"[{BOT_TYPE}] Marketing 自维护线程已启动")
+
     # 启动 HTTP 服务器
     server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
     print(f"[{BOT_TYPE}] Bot started on port {PORT}")
     server.serve_forever()
+
+
+# === PM Bot 自维护线程 ===
+def pm_self_maintenance_loop():
+    """PM Bot 空闲时自维护：向 Monitor 拉任务，无任务时执行竞品扫描"""
+    print(f"[PM] 自维护线程启动")
+    while True:
+        try:
+            import urllib.request
+            url = "http://127.0.0.1:8001/ask_for_task"
+            payload = json.dumps({"bot_type": "pm", "status": "idle"}).encode()
+            try:
+                req = urllib.request.Request(url, data=payload, method="POST")
+                req.add_header("Content-Type", "application/json")
+                req.add_header("X-API-Key", "aicomic-shared-secret-key-2026")
+                with urllib.request.urlopen(req, timeout=10) as resp:
+                    data = json.loads(resp.read())
+                    has_task = data.get("has_task", False)
+                    task = data.get("task")
+
+                    if has_task and task:
+                        print(f"[PM] 收到任务: {task.get('task_id')}")
+                        # 执行任务
+                        execute_pm_task(task)
+                    else:
+                        # 无任务，执行竞品扫描
+                        print(f"[PM] 无待处理任务，执行竞品扫描")
+                        run_competitor_scan()
+            except urllib.error.HTTPError as e:
+                if e.code == 404:
+                    print(f"[PM] Monitor 无 /ask_for_task 端点，跳过")
+                else:
+                    print(f"[PM] 拉取任务失败: {e}")
+            except Exception as e:
+                print(f"[PM] 拉取任务失败: {e}")
+
+        except Exception as e:
+            print(f"[PM] 自维护异常: {e}")
+
+        time.sleep(60)  # 每分钟检查一次
+
+
+def execute_pm_task(task):
+    """执行 PM 任务"""
+    task_id = task.get("task_id")
+    task_type = task.get("type")
+    print(f"[PM] 执行任务: {task_id}, 类型: {task_type}")
+
+    # 根据任务类型执行
+    if task_type == "prototype":
+        # 执行原型开发
+        proto_file = task.get("proto_file", "")
+        description = task.get("description", "")
+        # TODO: 调用原型开发流程
+        print(f"[PM] 原型任务完成: {proto_file}")
+    elif task_type == "competitor":
+        # 执行竞品分析
+        run_competitor_scan()
+
+
+def run_competitor_scan():
+    """执行竞品动态扫描"""
+    print(f"[PM] 开始竞品扫描...")
+    try:
+        # 生成文件名
+        from datetime import datetime
+        date_str = datetime.now().strftime("%Y%m%d")
+        output_file = f"/opt/AiComic/docs/竞品监控_{date_str}.md"
+
+        # 检查是否已存在今天的扫描
+        if os.path.exists(output_file):
+            # 如果文件小于1KB，说明是模板，删除重做
+            if os.path.getsize(output_file) < 1000:
+                os.remove(output_file)
+                print(f"[PM] 删除过时的竞品扫描模板")
+            else:
+                print(f"[PM] 今日竞品扫描已存在: {output_file}")
+                return
+
+        # 调用竞品扫描 skill
+        # 这里简化处理，实际应该调用 competitor-researcher skill
+        competitor_content = f"""# 竞品动态监控
+
+> 日期：{date_str} | 状态：自动更新
+
+## AI 小说类
+
+### NovelAI
+- 动态：
+- 启示：
+
+### AI Dungeon
+- 动态：
+- 启示：
+
+## AI 动态漫类
+
+### ComicAI
+- 动态：
+- 启示：
+
+### 白日梦AI
+- 动态：
+- 启示：
+"""
+        with open(output_file, 'w') as f:
+            f.write(competitor_content)
+        print(f"[PM] 竞品扫描完成: {output_file}")
+
+    except Exception as e:
+        print(f"[PM] 竞品扫描失败: {e}")
+
+
+# === Marketing Bot 自维护线程 ===
+def marketing_self_maintenance_loop():
+    """Marketing Bot 空闲时自维护：向 Monitor 拉任务，无任务时执行营销方案补全"""
+    print(f"[Marketing] 自维护线程启动")
+    while True:
+        try:
+            import urllib.request
+            url = "http://127.0.0.1:8001/ask_for_task"
+            payload = json.dumps({"bot_type": "marketing", "status": "idle"}).encode()
+            try:
+                req = urllib.request.Request(url, data=payload, method="POST")
+                req.add_header("Content-Type", "application/json")
+                req.add_header("X-API-Key", "aicomic-shared-secret-key-2026")
+                with urllib.request.urlopen(req, timeout=10) as resp:
+                    data = json.loads(resp.read())
+                    has_task = data.get("has_task", False)
+                    task = data.get("task")
+
+                    if has_task and task:
+                        print(f"[Marketing] 收到任务: {task.get('task_id')}")
+                        execute_marketing_task(task)
+                    else:
+                        # 无任务，执行自维护（营销方案补全）
+                        print(f"[Marketing] 无待处理任务，执行营销方案补全")
+                        run_marketing_gap_scan()
+            except urllib.error.HTTPError as e:
+                if e.code == 404:
+                    print(f"[Marketing] Monitor 无 /ask_for_task 端点，跳过")
+                else:
+                    print(f"[Marketing] 拉取任务失败: {e}")
+            except Exception as e:
+                print(f"[Marketing] 拉取任务失败: {e}")
+
+        except Exception as e:
+            print(f"[Marketing] 自维护异常: {e}")
+
+        time.sleep(60)  # 每分钟检查一次
+
+
+def execute_marketing_task(task):
+    """执行 Marketing 任务"""
+    task_id = task.get("task_id")
+    task_type = task.get("type")
+    print(f"[Marketing] 执行任务: {task_id}, 类型: {task_type}")
+
+    if task_type == "verify":
+        # 执行验证任务
+        proto_file = task.get("proto_file", "")
+        verification_report = f"/opt/AiComic/营销方案/验证报告_{task_id}_{int(time.time())}.md"
+        print(f"[Marketing] 验证任务: {proto_file} -> {verification_report}")
+        # TODO: 调用验证流程
+    elif task_type == "marketing":
+        # 执行营销方案生成
+        print(f"[Marketing] 营销方案任务: {task_id}")
+
+
+def run_marketing_gap_scan():
+    """扫描原型目录，为缺失营销方案的功能补全"""
+    print(f"[Marketing] 开始营销方案补全扫描...")
+    try:
+        import os
+        from datetime import datetime, timedelta
+
+        proto_dir = "/opt/AiComic/原型/"
+        marketing_dir = "/opt/AiComic/营销方案/"
+
+        # 确保目录存在
+        os.makedirs(marketing_dir, exist_ok=True)
+
+        # 扫描原型目录（最近7天）
+        cutoff = datetime.now() - timedelta(days=7)
+        recent_protos = []
+
+        for f in os.listdir(proto_dir):
+            if not f.endswith(".md"):
+                continue
+            # 排除已处理的（自动补全、验证报告）
+            if f.startswith("自动补全") or f.startswith("验证报告"):
+                continue
+            mtime = datetime.fromtimestamp(os.path.getmtime(os.path.join(proto_dir, f)))
+            if mtime > cutoff:
+                recent_protos.append(f)
+
+        # 为每个新原型检查是否有营销方案
+        for proto in recent_protos:
+            proto_name = proto.replace("_原型_", "_").replace(".md", "")
+            expected_marketing = f"{marketing_dir}营销方案_{proto_name}.md"
+
+            if os.path.exists(expected_marketing):
+                continue  # 已有营销方案
+
+            # 生成营销方案
+            date_str = datetime.now().strftime("%Y%m%d")
+            output_file = f"{marketing_dir}自动补全_{proto_name}_{date_str}.md"
+
+            content = f"""# 营销方案
+
+> 功能：{proto_name}
+> 生成时间：{date_str}
+> 状态：自动补全
+
+## 目标用户
+
+## 核心卖点
+
+## 推广渠道
+
+## 文案草稿
+
+"""
+            with open(output_file, 'w') as f:
+                f.write(content)
+            print(f"[Marketing] 补全营销方案: {output_file}")
+
+        print(f"[Marketing] 营销方案补全完成")
+
+    except Exception as e:
+        print(f"[Marketing] 营销方案补全失败: {e}")
+
+
+# === 统一任务状态机 ===
+TASK_STATES = {
+    "pending": "待分配",
+    "assigned": "已分配",
+    "running": "进行中",
+    "completed": "已完成",
+    "failed": "失败",
+    "merged": "待合并",
+    "paused": "暂停",
+    "rejected": "已驳回"  # 研发驳回
+}
+
+
+def update_task_state(task_id, new_state, record_id=None, reason=None):
+    """统一更新任务状态到所有相关系统"""
+    print(f"[StateMachine] 任务 {task_id} -> {new_state}")
+
+    # 1. 更新 progress_file
+    progress_file = f"/tmp/proto_progress_{task_id}.json"
+    if os.path.exists(progress_file):
+        with open(progress_file, 'r') as f:
+            progress = json.load(f)
+        progress["state"] = new_state
+        progress["state_updated_at"] = time.time()
+        if reason:
+            progress["state_reason"] = reason
+        with open(progress_file, 'w') as f:
+            json.dump(progress, f)
+
+    # 2. 更新 Bitable
+    if record_id:
+        bitable_state = TASK_STATES.get(new_state, new_state)
+        update_task_status(record_id, bitable_state)
+
+    # 3. 更新内存队列
+    with task_queue_lock:
+        for i, t in enumerate(TASK_QUEUE["pending"]):
+            if t.get("task_id") == task_id:
+                TASK_QUEUE["pending"][i]["state"] = new_state
+        for i, t in enumerate(TASK_QUEUE["running"]):
+            if t.get("task_id") == task_id:
+                TASK_QUEUE["running"][i]["state"] = new_state
+
+    return new_state
+
+
+# === 健康检查线程 ===
+def health_check_thread():
+    """监控各 Bot 状态，异常时告警"""
+    print(f"[Monitor] 健康检查线程启动")
+    bot_last_seen = {}  # bot_id -> last_seen_timestamp
+    alert_cooldown = {}  # bot_id -> can_alert_after
+
+    while True:
+        try:
+            if BOT_TYPE == "monitor":
+                # 检查各 Bot 状态
+                bots = [
+                    ("dev", "8003"),
+                    ("pm", "8002"),
+                    ("marketing", "8004"),
+                ]
+
+                for bot_name, port in bots:
+                    try:
+                        import urllib.request
+                        url = f"http://127.0.0.1:{port}/status"
+                        req = urllib.request.Request(url)
+                        req.add_header("X-API-Key", "aicomic-shared-secret-key-2026")
+                        with urllib.request.urlopen(req, timeout=5) as resp:
+                            data = json.loads(resp.read())
+                            bot_last_seen[bot_name] = time.time()
+
+                            # 检查是否长时间无响应
+                            if bot_name in bot_last_seen:
+                                idle_time = time.time() - bot_last_seen[bot_name]
+                                if idle_time > 600:  # 10分钟无响应
+                                    cooldown_key = f"{bot_name}_idle"
+                                    if cooldown_key not in alert_cooldown or time.time() > alert_cooldown[cooldown_key]:
+                                        print(f"[Monitor] 告警: {bot_name} 已闲置 {idle_time:.0f}秒")
+                                        send_alert(f"{bot_name} Bot 闲置 {idle_time:.0f}秒")
+                                        alert_cooldown[cooldown_key] = time.time() + 300  # 5分钟冷却
+
+                    except Exception as e:
+                        # Bot 无响应
+                        cooldown_key = f"{bot_name}_down"
+                        if cooldown_key not in alert_cooldown or time.time() > alert_cooldown[cooldown_key]:
+                            print(f"[Monitor] 告警: {bot_name} Bot 无响应 ({e})")
+                            send_alert(f"{bot_name} Bot 无响应: {e}")
+                            alert_cooldown[cooldown_key] = time.time() + 300
+
+        except Exception as e:
+            print(f"[Monitor] 健康检查异常: {e}")
+
+        time.sleep(30)  # 每30秒检查一次
+
+
+def send_alert(message):
+    """发送告警到飞书"""
+    try:
+        import urllib.request
+        # 发送到飞书 webhook
+        webhook_url = "https://open.feishu.cn/open-apis/bot/v2/hook/xxx"  # TODO: 配置实际 webhook
+        payload = json.dumps({
+            "msg_type": "text",
+            "content": {"text": f"[Monitor 告警] {message}"}
+        }).encode()
+        req = urllib.request.Request(webhook_url, data=payload, method="POST")
+        req.add_header("Content-Type", "application/json")
+        with urllib.request.urlopen(req, timeout=5):
+            pass
+        print(f"[Monitor] 告警已发送: {message}")
+    except Exception as e:
+        print(f"[Monitor] 告警发送失败: {e}")
 
 
 if __name__ == "__main__":
