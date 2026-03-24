@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from api.routes import router as api_router
-from app.config import settings
+from config.config import settings
 
 app = FastAPI(
     title="AI创作动态漫 API",

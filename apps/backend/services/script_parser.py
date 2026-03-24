@@ -7,7 +7,7 @@ import json
 import uuid
 from typing import List, Dict, Any, Optional
 
-from app.config import settings
+from config.config import settings
 
 
 class ScriptParser:

@@ -14,7 +14,7 @@ from sqlalchemy.ext.asyncio import AsyncAttrs, create_async_engine, async_sessio
 from sqlalchemy.orm import DeclarativeBase, relationship, Mapped, mapped_column
 from sqlalchemy.sql import func
 
-from app.config import settings
+from config.config import settings
 
 
 # 异步引擎

@@ -9,7 +9,7 @@ import uuid
 from typing import Optional, List, Dict, Any
 from io import BytesIO
 
-from app.config import settings
+from config.config import settings
 
 
 class ImageGenerator:
