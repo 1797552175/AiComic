@@ -80,11 +80,18 @@ def get_project_delivery_config(project_key="AiComic"):
             return {
                 "delivery_mode": cfg.get("delivery_mode", "relaxed"),
                 "default_branch": cfg.get("delivery", {}).get("default_branch", "main"),
-                "target_branch": cfg.get("delivery", {}).get("target_branch", ""),
+                "minimal_check_cmd": (
+                    cfg.get("minimal_check_cmd", "")
+                    or cfg.get("delivery", {}).get("minimal_check_cmd", "")
+                ),
             }
     except Exception as e:
         print(f"[WARN] 读取 project_config delivery 失败: {e}")
-    return {"delivery_mode": "relaxed", "default_branch": "main", "target_branch": ""}
+    return {
+        "delivery_mode": "relaxed",
+        "default_branch": "main",
+        "minimal_check_cmd": "",
+    }
 
 
 # === 检查 Server B 负载 ===
@@ -228,6 +235,7 @@ def dispatch_task_to_bot(bot_type, task):
                     "delivery_mode": delivery_cfg["delivery_mode"],
                     "target_branch": task.get("target_branch", ""),  # 任务级输入，strict 模式必需
                     "default_branch": delivery_cfg["default_branch"],
+                    "minimal_check_cmd": task.get("minimal_check_cmd", "") or delivery_cfg.get("minimal_check_cmd", ""),
                 }
             }).encode("utf-8")
             req = urllib.request.Request(
@@ -1095,49 +1103,36 @@ def execute_strict_mode_task(task_id, payload):
             if any(fn.endswith(ext) for ext in [".py", ".jsx", ".tsx", ".js", ".ts"]):
                 generated_files.append(f"/opt/AiComic/scripts/generated/{fn}")
 
-    # Step 2: 最小安全检查 — 必须是真实轻量运行检查
-    if not generated_files:
-        minimal_check_status = "skipped"
-        minimal_check_type = "none"
-        minimal_check_skip_reason = "no_generated_files"
-        print(f"[{BOT_TYPE}] [STRICT] 最小安全检查: skipped (无生成文件)")
-    else:
-        passed = failed = 0
-        errors = []
-        minimal_check_type = "runtime"
-        for gf in generated_files[:5]:
-            ext = gf.rsplit(".", 1)[-1]
-            if ext == "py":
-                o = __import__("subprocess").run(
-                    "python3 -m py_compile " + gf, shell=True, capture_output=True, timeout=30)
-                if o.returncode == 0:
-                    passed += 1
-                else:
-                    failed += 1
-                    errors.append("py: " + o.stderr[:60].decode())
-            elif ext in ("js", "jsx", "ts", "tsx"):
-                o = __import__("subprocess").run(
-                    "node --check " + gf, shell=True, capture_output=True, timeout=30)
-                if o.returncode == 0:
-                    passed += 1
-                else:
-                    failed += 1
-                    errors.append("node: " + o.stderr[:60].decode())
-            else:
-                o = __import__("subprocess").run("test -r " + gf, shell=True, capture_output=True)
-                if o.returncode == 0:
-                    passed += 1
-                else:
-                    failed += 1
-                    errors.append("not readable: " + gf)
-        if failed > 0:
-            minimal_check_status = "failed"
-            minimal_check_skip_reason = ""
-            print(f"[{BOT_TYPE}] [STRICT] 最小安全检查: FAILED ({failed})")
-        else:
+    # Step 2: 最小安全检查 — 项目级 contract 优先，无 contract 时诚实 skipped
+    # 优先级：任务级 minimal_check_cmd > 项目级 minimal_check_cmd > 无（skipped）
+    # 不再按语言硬编码检查命令
+    check_cmd = payload.get("minimal_check_cmd", "")
+    if check_cmd:
+        minimal_check_type = "project_contract"
+        minimal_check_cmd_used = check_cmd
+        o = __import__("subprocess").run(
+            check_cmd, shell=True, capture_output=True, timeout=120)
+        exit_code = o.returncode
+        stdout = (o.stdout or b"").decode()[:200]
+        stderr = (o.stderr or b"").decode()[:200]
+        if exit_code == 0:
             minimal_check_status = "passed"
             minimal_check_skip_reason = ""
-            print(f"[{BOT_TYPE}] [STRICT] 最小安全检查: passed ({passed} 文件)")
+            minimal_check_error = ""
+            print("[" + BOT_TYPE + "] [STRICT] 最小安全检查: passed (cmd=" + check_cmd + ")")
+        else:
+            minimal_check_status = "failed"
+            minimal_check_skip_reason = ""
+            minimal_check_error = "exit=" + str(exit_code) + " stderr=" + stderr
+            print("[" + BOT_TYPE + "] [STRICT] 最小安全检查: FAILED (cmd=" + check_cmd + ")")
+    else:
+        minimal_check_type = "none"
+        minimal_check_status = "skipped"
+        minimal_check_skip_reason = "minimal_check_skipped_no_runtime_contract"
+        minimal_check_cmd_used = ""
+        exit_code = None
+        minimal_check_error = ""
+        print("[" + BOT_TYPE + "] [STRICT] 最小安全检查: skipped (无 minimal_check_cmd contract)")
 
     # Step 3: git add + commit — 必须在 target_branch 上进行
     # 正确流程：先切换/创建目标分支，再 commit（保证 commit 落在目标分支）
@@ -1246,8 +1241,11 @@ def execute_strict_mode_task(task_id, payload):
             "codegen": codegen_status,
             "minimal_check": {
                 "status": minimal_check_status,
-                "check_type": minimal_check_type if "minimal_check_type" in dir() else "unknown",
+                "check_type": minimal_check_type if "minimal_check_type" in dir() else "none",
+                "command": minimal_check_cmd_used if "minimal_check_cmd_used" in dir() else "",
+                "exit_code": exit_code if "exit_code" in dir() else None,
                 "skip_reason": minimal_check_skip_reason if "minimal_check_skip_reason" in dir() else "",
+                "error": minimal_check_error if "minimal_check_error" in dir() else "",
             },
             "git_commit": git_commit_status,
             "git_push": push_status,
