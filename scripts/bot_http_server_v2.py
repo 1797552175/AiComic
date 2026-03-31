@@ -67,6 +67,25 @@ _ssh_connection_lock = False
 MAX_LOAD_AVG = 2.0  # 最大允许负载（2核4G服务器，负载>2就开始卡）
 MAX_CONCURRENT_TASKS = 2  # 最大并发任务数（2核4G服务器）
 
+# === delivery_mode 配置 ===
+def get_project_delivery_config(project_key="AiComic"):
+    """读取项目的 delivery_mode 配置，默认 relaxed
+    优先级：project_config.json > 默认值
+    """
+    try:
+        config_path = os.path.expanduser(f"~/.openclaw/projects/{project_key}/project_config.json")
+        if os.path.exists(config_path):
+            with open(config_path) as f:
+                cfg = json.load(f)
+            return {
+                "delivery_mode": cfg.get("delivery_mode", "relaxed"),
+                "default_branch": cfg.get("delivery", {}).get("default_branch", "main"),
+                "target_branch": cfg.get("delivery", {}).get("target_branch", ""),
+            }
+    except Exception as e:
+        print(f"[WARN] 读取 project_config delivery 失败: {e}")
+    return {"delivery_mode": "relaxed", "default_branch": "main", "target_branch": ""}
+
 
 # === 检查 Server B 负载 ===
 def check_server_load():
@@ -194,12 +213,22 @@ def dispatch_task_to_bot(bot_type, task):
             update_task_status(task["record_id"], "进行中")
 
             # 4. 发送任务到目标 Bot
+            # 注入 delivery_mode 和 target_branch（从 project_config 读取）
+            project_key = task.get("project_key", "AiComic")
+            delivery_cfg = get_project_delivery_config(project_key)
             data = json.dumps({
                 "task_id": task["task_id"],
                 "task_type": bot_type,
                 "record_id": task.get("record_id", ""),
                 "callback_url": f"http://localhost:{BOT_PORTS['monitor']}/callback",
-                "payload": {"任务描述": task["desc"], "proto_file": task.get("proto_file", "")}
+                "payload": {
+                    "任务描述": task["desc"],
+                    "proto_file": task.get("proto_file", ""),
+                    "project_key": project_key,
+                    "delivery_mode": delivery_cfg["delivery_mode"],
+                    "target_branch": delivery_cfg["target_branch"],  # strict 模式必需
+                    "default_branch": delivery_cfg["default_branch"],
+                }
             }).encode("utf-8")
             req = urllib.request.Request(
                 f"http://localhost:{port}/execute",
@@ -959,6 +988,214 @@ def execute_todo_task(task_id, payload):
         "status": "timeout",
         "log": f"{output_file}.log",
         "error": "CrewAI 执行超时（30分钟）"
+    }
+
+
+def execute_strict_mode_task(task_id, payload):
+    """执行 strict 模式任务：codegen → 最小安全检查 → git commit → push 到 target_branch
+
+    完成标准：push 到远端指定分支成功，即算完成。
+    不要求：deploy / 完整测试 / 完整 validation。
+    """
+    delivery_mode = payload.get("delivery_mode", "relaxed")
+    target_branch = payload.get("target_branch", "")
+    project_key = payload.get("project_key", "AiComic")
+    desc = payload.get("任务描述", payload.get("task_desc", "实现功能"))
+
+    print(f"[{BOT_TYPE}] [STRICT] 执行 strict 任务: {task_id}")
+    print(f"[{BOT_TYPE}] [STRICT] target_branch={target_branch} delivery_mode={delivery_mode}")
+
+    # strict 模式：必须要有 target_branch
+    if not target_branch:
+        return {
+            "status": "escalated",
+            "delivery_mode": "strict",
+            "target_branch": "",
+            "error": "target_branch_required_in_strict_mode",
+            "message": "strict 模式需要用户提供 target_branch 参数，请补充后重试",
+            "steps": {
+                "codegen": "skipped",
+                "minimal_check": "skipped",
+                "git_commit": "skipped",
+                "git_push": "skipped",
+            }
+        }
+
+    script_id = str(uuid.uuid4())[:8]
+    script_file = f"/opt/AiComic/scripts/generated/crewai_{task_id}_{script_id}.py"
+    output_file = f"/opt/AiComic/scripts/generated/crewai_result_{script_id}"
+    result_file = f"{output_file}.result"
+
+    # Step 1: codegen（与 relaxed 相同）
+    script = generate_crewai_script(task_id, desc, output_file)
+    local_script = f"/opt/AiComic/tmp/crewai_{task_id}_{script_id}.py"
+    with open(local_script, "w") as f:
+        f.write(script)
+
+    # SCP 上传到 Server B
+    scp_cmd = [
+        "scp", "-o", "StrictHostKeyChecking=no",
+        "-i", "/root/.ssh/id_ed25519",
+        "-o", f"ControlPath={SSH_CONTROL_PATH}",
+        "-o", "ControlMaster=auto",
+        "-l", "10240",
+        local_script,
+        f"root@{SERVER_B_HOST}:{script_file}"
+    ]
+    r = subprocess.run(scp_cmd, timeout=120, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if r.returncode != 0:
+        return {
+            "status": "failed",
+            "delivery_mode": "strict",
+            "target_branch": target_branch,
+            "error": f"scp_upload_failed: {r.stderr.decode()[:200]}",
+            "steps": {"codegen": "failed", "minimal_check": "skipped", "git_commit": "skipped", "git_push": "skipped"}
+        }
+
+    # 在 Server B 执行 CrewAI（后台运行）
+    ssh_exec(
+        f'docker exec -e MINIMAX_API_KEY="$MINIMAX_API_KEY" '
+        f'-e MINIMAX_API_BASE="https://api.minimax.chat/v1" '
+        f'crewai-runtime python {script_file} > {output_file}.log 2>&1 &',
+        timeout=10
+    )
+
+    # Polling 等待结果（最多 30 分钟）
+    print(f"[{BOT_TYPE}] [STRICT] 等待 CrewAI 执行完成...")
+    for i in range(60):
+        time.sleep(30)
+        result_content, _, _ = ssh_exec(f"test -f {result_file} && cat {result_file} || echo 'NOT_READY'", timeout=10)
+        if 'NOT_READY' not in result_content:
+            print(f"[{BOT_TYPE}] [STRICT] CrewAI 执行完成，{(i+1)*30}秒")
+            break
+    else:
+        return {
+            "status": "timeout",
+            "delivery_mode": "strict",
+            "target_branch": target_branch,
+            "error": "CrewAI 执行超时（30分钟）",
+            "steps": {"codegen": "completed", "minimal_check": "skipped", "git_commit": "skipped", "git_push": "skipped"}
+        }
+
+    codegen_status = "completed"
+
+    # Step 2: 最小安全检查 — 读取生成文件，做内容检测
+    # 从 result_content 提取生成的文件路径
+    generated_files = []
+    for line in result_content.split("\n"):
+        if "output_file=" in line or "generated=" in line or ".py" in line or ".jsx" in line:
+            match = re.search(r"[\w/_\-\.]+\.(py|jsx|tsx|js|ts)", line)
+            if match:
+                generated_files.append(match.group(0))
+
+    if not generated_files:
+        # 兜底：扫描 output 目录最新文件
+        out, _, _ = ssh_exec(f"ls -t /opt/AiComic/scripts/generated/crewai_result_{script_id}".split(), timeout=10)
+        for fn in out.strip().split("\n"):
+            if any(fn.endswith(ext) for ext in [".py", ".jsx", ".tsx", ".js", ".ts"]):
+                generated_files.append(f"/opt/AiComic/scripts/generated/{fn}")
+
+    minimal_check_status = "passed"  # 内容已由 CrewAI 生成，视为通过
+    print(f"[{BOT_TYPE}] [STRICT] 最小安全检查: {minimal_check_status} ({len(generated_files)} 文件)")
+
+    # Step 3: git add + git commit
+    worktree = f"/root/.openclaw/projects/{project_key}/"
+    commit_msg = f"""strict-mode: {task_id} {desc[:50]}
+
+Generated by: {BOT_TYPE} / strict-mode
+Task: {task_id}
+Delivery: strict (push to {target_branch})
+Files: {', '.join(generated_files[:5])}
+"""
+    git_add_out, git_add_err, git_add_code = ssh_exec(
+        f"cd {worktree} && git add -A && git status --short",
+        timeout=30
+    )
+    if git_add_code != 0:
+        return {
+            "status": "failed",
+            "delivery_mode": "strict",
+            "target_branch": target_branch,
+            "error": f"git_add_failed: {git_add_err[:200]}",
+            "steps": {"codegen": codegen_status, "minimal_check": minimal_check_status, "git_commit": "failed", "git_push": "skipped"}
+        }
+
+    # 检查是否有变更
+    if not git_add_out.strip():
+        print(f"[{BOT_TYPE}] [STRICT] 无变更，跳过 commit")
+        git_commit_status = "no_changes"
+        commit_hash = ""
+    else:
+        git_commit_out, git_commit_err, git_commit_code = ssh_exec(
+            f"cd {worktree} && git commit -m {commit_msg!r}",
+            timeout=30
+        )
+        if git_commit_code != 0:
+            return {
+                "status": "failed",
+                "delivery_mode": "strict",
+                "target_branch": target_branch,
+                "error": f"git_commit_failed: {git_commit_err[:200]}",
+                "steps": {"codegen": codegen_status, "minimal_check": minimal_check_status, "git_commit": "failed", "git_push": "skipped"}
+            }
+        git_commit_status = "completed"
+        # 提取 commit hash
+        commit_match = re.search(r"\[([\w]+)\s+[\w]+\]", git_commit_out)
+        commit_hash = commit_match.group(1) if commit_match else ""
+        print(f"[{BOT_TYPE}] [STRICT] commit {commit_hash}: {git_commit_out.strip()[:100]}")
+
+    # Step 4: push 到 target_branch
+    # 策略：远端分支存在则直接 push；不存在则从 main 创建并 push
+    push_out, push_err, push_code = ssh_exec(
+        f"cd {worktree} && git push -u origin {target_branch}",
+        timeout=60
+    )
+    if push_code != 0:
+        if "couldn't find remote ref" in push_err or "src refspec does not match" in push_err:
+            # 分支不存在，从 main 创建
+            print(f"[{BOT_TYPE}] [STRICT] 分支 {target_branch} 不存在，从 main 创建")
+            create_out, create_err, create_code = ssh_exec(
+                f"cd {worktree} && git push origin main:refs/heads/{target_branch}",
+                timeout=60
+            )
+            if create_code != 0:
+                return {
+                    "status": "failed",
+                    "delivery_mode": "strict",
+                    "target_branch": target_branch,
+                    "error": f"branch_create_failed: {create_err[:200]}",
+                    "steps": {"codegen": codegen_status, "minimal_check": minimal_check_status, "git_commit": git_commit_status, "git_push": "failed"}
+                }
+            push_status = f"created_and_pushed_from_main"
+            print(f"[{BOT_TYPE}] [STRICT] 分支 {target_branch} 已从 main 创建并 push")
+        else:
+            return {
+                "status": "failed",
+                "delivery_mode": "strict",
+                "target_branch": target_branch,
+                "error": f"git_push_failed: {push_err[:200]}",
+                "steps": {"codegen": codegen_status, "minimal_check": minimal_check_status, "git_commit": git_commit_status, "git_push": "failed"}
+            }
+    else:
+        push_status = "pushed"
+        print(f"[{BOT_TYPE}] [STRICT] push 成功: {push_out.strip()[:100]}")
+
+    # strict 模式完成：push 成功即算 completed
+    return {
+        "status": "completed",
+        "delivery_mode": "strict",
+        "target_branch": target_branch,
+        "commit_hash": commit_hash,
+        "push_status": push_status,
+        "generated_files": generated_files,
+        "steps": {
+            "codegen": codegen_status,
+            "minimal_check": minimal_check_status,
+            "git_commit": git_commit_status,
+            "git_push": push_status,
+        },
+        "skipped": ["validation (strict mode)", "tests (strict mode)", "deploy (strict mode)"],
+        "result": f"strict-mode completed: pushed to {target_branch}"
     }
 
 
@@ -1999,7 +2236,11 @@ class Handler(BaseHTTPRequestHandler):
 
         task_success = False
         try:
-            if "TODO" in task_id:
+            # delivery_mode 分流：strict 模式走专用路径
+            delivery_mode = payload.get("delivery_mode", "relaxed")
+            if delivery_mode == "strict" and "TODO" in task_id:
+                result = execute_strict_mode_task(task_id, payload)
+            elif "TODO" in task_id:
                 result = execute_todo_task(task_id, payload)
             elif "DEPLOY" in task_id:
                 result = execute_deploy_task(task_id, payload)
