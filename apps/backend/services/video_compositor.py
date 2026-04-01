@@ -7,8 +7,11 @@ import os
 import json
 import uuid
 import shutil
-from typing import List, Dict, Any, Optional, Tuple
-from pathlib import Path
+import inspect
+from typing import List, Dict, Any, Optional, Tuple, Callable, Awaitable
+from PIL import Image, ImageOps, ImageDraw
+
+ProgressCallback = Optional[Callable[[int, str], Awaitable[None] | None]]
 
 
 class VideoCompositor:
@@ -23,7 +26,7 @@ class VideoCompositor:
     }
 
     # 导出格式
-    EXPORT_FORMATS = ["mp4", "h265", "gif", "webm", "frames"]
+    EXPORT_FORMATS = ["png_sequence", "mp4", "pdf", "gif", "h265", "webm", "frames"]
 
     def __init__(
         self,
@@ -35,6 +38,19 @@ class VideoCompositor:
         os.makedirs(output_dir, exist_ok=True)
         os.makedirs(temp_dir, exist_ok=True)
 
+    async def _report_progress(
+        self,
+        progress_callback: ProgressCallback,
+        progress: int,
+        message: str
+    ) -> None:
+        """兼容同步/异步进度回调。"""
+        if not progress_callback:
+            return
+        result = progress_callback(progress, message)
+        if inspect.isawaitable(result):
+            await result
+
     async def compose(
         self,
         shots: List[Dict[str, Any]],
@@ -42,7 +58,8 @@ class VideoCompositor:
         quality: str = "1080p",
         subtitle_path: Optional[str] = None,
         watermark_path: Optional[str] = None,
-        output_path: Optional[str] = None
+        output_path: Optional[str] = None,
+        progress_callback: ProgressCallback = None
     ) -> Dict[str, Any]:
         """
         合成最终视频
@@ -71,6 +88,8 @@ class VideoCompositor:
         """
         preset = self.QUALITY_PRESETS.get(quality, self.QUALITY_PRESETS["1080p"])
 
+        await self._report_progress(progress_callback, 0, "开始合成")
+
         if output_path is None:
             output_path = os.path.join(
                 self.output_dir,
@@ -85,6 +104,12 @@ class VideoCompositor:
             # 1. 为每个镜头生成视频片段
             clip_paths = []
             for i, shot in enumerate(shots):
+                shot_progress = 5 + int((i / max(len(shots), 1)) * 60)
+                await self._report_progress(
+                    progress_callback,
+                    shot_progress,
+                    f"正在处理镜头 {i + 1}/{len(shots)}"
+                )
                 clip_path = await self._generate_shot_clip(
                     shot=shot,
                     preset=preset,
@@ -94,6 +119,7 @@ class VideoCompositor:
                 clip_paths.append(clip_path)
 
             # 2. 创建拼接列表文件
+            await self._report_progress(progress_callback, 68, "正在整理拼接清单")
             concat_list_path = os.path.join(work_dir, "concat.txt")
             with open(concat_list_path, "w") as f:
                 for clip in clip_paths:
@@ -102,6 +128,7 @@ class VideoCompositor:
                     f.write(f"file '{abs_clip}'\n")
 
             # 3. 拼接所有片段
+            await self._report_progress(progress_callback, 78, "正在合成视频")
             merged_path = os.path.join(work_dir, "merged.mp4")
             cmd_merge = [
                 "ffmpeg", "-y",
@@ -120,6 +147,7 @@ class VideoCompositor:
 
             # 4. 混入音频
             if audio_track_url:
+                await self._report_progress(progress_callback, 86, "正在混入音频")
                 final_path = os.path.join(work_dir, "with_audio.mp4")
                 cmd_audio = [
                     "ffmpeg", "-y",
@@ -136,6 +164,7 @@ class VideoCompositor:
 
             # 5. 添加字幕
             if subtitle_path:
+                await self._report_progress(progress_callback, 90, "正在添加字幕")
                 subtitled_path = os.path.join(work_dir, "subtitled.mp4")
                 cmd_sub = [
                     "ffmpeg", "-y",
@@ -151,6 +180,7 @@ class VideoCompositor:
 
             # 6. 添加水印
             if watermark_path:
+                await self._report_progress(progress_callback, 94, "正在添加水印")
                 watermarked_path = os.path.join(work_dir, "watermarked.mp4")
                 cmd_water = [
                     "ffmpeg", "-y",
@@ -170,6 +200,7 @@ class VideoCompositor:
 
             # 8. 获取视频信息
             info = self._get_video_info(output_path)
+            await self._report_progress(progress_callback, 100, "合成完成")
 
             return {
                 "output_url": f"file://{output_path}",
@@ -181,6 +212,30 @@ class VideoCompositor:
         finally:
             # 清理临时目录
             shutil.rmtree(work_dir, ignore_errors=True)
+
+    async def export_mp4(
+        self,
+        shots: List[Dict[str, Any]],
+        audio_track_url: Optional[str] = None,
+        quality: str = "1080p",
+        subtitle_path: Optional[str] = None,
+        watermark_path: Optional[str] = None,
+        output_path: Optional[str] = None,
+        progress_callback: ProgressCallback = None
+    ) -> Dict[str, Any]:
+        """导出 MP4，直接复用合成流程。"""
+        await self._report_progress(progress_callback, 0, "开始导出 MP4")
+        result = await self.compose(
+            shots=shots,
+            audio_track_url=audio_track_url,
+            quality=quality,
+            subtitle_path=subtitle_path,
+            watermark_path=watermark_path,
+            output_path=output_path,
+            progress_callback=progress_callback
+        )
+        await self._report_progress(progress_callback, 100, "MP4 导出完成")
+        return result
 
     async def _generate_shot_clip(
         self,
@@ -291,7 +346,8 @@ class VideoCompositor:
         video_path: str,
         fps: int = 15,
         max_width: int = 480,
-        output_path: Optional[str] = None
+        output_path: Optional[str] = None,
+        progress_callback: ProgressCallback = None
     ) -> str:
         """
         导出为GIF格式
@@ -311,6 +367,8 @@ class VideoCompositor:
                 f"export_{uuid.uuid4().hex[:8]}.gif"
             )
 
+        await self._report_progress(progress_callback, 0, "开始导出 GIF")
+
         # 转换为调色板GIF（体积小）
         cmd = [
             "ffmpeg", "-y",
@@ -321,12 +379,62 @@ class VideoCompositor:
         ]
 
         subprocess.run(cmd, capture_output=True)
+        await self._report_progress(progress_callback, 100, "GIF 导出完成")
+        return f"file://{output_path}"
+
+    async def export_gif_from_images(
+        self,
+        image_paths: List[str],
+        fps: int = 12,
+        output_path: Optional[str] = None,
+        progress_callback: ProgressCallback = None
+    ) -> str:
+        """将图片序列导出为 GIF。"""
+        if output_path is None:
+            output_path = os.path.join(
+                self.output_dir,
+                f"export_{uuid.uuid4().hex[:8]}.gif"
+            )
+
+        valid_paths = [self._normalize_path(path) for path in image_paths if path]
+        if not valid_paths:
+            raise ValueError("没有可用于导出的图片")
+
+        await self._report_progress(progress_callback, 0, "开始生成 GIF")
+        frames = []
+        total = len(valid_paths)
+        for index, image_path in enumerate(valid_paths, start=1):
+            if not os.path.exists(image_path):
+                continue
+            with Image.open(image_path) as source:
+                frames.append(source.convert("P", palette=Image.ADAPTIVE))
+            progress = int(index / total * 95)
+            await self._report_progress(
+                progress_callback,
+                progress,
+                f"正在准备 GIF 帧 {index}/{total}"
+            )
+
+        if not frames:
+            raise ValueError("没有可用于导出的图片")
+
+        duration = max(int(1000 / max(fps, 1)), 1)
+        frames[0].save(
+            output_path,
+            save_all=True,
+            append_images=frames[1:],
+            duration=duration,
+            loop=0,
+            disposal=2
+        )
+        await self._report_progress(progress_callback, 100, "GIF 导出完成")
         return f"file://{output_path}"
 
     async def export_frames(
         self,
         video_path: str,
-        output_dir: Optional[str] = None
+        output_dir: Optional[str] = None,
+        progress_callback: ProgressCallback = None
     ) -> str:
         """
         导出为PNG序列帧
@@ -345,6 +453,8 @@ class VideoCompositor:
             )
         os.makedirs(output_dir, exist_ok=True)
 
+        await self._report_progress(progress_callback, 0, "开始导出 PNG 序列")
+
         cmd = [
             "ffmpeg", "-y",
             "-i", video_path.replace("file://", ""),
@@ -353,7 +463,82 @@ class VideoCompositor:
         ]
 
         subprocess.run(cmd, capture_output=True)
+        await self._report_progress(progress_callback, 100, "PNG 序列导出完成")
         return f"file://{output_dir}"
+
+    async def export_png_sequence(
+        self,
+        image_paths: List[str],
+        output_dir: Optional[str] = None,
+        progress_callback: ProgressCallback = None
+    ) -> str:
+        """将图片序列导出为 PNG 序列。"""
+        if output_dir is None:
+            output_dir = os.path.join(
+                self.output_dir,
+                f"png_sequence_{uuid.uuid4().hex[:8]}"
+            )
+        os.makedirs(output_dir, exist_ok=True)
+
+        valid_paths = [self._normalize_path(path) for path in image_paths if path]
+        total = max(len(valid_paths), 1)
+        await self._report_progress(progress_callback, 0, "开始导出 PNG 序列")
+
+        for index, image_path in enumerate(valid_paths, start=1):
+            if not os.path.exists(image_path):
+                continue
+            with Image.open(image_path) as image:
+                target = os.path.join(output_dir, f"frame_{index:04d}.png")
+                image.save(target, format="PNG")
+            progress = int(index / total * 100)
+            await self._report_progress(
+                progress_callback,
+                progress,
+                f"正在导出 PNG 帧 {index}/{total}"
+            )
+
+        await self._report_progress(progress_callback, 100, "PNG 序列导出完成")
+        return f"file://{output_dir}"
+
+    async def export_pdf(
+        self,
+        image_paths: List[str],
+        output_path: Optional[str] = None,
+        title: str = "AiComic 导出",
+        progress_callback: ProgressCallback = None
+    ) -> str:
+        """将图片序列导出为 PDF。"""
+        if output_path is None:
+            output_path = os.path.join(
+                self.output_dir,
+                f"export_{uuid.uuid4().hex[:8]}.pdf"
+            )
+
+        valid_paths = [self._normalize_path(path) for path in image_paths if path]
+        total = max(len(valid_paths), 1)
+        pages = []
+        await self._report_progress(progress_callback, 0, "开始生成 PDF")
+
+        for index, image_path in enumerate(valid_paths, start=1):
+            if not os.path.exists(image_path):
+                continue
+            with Image.open(image_path) as source:
+                image = source.convert("RGB")
+                page = self._compose_pdf_page(image, title, index, total)
+                pages.append(page)
+            progress = int(index / total * 90)
+            await self._report_progress(
+                progress_callback,
+                progress,
+                f"正在生成 PDF 第 {index}/{total} 页"
+            )
+
+        if not pages:
+            raise ValueError("没有可用于导出的图片")
+
+        pages[0].save(output_path, save_all=True, append_images=pages[1:])
+        await self._report_progress(progress_callback, 100, "PDF 导出完成")
+        return f"file://{output_path}"
 
     def _get_video_info(self, video_path: str) -> Dict[str, Any]:
         """获取视频信息"""
@@ -377,6 +562,31 @@ class VideoCompositor:
             "resolution": f"{width}x{height}",
             "file_size": file_size
         }
+
+    def _normalize_path(self, path: str) -> str:
+        """清理 file:// 前缀。"""
+        return path.replace("file://", "")
+
+    def _compose_pdf_page(
+        self,
+        image: Image.Image,
+        title: str,
+        page_index: int,
+        total_pages: int
+    ) -> Image.Image:
+        """把单张图片整理成 PDF 页面。"""
+        page_size = (1240, 1754)
+        canvas = Image.new("RGB", page_size, "white")
+        draw = ImageDraw.Draw(canvas)
+
+        header = f"{title}  ·  {page_index}/{total_pages}"
+        draw.text((56, 48), header, fill="black")
+
+        preview = ImageOps.contain(image, (1130, 1540))
+        x = (page_size[0] - preview.width) // 2
+        y = 140
+        canvas.paste(preview, (x, y))
+        return canvas
 
     async def generate_thumbnail(
         self,

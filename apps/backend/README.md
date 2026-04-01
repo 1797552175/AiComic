@@ -56,3 +56,6 @@ docker compose up -d
 | `POST /api/v1/motion` | 动态化处理 |
 | `POST /api/v1/audio` | 配音配乐 |
 | `POST /api/v1/compose` | 视频合成 |
+| `POST /api/projects/{project_id}/exports` | 导出任务创建 |
+| `GET /api/exports/{task_id}` | 导出进度查询 |
+| `GET /api/projects/{project_id}/share` | 分享信息生成 |

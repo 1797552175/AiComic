@@ -1,3 +1,4 @@
-# 前端项目（Next.js）
+# 前端项目（Svelte 资产）
 
-> 暂未开始，后续从 ai-novel-web 或独立项目迁移
+> 当前仓库只保留导出/分享面板相关源码片段。
+> 核心组件位于 `src/components/ShareExportPanel.svelte`。

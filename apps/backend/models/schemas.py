@@ -208,8 +208,29 @@ class ComposeResponse(BaseModel):
 class ExportRequest(BaseModel):
     """导出请求"""
     project_id: str
-    format: str = "mp4"  # mp4/h265/gif/序列帧
+    format: str = "mp4"  # png_sequence/mp4/pdf/gif
     resolution: str = "1080p"  # 480p/720p/1080p/4k
+    quality: str = "1080p"
+    fps: int = 15
+    title: Optional[str] = None
+
+
+class ExportResponse(BaseModel):
+    """导出任务响应"""
+    task_id: str
+    status: str = "processing"
+    progress: int = 0
+    estimated_time: int = 300
+
+
+class ShareKitResponse(BaseModel):
+    """分享信息响应"""
+    project_id: str
+    title: str
+    share_url: str
+    qr_code_url: str
+    embed_code: str
+    platforms: Dict[str, Dict[str, str]]
 
 
 # ========================

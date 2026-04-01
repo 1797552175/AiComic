@@ -1,35 +1,33 @@
 """
 API 路由
 """
-from typing import List
-from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
+import asyncio
+import time
+import uuid
+from dataclasses import dataclass, asdict
+from enum import Enum
+from typing import List, Dict, Optional
+from urllib.parse import quote_plus, urljoin
+
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from models.database import get_db, Project, Character, Scene, Shot, Dialogue
+from models.database import get_db, async_session, Project, Character, Scene, Shot, Dialogue
 from models.schemas import (
     ProjectCreate, ProjectUpdate, ProjectResponse,
     CharacterCreate, CharacterResponse,
     ScriptParseRequest, ScriptParseResponse,
     ShotUpdate, ShotGenerateRequest, ShotGenerateResponse,
     MotionApplyRequest,
-    ComposeRequest, ComposeResponse
+    ComposeRequest, ComposeResponse,
+    ExportRequest, ExportResponse, ShareKitResponse
 )
 from services.script_parser import script_parser
 from services.storyboard import storyboard_generator
+from services.video_compositor import video_compositor
 
 router = APIRouter()
-
-
-
-# ========================
-# 异步任务队列
-# ========================
-import asyncio
-import time
-from typing import Dict, Optional
-from dataclasses import dataclass
-from enum import Enum
 
 class TaskStatus(str, Enum):
     PENDING = "pending"
@@ -41,6 +39,9 @@ class TaskStatus(str, Enum):
 class Task:
     task_id: str
     status: str
+    progress: int
+    stage: str
+    task_type: str
     created_at: float
     started_at: Optional[float]
     completed_at: Optional[float]
@@ -50,12 +51,15 @@ class Task:
 _task_store: Dict[str, Task] = {}
 _task_lock = asyncio.Lock()
 
-async def create_task() -> str:
+async def create_task(task_type: str = "general") -> str:
     task_id = f"task_{uuid.uuid4().hex[:12]}"
     async with _task_lock:
         _task_store[task_id] = Task(
             task_id=task_id,
-            status=TaskStatus.PENDING,
+            status=TaskStatus.PENDING.value,
+            progress=0,
+            stage="pending",
+            task_type=task_type,
             created_at=time.time(),
             started_at=None,
             completed_at=None,
@@ -67,20 +71,33 @@ async def create_task() -> str:
 async def start_task(task_id: str):
     async with _task_lock:
         if task_id in _task_store:
-            _task_store[task_id].status = TaskStatus.PROCESSING
+            _task_store[task_id].status = TaskStatus.PROCESSING.value
             _task_store[task_id].started_at = time.time()
+
+async def update_task_progress(task_id: str, progress: int, stage: str, message: str = ""):
+    async with _task_lock:
+        if task_id in _task_store:
+            task = _task_store[task_id]
+            task.progress = max(0, min(100, progress))
+            task.stage = stage
+            if message:
+                task.result = {**(task.result or {}), "message": message}
 
 async def complete_task(task_id: str, result: dict):
     async with _task_lock:
         if task_id in _task_store:
-            _task_store[task_id].status = TaskStatus.COMPLETED
+            _task_store[task_id].status = TaskStatus.COMPLETED.value
+            _task_store[task_id].progress = 100
+            _task_store[task_id].stage = "completed"
             _task_store[task_id].completed_at = time.time()
             _task_store[task_id].result = result
 
 async def fail_task(task_id: str, error: str):
     async with _task_lock:
         if task_id in _task_store:
-            _task_store[task_id].status = TaskStatus.FAILED
+            _task_store[task_id].status = TaskStatus.FAILED.value
+            _task_store[task_id].progress = 100
+            _task_store[task_id].stage = "failed"
             _task_store[task_id].completed_at = time.time()
             _task_store[task_id].error = error
 
@@ -90,6 +107,79 @@ async def get_task(task_id: str) -> Optional[dict]:
             t = _task_store[task_id]
             return asdict(t)
     return None
+
+def _normalize_file_path(value: Optional[str]) -> str:
+    if not value:
+        return ""
+    return value.replace("file://", "")
+
+async def _load_project_export_shots(project_id: str) -> tuple[str, List[dict]]:
+    async with async_session() as db:
+        result = await db.execute(select(Project).where(Project.id == project_id))
+        project = result.scalar_one_or_none()
+        if not project:
+            raise HTTPException(status_code=404, detail="项目不存在")
+
+        scenes_result = await db.execute(
+            select(Scene).where(Scene.project_id == project_id).order_by(Scene.order_index)
+        )
+        scenes = scenes_result.scalars().all()
+
+        shots_payload: List[dict] = []
+        for scene in scenes:
+            shot_result = await db.execute(
+                select(Shot).where(Shot.scene_id == scene.id).order_by(Shot.order_index)
+            )
+            shots = shot_result.scalars().all()
+            for shot in shots:
+                shots_payload.append({
+                    "id": shot.id,
+                    "scene_id": scene.id,
+                    "image_url": _normalize_file_path(shot.image_url),
+                    "duration": shot.duration,
+                    "motion_type": (shot.motion_data or {}).get("type", "static"),
+                    "keywords": shot.keywords or "",
+                    "description": shot.description or "",
+                })
+
+        return project.title, shots_payload
+
+def _build_share_url(base_url: str, project_id: str) -> str:
+    normalized_base = base_url if base_url.endswith("/") else f"{base_url}/"
+    return urljoin(normalized_base, f"share/{project_id}")
+
+def _build_share_platforms(share_url: str, title: str) -> Dict[str, Dict[str, str]]:
+    encoded_url = quote_plus(share_url)
+    encoded_title = quote_plus(title)
+    return {
+        "wechat": {
+            "label": "微信",
+            "share_url": share_url,
+            "hint": "复制链接后在微信内发送，或使用二维码扫码预览",
+        },
+        "weibo": {
+            "label": "微博",
+            "share_url": f"https://service.weibo.com/share/share.php?url={encoded_url}&title={encoded_title}",
+            "hint": "打开后可直接跳转微博分享页",
+        },
+        "douyin": {
+            "label": "抖音",
+            "share_url": f"snssdk1128://share/text?text={encoded_title}%20{encoded_url}",
+            "hint": "可作为抖音 App 内分享口令/文本分享入口",
+        },
+    }
+
+def _build_embed_code(share_url: str, title: str) -> str:
+    safe_title = title.replace('"', "&quot;")
+    return (
+        f'<iframe src="{share_url}?embed=1" title="{safe_title}" '
+        'loading="lazy" allowfullscreen '
+        'style="width:100%;min-height:640px;border:0;border-radius:16px;"></iframe>'
+    )
+
+def _build_qr_code_url(share_url: str) -> str:
+    encoded_url = quote_plus(share_url)
+    return f"https://api.qrserver.com/v1/create-qr-code/?size=240x240&data={encoded_url}"
 
 async def process_shot_generation(task_id: str, project_id: str, shot_ids: list):
     await start_task(task_id)
@@ -351,8 +441,8 @@ async def generate_shots_batch(
     实际生成是异步的，这里返回任务ID
     """
     # 异步任务队列实现
-    task_id = await create_task()
-    asyncio.create_task(process_shot_generation(task_id, project_id, [s.id for s in shots]))
+    task_id = await create_task(task_type="shot_generation")
+    asyncio.create_task(process_shot_generation(task_id, project_id, request.shot_ids))
     return ShotGenerateResponse(
         task_id=task_id,
         status="pending",
@@ -431,12 +521,138 @@ async def compose_video(
     实际合成是异步的，这里返回任务ID
     """
     # 异步任务队列实现
-    task_id = await create_task()
-    asyncio.create_task(process_video_composition(task_id, project_id, video_config))
+    task_id = await create_task(task_type="composition")
+    asyncio.create_task(process_video_composition(task_id, project_id, request.model_dump()))
     return ComposeResponse(
         task_id=task_id,
         status="pending",
         estimated_time=300
+    )
+
+
+async def process_export_task(task_id: str, project_id: str, config: dict):
+    """处理导出任务。"""
+    await start_task(task_id)
+    try:
+        title, shots = await _load_project_export_shots(project_id)
+        export_format = (config.get("format") or "mp4").lower()
+        quality = config.get("quality") or config.get("resolution") or "1080p"
+        fps = int(config.get("fps") or 15)
+        export_title = config.get("title") or title
+        image_paths = [shot["image_url"] for shot in shots if shot.get("image_url")]
+
+        if not shots:
+            raise HTTPException(status_code=400, detail="项目中没有可导出的镜头")
+
+        async def progress(progress_value: int, message: str):
+            await update_task_progress(task_id, progress_value, f"export_{export_format}", message)
+
+        await update_task_progress(task_id, 5, "preparing", "正在读取导出素材")
+
+        if export_format == "mp4":
+            result = await video_compositor.export_mp4(
+                shots=shots,
+                quality=quality,
+                progress_callback=progress
+            )
+            await complete_task(task_id, {
+                "format": "mp4",
+                "download_url": result["output_url"],
+                "duration": result["duration"],
+                "resolution": result["resolution"],
+                "file_size": result["file_size"],
+                "title": export_title,
+            })
+            return
+
+        if not image_paths:
+            raise HTTPException(status_code=400, detail="项目中没有可用于导出的图片")
+
+        if export_format == "gif":
+            output_url = await video_compositor.export_gif_from_images(
+                image_paths=image_paths,
+                fps=fps,
+                progress_callback=progress
+            )
+        elif export_format in {"png", "png_sequence", "frames"}:
+            output_url = await video_compositor.export_png_sequence(
+                image_paths=image_paths,
+                progress_callback=progress
+            )
+        elif export_format == "pdf":
+            output_url = await video_compositor.export_pdf(
+                image_paths=image_paths,
+                title=export_title,
+                progress_callback=progress
+            )
+        else:
+            raise HTTPException(status_code=400, detail=f"不支持的导出格式: {export_format}")
+
+        await complete_task(task_id, {
+            "format": export_format,
+            "download_url": output_url,
+            "title": export_title,
+            "frame_count": len(image_paths),
+            "fps": fps,
+        })
+    except HTTPException as exc:
+        await fail_task(task_id, exc.detail if isinstance(exc.detail, str) else "导出失败")
+    except Exception as exc:
+        await fail_task(task_id, str(exc))
+
+
+@router.post("/projects/{project_id}/exports", response_model=ExportResponse)
+async def export_project(
+    project_id: str,
+    request: ExportRequest,
+    background_tasks: BackgroundTasks,
+    db: AsyncSession = Depends(get_db)
+):
+    """创建导出任务。"""
+    result = await db.execute(select(Project).where(Project.id == project_id))
+    if not result.scalar_one_or_none():
+        raise HTTPException(status_code=404, detail="项目不存在")
+
+    task_id = await create_task(task_type="export")
+    asyncio.create_task(process_export_task(task_id, project_id, request.model_dump()))
+    return ExportResponse(
+        task_id=task_id,
+        status="pending",
+        progress=0,
+        estimated_time=300
+    )
+
+
+@router.get("/exports/{task_id}")
+async def get_export_task(task_id: str):
+    """查询导出任务状态。"""
+    task = await get_task(task_id)
+    if not task:
+        raise HTTPException(status_code=404, detail="任务不存在")
+    return task
+
+
+@router.get("/projects/{project_id}/share", response_model=ShareKitResponse)
+async def get_share_kit(
+    project_id: str,
+    request: Request,
+    db: AsyncSession = Depends(get_db)
+):
+    """生成分享链接、二维码和嵌入代码。"""
+    result = await db.execute(select(Project).where(Project.id == project_id))
+    project = result.scalar_one_or_none()
+    if not project:
+        raise HTTPException(status_code=404, detail="项目不存在")
+
+    share_url = _build_share_url(str(request.base_url), project_id)
+    platforms = _build_share_platforms(share_url, project.title)
+    return ShareKitResponse(
+        project_id=project_id,
+        title=project.title,
+        share_url=share_url,
+        qr_code_url=_build_qr_code_url(share_url),
+        embed_code=_build_embed_code(share_url, project.title),
+        platforms=platforms,
     )
 
 
